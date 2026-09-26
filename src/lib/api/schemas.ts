@@ -3,7 +3,7 @@ import { NOTE_MAX_LENGTH } from '@/config/app.config.ts';
 import { REPORT_KINDS, VOTE_KINDS } from '@/lib/db/schema.ts';
 
 /**
- * Hard rule 8: every request body, query string and upstream payload is
+ * Every request body, query string and upstream payload is
  * validated with zod. These are the request-side schemas; upstream payload
  * schemas live next to their adapter.
  */
@@ -39,7 +39,7 @@ export const newReportSchema = z.object({
   passableBy: z.array(z.enum(['motorbike', 'car', 'pickup', 'none'])).max(4).optional(),
   /** Thai district name, if the client resolved one. */
   districtTh: z.string().max(80).optional(),
-  /** Cloudflare Turnstile token (SPEC §6.2). */
+  /** Cloudflare Turnstile token. */
   turnstileToken: z.string().min(1).max(4096),
 });
 
@@ -55,8 +55,8 @@ export const stationQuerySchema = z.object({
 
 /**
  * Parses a multipart or JSON body into the report shape.
- * SPEC §12: POST /api/v1/reports is multipart (fields + optional photo).
- * Photos are Phase 1, so a file part is accepted and ignored for now.
+ * POST /api/v1/reports is multipart (fields + optional photo).
+ * Photos are, so a file part is accepted and ignored for now.
  */
 export async function parseReportBody(request: Request): Promise<unknown> {
   const contentType = request.headers.get('content-type') ?? '';

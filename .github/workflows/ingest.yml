@@ -1,7 +1,7 @@
 name: Ingest
 
-# SPEC §7: GitHub Actions cron every 10 minutes drives ingest. This also keeps
-# the Supabase free tier from pausing after 7 days of inactivity (SPEC §7.1).
+# GitHub Actions cron every 10 minutes drives ingest. This also keeps
+# the Supabase free tier from pausing after 7 days of inactivity.
 on:
   schedule:
     - cron: '*/10 * * * *'
@@ -45,7 +45,7 @@ jobs:
           echo
 
           # 207 means at least one source degraded but the run itself succeeded
-          # (Hard rule 5). Surface it as a warning, not a failed workflow.
+          #. Surface it as a warning, not a failed workflow.
           if [ "$code" = "207" ]; then
             echo "::warning::One or more sources degraded — see /api/v1/health"
             exit 0

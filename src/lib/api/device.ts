@@ -4,11 +4,11 @@ import { createHash, randomUUID } from 'node:crypto';
 import { cookies } from 'next/headers';
 
 /**
- * Device identity for rate limiting and one-vote-per-device. SPEC §6.3.
+ * Device identity for rate limiting and one-vote-per-device..
  *
  * "The device ID is a random UUID stored in a signed httpOnly cookie. The server
  * stores only sha256(deviceId + SERVER_SALT)." The raw id never reaches the
- * database and is never logged (Hard rule 27).
+ * database and is never logged.
  */
 
 const COOKIE = 'nw_did';
@@ -40,7 +40,7 @@ export async function deviceHash(): Promise<string> {
 }
 
 /**
- * Hashed client IP, for the second rate-limit dimension. SPEC §6.3: stored
+ * Hashed client IP, for the second rate-limit dimension. stored
  * hashed, kept 7 days, used for rate limiting only.
  */
 export function ipHash(request: Request): string | null {

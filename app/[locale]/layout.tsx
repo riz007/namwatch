@@ -10,7 +10,7 @@ import { SiteHeader } from '@/components/SiteHeader.tsx';
 import '@/styles/globals.css';
 
 /**
- * SPEC §9: a Thai-capable body face paired with a Latin face of similar x-height.
+ * a Thai-capable body face paired with a Latin face of similar x-height.
  * IBM Plex Sans Thai and IBM Plex Sans are designed as a pair.
  */
 const plexThai = IBM_Plex_Sans_Thai({

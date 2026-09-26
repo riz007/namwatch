@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { FloodScreen } from '@/components/flood/FloodScreen.tsx';
 
-/** Screen 1 — Map + List. SPEC §8.3. */
+/** Screen 1 — Map + List.. */
 export async function generateMetadata({
   params,
 }: {

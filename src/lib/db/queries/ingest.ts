@@ -7,14 +7,14 @@ import { resolveRegionId } from '@/lib/geo/region.ts';
 import type { IngestPayload } from '@/lib/sources/types.ts';
 
 /**
- * Persisting a normalised adapter payload. Hard rule 7: SQL lives only here.
+ * Persisting a normalised adapter payload. SQL lives only here.
  *
  * Writes are upserts keyed on (source, external_id), so re-running ingest is
  * idempotent — which matters because the GitHub Actions cron can overlap with
- * the lazy refresh path (SPEC §7).
+ * the lazy refresh path.
  *
  * Everything is chunked: the free tier will not thank us for a 4 MB single
- * statement, and ThaiWater alone returns 800+ stations (Hard rule 11).
+ * statement, and ThaiWater alone returns 800+ stations.
  */
 
 const CHUNK = 200;
@@ -69,7 +69,7 @@ export async function persistPayload(payload: IngestPayload): Promise<IngestCoun
 
   if (payload.readings.length > 0) {
     // Readings reference stations by (source, external_id); resolve to ids in one
-    // statement rather than a lookup per reading (Hard rule 11: no N+1).
+    // statement rather than a lookup per reading.
     for (const batch of chunk(payload.readings)) {
       // Every parameter is cast explicitly: Postgres cannot infer column types
       // for a bare VALUES list used as a join source, and an untyped timestamptz
@@ -131,7 +131,7 @@ export async function persistPayload(payload: IngestPayload): Promise<IngestCoun
 }
 
 /**
- * SPEC §11 retention: raw readings are kept 14 days, then rolled up to hourly.
+ * Retention: raw readings are kept 14 days, then rolled up to hourly.
  * Called by /api/internal/maintain.
  */
 export async function pruneOldReadings(olderThan: Date): Promise<number> {

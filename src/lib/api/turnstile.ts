@@ -1,7 +1,7 @@
 import 'server-only';
 
 /**
- * Cloudflare Turnstile verification. SPEC §6.2 anti-abuse.
+ * Cloudflare Turnstile verification. anti-abuse.
  *
  * Fails closed: if the secret is missing or Cloudflare is unreachable, a
  * submission is rejected rather than waved through. During an emergency a spam

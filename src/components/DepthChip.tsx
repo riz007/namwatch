@@ -3,7 +3,7 @@ import { depthBand, type DepthBandValue } from '@/config/depth-bands.ts';
 import { DepthPictogram } from './DepthPictogram.tsx';
 
 /**
- * The canonical depth indicator. Hard rule 22 / SPEC §8.1: colour + pictogram +
+ * The canonical depth indicator. / colour + pictogram +
  * text, always all three. Nothing else in the app may render a depth band.
  *
  * The border is not decoration — a pale fill cannot reach WCAG 2.2 SC 1.4.11

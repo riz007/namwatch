@@ -1,7 +1,7 @@
 import { timingSafeEqual } from 'node:crypto';
 
 /**
- * Hard rule 29: `/api/internal/*` requires `x-ingest-secret`, compared in
+ * `/api/internal/*` requires `x-ingest-secret`, compared in
  * constant time so the endpoint cannot be probed a byte at a time.
  */
 export function isAuthorisedInternal(request: Request): boolean {
@@ -13,7 +13,7 @@ export function isAuthorisedInternal(request: Request): boolean {
 
   const a = Buffer.from(provided, 'utf8');
   const b = Buffer.from(expected, 'utf8');
-  // timingSafeEqual throws on a length mismatch, which would itself leak the
+  // TimingSafeEqual throws on a length mismatch, which would itself leak the
   // length, so compare a fixed-size digest-like padding instead.
   if (a.length !== b.length) {
     // Still burn a comparison so the timing does not distinguish the two cases.

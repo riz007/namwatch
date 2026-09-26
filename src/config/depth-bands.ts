@@ -1,17 +1,17 @@
 /**
- * Water depth bands. SPEC §6.1 (the band table) and §10 (colour non-negotiables).
+ * Water depth bands. (the band table) and §10 (colour non-negotiables).
  *
- * Hard rule 4: depth bands, labels and colours come ONLY from this file and the
+ * Depth bands, labels and colours come ONLY from this file and the
  * `depth-*` tokens it generates. Do not invent new severity levels or colours.
  *
- * Hard rule 22 / SPEC §8.1: severity is never conveyed by colour alone. Every band
+ * / severity is never conveyed by colour alone. Every band
  * carries a colour, a pictogram and a text label, and the UI must render all three.
  *
  * The ramp is a sequential scale with strictly decreasing lightness, verified under
- * simulated protanopia, deuteranopia and tritanopia by `pnpm check:cvd` (SPEC §10.1).
+ * simulated protanopia, deuteranopia and tritanopia by `pnpm check:cvd`.
  * Changing any hex here without re-running that check will fail CI.
  *
- * Labels live in `src/i18n/messages/{th,en}.json` under the keys below (Hard rule 15);
+ * Labels live in `src/i18n/messages/{th,en}.json` under the keys below;
  * this file owns the band structure and the key names so nothing else invents a label.
  */
 
@@ -19,7 +19,7 @@ export const DEPTH_BANDS_COUNT = 6;
 
 export type DepthBandValue = 0 | 1 | 2 | 3 | 4 | 5;
 
-/** SPEC §6.1: "passable by" chips. */
+/** "passable by" chips. */
 export type Vehicle = 'motorbike' | 'car' | 'pickup' | 'none';
 
 export type DepthBand = {

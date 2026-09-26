@@ -1,7 +1,7 @@
 /**
  * Bounding-box parsing and clamping.
  *
- * Hard rule 11: no unbounded selects. Every map query is bbox-bounded, and the
+ * No unbounded selects. Every map query is bbox-bounded, and the
  * span is clamped here so a client cannot ask for the whole planet.
  */
 import { BANGKOK_BBOX, MAX_BBOX_SPAN_DEG } from "@/config/app.config.ts";

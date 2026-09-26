@@ -1,7 +1,7 @@
 /**
  * Adapter registry and the safety wrapper around every adapter call.
  *
- * Hard rule 5: "A failing source adapter must degrade only its own layer. Never
+ * "A failing source adapter must degrade only its own layer. Never
  * throw into page render." That guarantee lives here — `runAdapter` never
  * rejects. Whatever an adapter does (throws, hangs, returns nonsense), the
  * caller gets an `AdapterResult` and the other layers are unaffected.
@@ -16,7 +16,7 @@ import {
   type SourceId,
 } from "./types.ts";
 
-/** Every adapter wired into ingest. Phase 1 adds `bma-dds` and `rainviewer`. */
+/** Every adapter wired into ingest.  `bma-dds` and `rainviewer`. */
 export const ADAPTERS: readonly SourceAdapter[] = [
   thaiwaterAdapter,
   traffyAdapter,
@@ -74,7 +74,7 @@ export async function runAdapter(
           : error.message
         : String(error);
 
-    // Deliberately not rethrown: this is the Hard rule 5 boundary.
+    // Deliberately not rethrown: this is the boundary.
     logger.warn(
       { err: message, durationMs: Date.now() - started },
       "adapter failed",
@@ -100,7 +100,7 @@ export async function runAll(
   return Promise.all(adapters.map((a) => runAdapter(a, options)));
 }
 
-/** SPEC §5: a source is "delayed" once it is older than 3× its cadence. */
+/** a source is "delayed" once it is older than 3× its cadence. */
 export function isStale(
   adapter: SourceAdapter,
   lastSuccessAt: Date | null,

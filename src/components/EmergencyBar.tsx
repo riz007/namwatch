@@ -3,18 +3,18 @@ import { hotlinesFor } from '@/config/hotlines.ts';
 import { BANGKOK_REGION_ID } from '@/config/regions.ts';
 
 /**
- * Persistent emergency hotline bar. SPEC §8.2.
+ * Persistent emergency hotline bar..
  *
- * Hard rule 1: on every public page, in both languages, numbers only from
+ * On every public page, in both languages, numbers only from
  * `src/config/hotlines.ts`.
- * Hard rule 3: never implies we dispatch rescue — the copy points at hotlines.
+ * Never implies we dispatch rescue — the copy points at hotlines.
  *
  * Built on <details> deliberately: it expands and collapses with no JavaScript,
- * so it still works on a cheap phone whose bundle has not arrived (SPEC §8.1).
+ * so it still works on a cheap phone whose bundle has not arrived.
  *
  * Deliberately ink-dark rather than red: red is spec-owned by depth-5
  * ("life-threatening"), and a permanently-red strip at the top of every page
- * would both compete with the severity scale and contradict SPEC §8.1's
+ * would both compete with the severity scale and contradict 's
  * "calm, not alarmist". This reads as an official notice strip.
  */
 export async function EmergencyBar({ regionId = BANGKOK_REGION_ID }: { regionId?: string }) {

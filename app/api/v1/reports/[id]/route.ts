@@ -9,8 +9,8 @@ import { isCorroborated } from '@/lib/reports/trust.ts';
 import { CORROBORATION_RADIUS_M } from '@/config/app.config.ts';
 
 /**
- * SPEC §12 `GET /api/v1/reports/:id` — public fields only, `s-maxage=15`.
- * Hard rule 10: the response is built from `geom_public`.
+ * `GET /api/v1/reports/:id` — public fields only, `s-maxage=15`.
+ * The response is built from `geom_public`.
  */
 export const dynamic = 'force-dynamic';
 
@@ -22,7 +22,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
   const report = await findPublicReport(id);
   if (!report) return apiError('not_found');
 
-  // SPEC §6.2 corroboration badge. Computed server-side against the public
+  // Corroboration badge. Computed server-side against the public
   // point, which is close enough for a 500 m radius and leaks nothing.
   const nearby = await floodingStationsNear(report.lon, report.lat, CORROBORATION_RADIUS_M).catch(
     () => [],

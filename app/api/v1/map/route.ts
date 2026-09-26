@@ -15,14 +15,14 @@ import { decayOpacity, type ReportKind } from '@/lib/reports/decay.ts';
 import { log } from '@/lib/log.ts';
 
 /**
- * SPEC §12 `GET /api/v1/map?bbox=&layers=&since=` — combined GeoJSON for the
+ * `GET /api/v1/map?bbox=&layers=&since=` — combined GeoJSON for the
  * viewport. `s-maxage=30, stale-while-revalidate=300`.
  *
- * Hard rule 5: each layer is fetched independently and a failure degrades only
+ * Each layer is fetched independently and a failure degrades only
  * that layer. The response always carries a `degraded` list so the UI can show
  * which layer is missing rather than silently showing less.
  *
- * Hard rule 10: report geometry comes from `geom_public`, never `geom_exact`.
+ * Report geometry comes from `geom_public`, never `geom_exact`.
  */
 export const dynamic = 'force-dynamic';
 
@@ -71,7 +71,7 @@ export async function GET(request: Request) {
     try {
       return await run();
     } catch (error) {
-      // Hard rule 5: degrade this layer only.
+      // Degrade this layer only.
       degraded.push(name);
       log.warn({ layer: name, err: String(error) }, 'map layer failed');
       return [];

@@ -11,7 +11,7 @@ import {
 } from './normalize.ts';
 
 /**
- * Hard rule 12: tests run against committed fixtures only, never the network.
+ * Tests run against committed fixtures only, never the network.
  * The fixtures are real upstream payloads captured on 26 Sep 2026.
  */
 const readFixture = (name: string): unknown =>
@@ -94,7 +94,7 @@ describe('thaiwater severity derivation', () => {
     expect(hasUsableBank(10.9, null)).toBe(true);
   });
 
-  // Documented in docs/sources/thaiwater.md §4: situation_level is channel fill,
+  // Documented in the source documentation §4: situation_level is channel fill,
   // not freeboard. Chao Phraya 15 is level 4 while 1.82 m BELOW its bank.
   it('does not inherit situation_level, which measures channel fill not flood risk', () => {
     expect(deriveStatus(0.34, 2.16, -15.697, fresh, NOW)).toBe('normal');
@@ -110,7 +110,7 @@ describe('thaiwater normalisation against real fixtures', () => {
   });
 
   it('keys stations on station.id (per feed), not the per-reading row id', () => {
-    // docs §5: the top-level `id` changes whenever telemetry lands.
+    // Docs §5: the top-level `id` changes whenever telemetry lands.
     const ids = payload.stations.map((s) => s.externalId);
     expect(ids).toContain('wl:1394808');
     expect(new Set(ids).size).toBe(ids.length);
@@ -186,7 +186,7 @@ describe('thaiwater adapter', () => {
 
 describe('thaiwater station identity across feeds', () => {
   // A site can host both a water-level and a rain gauge under one station.id.
-  // SPEC §11 makes (source, external_id) unique, so a collision here would make
+  // Makes (source, external_id) unique, so a collision here would make
   // the whole ingest batch fail on ON CONFLICT.
   it('never emits two stations with the same external id', () => {
     const payload = thaiwaterAdapter.normalize(thaiwaterAdapter.loadFixture());

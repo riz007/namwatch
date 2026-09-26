@@ -4,10 +4,10 @@ import type { IngestPayload, SourceAdapter } from '../types.ts';
 import { normalizeTraffy } from './normalize.ts';
 
 /**
- * Traffy Fondue (BMA × NECTEC) adapter. Contract: `docs/sources/traffy.md`.
+ * Traffy Fondue (BMA × NECTEC) adapter. Contract: the source documentation.
  *
- * Provenance `official_channel` — citizen-reported, agency-tracked. Hard rule 2:
- * this is neither an official sensor reading nor our own crowd data, and the UI
+ * Provenance `official_channel` — citizen-reported, agency-tracked.
+ * This is neither an official sensor reading nor our own crowd data, and the UI
  * must render it as its own third category.
  */
 
@@ -44,7 +44,7 @@ export const traffyAdapter: SourceAdapter = {
     const response = await fetch(url, {
       signal,
       headers: {
-        // Hard rule 13: identify ourselves.
+        // Identify ourselves.
         'user-agent': APP.userAgent,
         accept: 'application/json',
       },

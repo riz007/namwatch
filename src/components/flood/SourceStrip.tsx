@@ -8,8 +8,8 @@ import { ProvenanceMark } from '../Provenance.tsx';
  * Attribution and freshness strip. This app screen has no marketing footer —
  * this is what sits at the foot instead.
  *
- * SPEC §5: attribution is shown on the map, in Thai agency names and English.
- * SPEC §10 non-negotiable 4: it cannot be styled into invisibility, so it
+ * Attribution is shown on the map, in Thai agency names and English.
+ * It cannot be styled into invisibility, so it
  * renders at real body size with the provenance key spelled out.
  */
 export function SourceStrip({

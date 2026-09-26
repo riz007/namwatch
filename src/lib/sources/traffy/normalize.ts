@@ -2,11 +2,8 @@ import type { IngestPayload, NormalizedExternalReport } from '../types.ts';
 import { traffyPayloadSchema, type TraffyFeature } from './schema.ts';
 
 /**
- * Normalisation for `traffy`. See `docs/sources/traffy.md`.
- *
  * Provenance is `official_channel`: citizen-reported but tracked in the official
- * BMA queue. Hard rule 2 — never present this as an official sensor reading, and
- * never as our own crowd data.
+ * BMA queue — never present it as a sensor reading, nor as our own crowd data.
  */
 
 /**
@@ -34,13 +31,9 @@ export function parseTraffyTimestamp(value: string | null | undefined): Date | n
 }
 
 /**
- * Strips the personal information that citizens routinely put in free-text
- * complaints. Measured over 1,000 flood features: live mobile numbers appear in
- * ~0.2%, house numbers (`บ้านเลขที่`) in ~2.5%, plus `โทร`/`ติดต่อ` blocks.
- *
- * This data is already public upstream, so removing it is not a completeness
- * loss we owe anyone — but concentrating it on our map under our byline changes
- * the exposure, and none of it may reach analytics (Hard rule 25).
+ * Strips personal information citizens put in free-text complaints: live mobile
+ * numbers, house numbers, and `โทร`/`ติดต่อ` blocks. The data is already public
+ * upstream, but concentrating it on our map under our byline changes the exposure.
  */
 export function scrubPii(text: string): string {
   return (
@@ -59,12 +52,9 @@ export function scrubPii(text: string): string {
 }
 
 /**
- * The string we are willing to show.
- *
- * Prefers the upstream AI summary, which is already abstracted (`น้ำท่วมขัง`)
- * and carries no personal detail. Falls back to a scrubbed description only
- * when there is no summary (~9% of items). The AI categories are deliberately
- * NOT used — they are a guess, not an agency classification.
+ * Prefers the upstream summary, which is already abstracted and carries no
+ * personal detail; falls back to a scrubbed description. Upstream's inferred
+ * categories are not used — they are a guess, not an agency classification.
  */
 export function displayText(feature: TraffyFeature): string | null {
   const summary = feature.properties.ai?.summary?.trim();

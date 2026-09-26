@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { readFileSync, readdirSync } from 'node:fs';
 
 /**
- * Hard rule 10 / SPEC §6.3: "Exact coordinates of `home`/`help` reports never
+ * / "Exact coordinates of `home`/`help` reports never
  * leave the server. Public responses use `geom_public`."
  *
  * This is the kind of rule that is easy to break by accident months later — a

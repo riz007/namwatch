@@ -1,11 +1,11 @@
 /**
- * Region registry. SPEC §8 (multi-city from day one) and §11 (`regions` table).
+ * Region registry. (multi-city from day one) and §11 (`regions` table).
  *
  * The data model is multi-city: other provinces are added here by configuration,
  * not code (SPEC header, Scope). Only regions with `enabled: true` are served.
  *
  * Boundary geometry is deliberately absent. The licence for Bangkok district
- * polygons is SPEC §18 open question 3; until that is settled we match districts
+ * polygons is open question 3; until that is settled we match districts
  * by name (upstream feeds give us Thai district names) rather than shipping
  * geometry of uncertain provenance.
  */

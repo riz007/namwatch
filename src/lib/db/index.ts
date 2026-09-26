@@ -5,10 +5,10 @@ import postgres from 'postgres';
 import * as schema from './schema.ts';
 
 /**
- * The single place a database client is constructed (Hard rule 7).
+ * The single place a database client is constructed.
  *
  * `server-only` makes this a build error if it is ever imported from a client
- * component, which is the mechanical half of Hard rule 6 — the browser never
+ * component, which is the mechanical half of the browser never
  * talks to Supabase.
  *
  * Connects over the Supavisor transaction pooler (port 6543) with
@@ -37,9 +37,9 @@ function connectionString(): string {
 
 export function sqlClient(): postgres.Sql {
   client ??= postgres(connectionString(), {
-    // Required by the Supavisor transaction pooler (SPEC §7.1).
+    // Required by the Supavisor transaction pooler.
     prepare: false,
-    // Free tier: keep the connection count small (Hard rule 11).
+    // Free tier: keep the connection count small.
     max: 3,
     idle_timeout: 20,
     connect_timeout: 10,

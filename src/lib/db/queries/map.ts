@@ -7,13 +7,13 @@ import { MAX_MAP_FEATURES } from '@/config/app.config.ts';
 import type { BBox } from '@/lib/geo/bbox.ts';
 
 /**
- * Read queries for the map. Hard rule 7: SQL lives only here.
+ * Read queries for the map. SQL lives only here.
  *
- * Hard rule 10 is enforced structurally: these selects never name `geom_exact`.
- * `reports.geom_exact` is only ever read by server-side corroboration logic,
- * never by anything that feeds a response body. `reports.test.ts` asserts it.
+ * Location privacy is structural: these selects never name `geom_exact`, which
+ * is read only by server-side corroboration logic and never by anything that
+ * feeds a response body. A test asserts it.
  *
- * Hard rule 11: every query is bbox-bounded and limited.
+ * Every query is bbox-bounded and limited.
  */
 
 /** PostGIS: a bbox as a geography, for `ST_Intersects`. */
@@ -46,7 +46,7 @@ export async function reportsInBBox(
       kind: reports.kind,
       depthBand: reports.depthBand,
       note: reports.note,
-      // geom_public only — never geom_exact (Hard rule 10).
+      // Geom_public only — never geom_exact.
       lon: sql<number>`ST_X(${reports.geomPublic}::geometry)`,
       lat: sql<number>`ST_Y(${reports.geomPublic}::geometry)`,
       createdAt: reports.createdAt,
@@ -94,7 +94,7 @@ type RawStationRow = Omit<MapStation, 'observedAt'> & { observedAt: string | Dat
  * Stations with their most recent reading.
  *
  * Uses a LATERAL join rather than fetching stations and then their readings,
- * which would be an N+1 against the free tier (Hard rule 11).
+ * which would be an N+1 against the free tier.
  */
 export async function stationsInBBox(
   bbox: BBox,
@@ -181,7 +181,7 @@ export async function externalReportsInBBox(
 
 /**
  * Stations near a point that are currently showing flooding, for the
- * corroboration badge (SPEC §6.2). Server-side only.
+ * corroboration badge. Server-side only.
  */
 export async function floodingStationsNear(
   lon: number,

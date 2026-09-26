@@ -23,7 +23,7 @@ const config = [
     },
   },
   {
-    // Hard rule 6: a client component must never reach the database directly.
+    // a client component must never reach the database directly.
     files: ['src/components/**/*.{ts,tsx}'],
     rules: {
       'no-restricted-imports': [

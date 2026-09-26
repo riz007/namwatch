@@ -2,7 +2,7 @@ import type { DepthBandValue } from '@/config/depth-bands.ts';
 
 /**
  * Depth pictogram: a standing figure with the waterline drawn at the band's
- * height. SPEC §6.1 asks for body pictograms, and Hard rule 22 forbids conveying
+ * height. asks for body pictograms, and forbids conveying
  * severity by colour alone — this is the second channel, with the text label
  * as the third.
  *

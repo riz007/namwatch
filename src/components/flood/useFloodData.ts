@@ -5,12 +5,12 @@ import { POLL_MS } from '@/config/app.config.ts';
 import type { MapResponse } from '@/lib/api/map-types.ts';
 
 /**
- * The client's only data source. Hard rule 6: the browser talks to
+ * The client's only data source. the browser talks to
  * `/api/v1/*` and never to Supabase.
  *
- * Polling is 60 s (SPEC §7.2, Hard rule 11 floor of 30 s). `keepPreviousData`
+ * Polling is 60 s. `keepPreviousData`
  * means a failed refresh leaves the last-good data on screen rather than
- * blanking the map, which matters on a flaky mobile connection (SPEC §14).
+ * blanking the map, which matters on a flaky mobile connection.
  */
 async function fetcher(url: string): Promise<MapResponse> {
   const response = await fetch(url);

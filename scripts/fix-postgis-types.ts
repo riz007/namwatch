@@ -1,5 +1,5 @@
 /**
- * drizzle-kit quotes any column type it does not recognise, so a `geography`
+ * Drizzle-kit quotes any column type it does not recognise, so a `geography`
  * column comes out as `"geography(Point,4326)"` — which Postgres reads as an
  * identifier, not a type, and rejects.
  *

@@ -1,5 +1,5 @@
 /**
- * Note validation. SPEC §6.2: "Profanity and link filter on notes. No URLs
+ * Note validation. "Profanity and link filter on notes. No URLs
  * allowed in notes."
  */
 import { NOTE_MAX_LENGTH } from "@/config/app.config.ts";
@@ -16,7 +16,7 @@ const LINK_PATTERNS: readonly RegExp[] = [
   /\bh[tx]{2}ps?:\/\//i,
   /\bwww\./i,
   /\/\//,
-  // bare domain with a common TLD, e.g. "spam.co.th"
+  // Bare domain with a common TLD, e.g. "spam.co.th"
   /\b[a-z0-9-]+\.(?:com|net|org|co|io|me|ru|cn|th|xyz|top|link|shop|info|biz)\b/i,
   // "example dot com"
   /\b(?:dot|จุด)\s+(?:com|net|org|co|th)\b/i,
@@ -52,7 +52,7 @@ export function validateNote(note: string | null | undefined): {
   const trimmed = note.trim();
   if (trimmed === "") return { ok: true };
 
-  // SPEC §9: never measure Thai by JS char count for display, but the DB
+  // Never measure Thai by JS char count for display, but the DB
   // constraint is char_length, so this must match the DB exactly.
   if ([...trimmed].length > NOTE_MAX_LENGTH)
     return { ok: false, reason: "too_long" };

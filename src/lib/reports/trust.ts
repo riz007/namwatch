@@ -1,5 +1,5 @@
 /**
- * Crowd trust signals. SPEC §6.2.
+ * Crowd trust signals..
  */
 import {
   CORROBORATION_RADIUS_M,
@@ -10,11 +10,10 @@ import type { LonLat } from "../sources/types.ts";
 /**
  * How many independent "water receded" votes retire a report.
  *
- * SPEC §6.2 says a vote can end a report's life but does not give a number.
  * One is too few: a single device could clear a genuine report during an
- * emergency, which is the most damaging failure this feature has. Two
- * independent devices, and only while they outnumber the "still flooded"
- * votes, keeps it responsive without handing one actor a delete button.
+ * emergency, which is this feature's most damaging failure. Two independent
+ * devices, and only while they outnumber the "still flooded" votes, stays
+ * responsive without handing one actor a delete button.
  */
 export const RECEDED_VOTES_TO_EXPIRE = 2;
 
@@ -24,11 +23,11 @@ export type VoteCounts = {
   readonly flags: number;
 };
 
-/** SPEC §6.2: three distinct device flags auto-hide a report pending review. */
+/** three distinct device flags auto-hide a report pending review. */
 export const shouldAutoHide = (counts: VoteCounts): boolean =>
   counts.flags >= FLAGS_TO_AUTOHIDE;
 
-/** SPEC §6.2: the crowd can retract a report by agreeing the water has gone. */
+/** the crowd can retract a report by agreeing the water has gone. */
 export const shouldExpireFromVotes = (counts: VoteCounts): boolean =>
   counts.receded >= RECEDED_VOTES_TO_EXPIRE && counts.receded > counts.still;
 
@@ -53,7 +52,7 @@ export type NearbyStation = {
 };
 
 /**
- * SPEC §6.2 corroboration badge: "near an official sensor showing flooding".
+ * Corroboration badge: "near an official sensor showing flooding".
  * Only `warning` and `critical` count — `watch` means rising, not flooding.
  */
 export function isCorroborated(

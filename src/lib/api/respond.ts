@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 
 /**
- * Response helpers for the v1 API. SPEC §12.
+ * Response helpers for the v1 API..
  *
  * Errors use `{ error: { code, message_th, message_en } }` — bilingual, because
  * the client may be rendering in either locale and an English-only error string
@@ -65,14 +65,14 @@ export function apiError(
   );
 }
 
-/** SPEC §12 cache policies, named so a route cannot invent its own. */
+/** cache policies, named so a route cannot invent its own. */
 export const CACHE = {
   map: 'public, s-maxage=30, stale-while-revalidate=300',
   report: 'public, s-maxage=15, stale-while-revalidate=60',
   station: 'public, s-maxage=120, stale-while-revalidate=600',
   summary: 'public, s-maxage=60, stale-while-revalidate=300',
   photo: 'public, s-maxage=86400, immutable',
-  /** Hard rule 9: mutations are never cached. */
+  /** mutations are never cached. */
   none: 'no-store',
 } as const;
 

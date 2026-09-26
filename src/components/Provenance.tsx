@@ -1,16 +1,16 @@
 import { useTranslations } from 'next-intl';
 
 /**
- * Hard rule 2 / SPEC §2: official data and crowd data must always look
+ * / official data and crowd data must always look
  * different, and every datum shows its source. There are three levels, not two
  * — Traffy Fondue is citizen-reported through the official BMA queue, which is
  * neither an agency sensor nor our own crowd.
  *
  * The three are distinguished by SHAPE, not colour: colour is fully spent on
  * the depth scale, and a fourth colour language would compete with severity.
- *   official_sensor  ▢ square   — a fixed instrument at a fixed place
- *   official_channel ◇ diamond  — a filed case moving through a queue
- *   crowd            ○ circle   — a person, standing somewhere
+ * Official_sensor  ▢ square   — a fixed instrument at a fixed place
+ * official_channel ◇ diamond  — a filed case moving through a queue
+ * crowd            ○ circle   — a person, standing somewhere
  */
 export type ProvenanceLevel = 'official_sensor' | 'official_channel' | 'crowd';
 

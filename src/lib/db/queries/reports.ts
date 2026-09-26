@@ -11,9 +11,9 @@ import { windowStart } from '@/lib/reports/rate-limit.ts';
 import type { LonLat } from '@/lib/sources/types.ts';
 
 /**
- * Report writes and public reads. Hard rule 7: SQL lives only here.
+ * Report writes and public reads. SQL lives only here.
  *
- * Hard rule 10: no select in this file names `geom_exact`. The exact point is
+ * No select in this file names `geom_exact`. The exact point is
  * written once at insert and thereafter only used by server-side distance maths.
  */
 
@@ -73,7 +73,7 @@ export type PublicReport = {
   regionId: string | null;
 };
 
-/** SPEC §12 `GET /api/v1/reports/:id` — public fields only. */
+/** `GET /api/v1/reports/:id` — public fields only. */
 export async function findPublicReport(id: string): Promise<PublicReport | null> {
   const [row] = await db()
     .select({
@@ -103,7 +103,7 @@ export type VoteKind = 'still' | 'receded' | 'flag';
 export type VoteOutcome = 'recorded' | 'already_voted' | 'not_found';
 
 /**
- * Records one vote and applies its consequence. SPEC §6.2.
+ * Records one vote and applies its consequence..
  *
  * Runs in a transaction so the counter, the expiry change and the auto-hide can
  * never disagree. One vote per device per report is enforced by the composite
@@ -171,7 +171,7 @@ const columnName = (vote: VoteKind): 'stillCount' | 'recededCount' | 'flagCount'
   vote === 'still' ? 'stillCount' : vote === 'receded' ? 'recededCount' : 'flagCount';
 
 /**
- * Increments and reads a rate-limit counter atomically. SPEC §6.2.
+ * Increments and reads a rate-limit counter atomically..
  * Returns the count *including* this attempt.
  */
 export async function bumpRateLimit(key: string, now: Date = new Date()): Promise<number> {
@@ -188,7 +188,7 @@ export async function bumpRateLimit(key: string, now: Date = new Date()): Promis
   return row?.count ?? 1;
 }
 
-/** SPEC §11 retention: expire what is past its time. Called by /api/internal/maintain. */
+/** retention: expire what is past its time. Called by /api/internal/maintain. */
 export async function expireOverdueReports(now: Date = new Date()): Promise<number> {
   const rows = await db()
     .update(reports)
@@ -203,7 +203,7 @@ export async function pruneRateLimits(olderThan: Date): Promise<void> {
   await db().delete(rateLimits).where(sql`${rateLimits.windowStart} < ${olderThan}`);
 }
 
-/** SPEC §6.3: IP hashes are kept for 7 days, for rate limiting only. */
+/** IP hashes are kept for 7 days, for rate limiting only. */
 export async function clearOldIpHashes(olderThan: Date): Promise<number> {
   const rows = await db()
     .update(reports)

@@ -11,22 +11,12 @@ import {
   type WaterLevelReading,
 } from './schema.ts';
 
-/**
- * Normalisation for `thaiwater`. See `docs/sources/thaiwater.md` for the
- * verified contract behind every decision here.
- *
- * Hard rule 14: water level is metres MSL, rain is millimetres.
- */
+/** Water level is metres MSL, rain is millimetres. */
 
 /**
- * A reading older than this is reported as `unknown` rather than as a severity.
- *
- * This is a safety decision, not a tidiness one. The upstream payload silently
- * mixes fresh and days-old readings: station BKC004 was observed carrying a
- * 43-hour-old reading while still reporting `situation_level: 5`. Showing a
- * two-day-old measurement as "overbank" on a live flood map would be worse than
- * showing nothing. HII grey out stale stations on their own site for the same
- * reason (`scale.data.not_today`).
+ * Readings older than this report `unknown` rather than a severity. The upstream
+ * payload mixes fresh and days-old data without marking it: one station was seen
+ * carrying a 43-hour-old reading still labelled level 5.
  */
 export const STALE_READING_HOURS = 3;
 
@@ -36,8 +26,7 @@ const BANGKOK_OFFSET = '+07:00';
 /**
  * Upstream datetimes are `"YYYY-MM-DD HH:MM"` wall-clock in Asia/Bangkok with no
  * zone marker. `new Date(...)` on that string uses the runtime's zone, which on
- * Vercel is UTC — silently shifting every reading by seven hours. The offset is
- * therefore always attached explicitly.
+ * production is UTC — a silent seven-hour shift. The offset is always explicit.
  */
 export function parseBangkokTimestamp(value: string): Date | null {
   const match = /^(\d{4}-\d{2}-\d{2})[ T](\d{2}:\d{2})(?::(\d{2}))?$/.exec(value.trim());
@@ -59,11 +48,8 @@ const text = (v: string | null | undefined): string | null => {
 };
 
 /**
- * Whether a station's bank geometry can be trusted.
- *
- * Six stations publish `min_bank == 0` alongside `ground_level == 0`, which
- * produces nonsense downstream — station 558658 reports 279.23 m "over bank".
- * HII themselves omit the derived fields for these. Treat the bank as unknown.
+ * Some stations publish `min_bank == 0` alongside `ground_level == 0`, which
+ * yields nonsense downstream — one reports 279 m "over bank". Treat as unknown.
  */
 export function hasUsableBank(minBank: number | null, groundLevel: number | null): boolean {
   if (minBank === null) return false;
@@ -73,13 +59,12 @@ export function hasUsableBank(minBank: number | null, groundLevel: number | null
 }
 
 /**
- * Our severity, derived from freeboard against the bank — deliberately NOT from
- * `situation_level`, which measures how full the channel is from bed to bank and
- * so reads 4 for a station sitting 1.8 m below its bank (docs §4).
+ * Severity from freeboard against the bank — deliberately not from upstream's
+ * `situation_level`, which measures channel fill and so reads high for a deep
+ * channel sitting well below its bank.
  *
- * The `>=` at the top matches HII's own labelling: they call a level exactly
- * equal to the bank ล้นตลิ่ง, and disagreeing with the official site would be
- * confusing during an emergency.
+ * `>=` matches the official site's own labelling of a level equal to the bank as
+ * ล้นตลิ่ง; disagreeing with them during an emergency would confuse people.
  */
 export function deriveStatus(
   levelMsl: number | null,
@@ -105,7 +90,7 @@ export function deriveStatus(
 /**
  * A site can host both a water-level gauge and a rain gauge under the SAME
  * `station.id`, but they are different sensors measuring different quantities
- * in different units. SPEC §11 makes `(source, external_id)` unique, so the
+ * in different units. makes `(source, external_id)` unique, so the
  * feed is folded into the id to keep them distinct rows.
  */
 const externalIdFor = (stationId: number, kind: NormalizedStation['kind']): string =>
@@ -170,7 +155,7 @@ export function normalizeWaterLevel(raw: unknown, now: Date = new Date()): Inges
         source: 'thaiwater',
         externalId: station.externalId,
         observedAt,
-        // Hard rule 14: metres MSL.
+        // Metres MSL.
         value: levelMsl,
         status: deriveStatus(
           levelMsl,
@@ -205,7 +190,7 @@ export function normalizeRain(raw: unknown): IngestPayload {
         source: 'thaiwater',
         externalId: station.externalId,
         observedAt,
-        // Hard rule 14: millimetres.
+        // Millimetres.
         value: mm,
         // Rainfall has no bank to compare against; severity is not ours to invent.
         status: 'unknown',

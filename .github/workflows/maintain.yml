@@ -1,7 +1,7 @@
 name: Maintain
 
-# SPEC §11 retention: a nightly job expires overdue reports, prunes raw readings
-# past 14 days and clears IP hashes past 7 days (SPEC §6.3).
+# Retention: a nightly job expires overdue reports, prunes raw readings
+# past 14 days and clears IP hashes past 7 days.
 # 19:00 UTC is 02:00 Asia/Bangkok — the quietest hour for our users.
 on:
   schedule:

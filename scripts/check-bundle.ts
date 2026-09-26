@@ -1,9 +1,9 @@
 /**
- * Enforces the initial-JS budget. AGENTS.md Hard rule 24 / SPEC §14:
+ * Enforces the initial-JS budget.
  * "initial JS < 170 KB gz excluding the lazy-loaded map chunk".
  *
  * Measures what the prerendered document actually references, which is the
- * number a phone on 4G pays — not the sum of every chunk in .next.
+ * number a phone on 4G pays — not the sum of every chunk in.next.
  *
  * Run after `pnpm build`.
  */

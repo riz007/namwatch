@@ -12,3 +12,10 @@ coverage/
 playwright-report/
 test-results/
 .vercel
+
+# Internal planning, specifications and tooling config. Not part of the
+# published repository.
+/docs/internal/
+/CLAUDE.md
+/.claude/
+/.hallmark/

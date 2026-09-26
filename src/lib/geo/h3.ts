@@ -1,19 +1,19 @@
 /**
- * H3 snapping for location privacy. SPEC §6.3.
+ * H3 snapping for location privacy..
  *
  * Public coordinates for `home` and `help` reports are snapped to the centre of
  * their H3 resolution-9 cell (~170 m across) so a home is never pinpointed.
  * `road` and `canal` keep exact coordinates — a blurred road closure is useless.
  *
  * The exact point is still stored server-side (`reports.geom_exact`) and must
- * never be returned by a public endpoint (Hard rule 10).
+ * never be returned by a public endpoint.
  */
 import { H3_PUBLIC_RESOLUTION } from "@/config/app.config.ts";
 import { cellToLatLng, latLngToCell } from "h3-js";
 import type { ReportKind } from "../reports/decay.ts";
 import type { LonLat } from "../sources/types.ts";
 
-/** Kinds whose public location is blurred. SPEC §6.3. */
+/** Kinds whose public location is blurred.. */
 const BLURRED_KINDS: ReadonlySet<ReportKind> = new Set<ReportKind>([
   "home",
   "help",

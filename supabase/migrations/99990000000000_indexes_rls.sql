@@ -1,13 +1,13 @@
 -- Spatial indexes and row-level security.
 --
--- drizzle-kit cannot express GIST indexes or RLS policies, so they live here.
+-- Drizzle-kit cannot express GIST indexes or RLS policies, so they live here.
 -- Everything is idempotent: this file is applied once by the ledger, but staying
 -- idempotent means a partial failure can be safely retried.
 --
 -- NOTE for future migrations: any NEW table must enable RLS in its own migration.
 -- `supabase/migrations.test.ts` fails if a table in the schema is missing here.
 
--- SPEC §11: GIST on every geom column.
+-- GIST on every geom column.
 create index if not exists stations_geom_gix           on stations           using gist (geom);
 create index if not exists reports_geom_public_gix     on reports            using gist (geom_public);
 create index if not exists reports_geom_exact_gix      on reports            using gist (geom_exact);
@@ -19,7 +19,7 @@ create index if not exists reports_active_idx
   on reports (expires_at desc)
   where status = 'active';
 
--- Hard rule 28 / SPEC §14: RLS is enabled deny-all on every table as defence in
+-- / RLS is enabled deny-all on every table as defence in
 -- depth. The application connects as the owner over a server-side pooled
 -- connection and is unaffected; this exists so that a leaked anon/authenticated
 -- key can read nothing, even if one is ever introduced by mistake.
@@ -43,8 +43,8 @@ begin
   ] loop
     execute format('alter table public.%I enable row level security', t);
 
-    -- anon/authenticated are Supabase's roles. Guard on existence so the same
-    -- migration runs on a plain Postgres (SPEC §7.1: staying portable).
+    -- Anon/authenticated are Supabase's roles. Guard on existence so the same
+    -- migration runs on a plain Postgres.
     foreach r in array array['anon', 'authenticated'] loop
       if exists (select 1 from pg_roles where rolname = r) then
         execute format('revoke all on public.%I from %I', t, r);

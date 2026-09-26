@@ -13,7 +13,7 @@ describe('decay (SPEC §6.2)', () => {
 
   it('fades to 40% by six hours', () => {
     expect(decayOpacity(T0, 'road', at(6))).toBeCloseTo(0.4, 5);
-    // midway between the 1 h and 6 h anchors
+    // Midway between the 1 h and 6 h anchors
     expect(decayOpacity(T0, 'road', at(3.5))).toBeCloseTo(0.7, 5);
   });
 

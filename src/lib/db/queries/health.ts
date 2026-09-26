@@ -26,7 +26,7 @@ export async function recordSourceSuccess(source: string, at: Date): Promise<voi
 }
 
 export async function recordSourceFailure(source: string, error: string, at: Date): Promise<void> {
-  // lastSuccessAt is deliberately left alone: the UI needs to know how old the
+  // LastSuccessAt is deliberately left alone: the UI needs to know how old the
   // last *good* data is, which is what the "source delayed" badge keys off.
   await db()
     .insert(sourceHealth)
@@ -37,7 +37,7 @@ export async function recordSourceFailure(source: string, error: string, at: Dat
     });
 }
 
-/** SPEC §12 `/api/v1/health`: a cheap liveness probe, not a full query. */
+/** `/api/v1/health`: a cheap liveness probe, not a full query. */
 export async function pingDatabase(): Promise<{ ok: boolean; latencyMs: number | null }> {
   if (!isDatabaseConfigured()) return { ok: false, latencyMs: null };
   const started = Date.now();

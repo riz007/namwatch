@@ -4,11 +4,11 @@ import { useLocale, useTranslations } from 'next-intl';
 import { useSyncExternalStore } from 'react';
 
 /**
- * Relative age of a datum. SPEC §8.1: "Freshness is first-class" — every datum
- * shows its age, and SPEC §10 non-negotiable 4 forbids styling these labels
+ * Relative age of a datum. "Freshness is first-class" — every datum
+ * shows its age, and non-negotiable 4 forbids styling these labels
  * into invisibility, so this renders at real body size, not as fine print.
  *
- * Uses Intl.RelativeTimeFormat (SPEC §9). Re-renders on a slow interval so a
+ * Uses Intl.RelativeTimeFormat. Re-renders on a slow interval so a
  * page left open during a flood does not quietly show a stale "2 min ago".
  */
 const MINUTE = 60_000;
@@ -19,7 +19,7 @@ const MINUTE = 60_000;
  * `useSyncExternalStore` is the right primitive here rather than a
  * `useState` + `useEffect` pair: the server has no meaningful "now", and
  * quantising to the minute keeps the client snapshot stable between renders so
- * React does not loop. The server snapshot is null, so the first paint renders
+ * react does not loop. The server snapshot is null, so the first paint renders
  * the timestamp itself and hydration then sharpens it to a relative age.
  */
 const subscribe = (onChange: () => void): (() => void) => {

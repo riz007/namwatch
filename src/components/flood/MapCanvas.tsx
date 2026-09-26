@@ -11,17 +11,17 @@ import { DEPTH_BANDS } from '@/config/depth-bands.ts';
 import { isReport, isStation, type AnyProps, type MapFeature } from '@/lib/api/map-types.ts';
 
 /**
- * MapLibre GL + OpenFreeMap vector tiles (SPEC §8.4 — free, no key).
+ * MapLibre GL + OpenFreeMap vector tiles.
  *
  * Loaded through next/dynamic by the screen, so neither maplibre-gl nor its CSS
- * touches the initial bundle (Hard rule 24: < 170 KB gz excluding the map chunk).
+ * touches the initial bundle.
  *
  * Markers are DOM elements rather than a GL symbol layer: at Bangkok scale there
  * are only a few hundred, and DOM markers inherit the same depth tokens the List
  * uses, so the two views cannot disagree about what a band looks like.
  */
 /**
- * SPEC §10 non-negotiable 5: dark mode exists because people check at night
+ * Dark mode exists because people check at night
  * during outages, on battery. A bright white basemap would defeat both reasons,
  * so the basemap follows the colour scheme.
  */
@@ -73,7 +73,7 @@ export function MapCanvas({ features }: { features: readonly MapFeature[] }) {
       if (cancelled || !container.current) return;
 
       // MapLibre 6 spawns its tile-parsing worker from a module URL that
-      // Turbopack cannot resolve, so the map renders blank while still fetching
+      // turbopack cannot resolve, so the map renders blank while still fetching
       // tiles. Point it at the copy in /public (kept in step by
       // `pnpm sync:map-worker`). Works identically in production, any bundler.
       maplibre.setWorkerUrl('/maplibre-gl-worker.mjs');
@@ -94,12 +94,12 @@ export function MapCanvas({ features }: { features: readonly MapFeature[] }) {
         pitchWithRotate: false,
       });
 
-      // Zoom sits top-right — SPEC §8.1 reserves the bottom thumb zone for the
+      // Zoom sits top-right
       // primary action.
       instance.addControl(new maplibre.NavigationControl({ showCompass: false }), 'top-right');
 
       instance.on('load', () => {
-        // SPEC §8.4: labels follow the UI locale via OSM's own name:th / name:en.
+        // Labels follow the UI locale via OSM's own name:th / name:en.
         const field =
           locale === 'th'
             ? ['coalesce', ['get', 'name:th'], ['get', 'name']]
@@ -137,7 +137,7 @@ export function MapCanvas({ features }: { features: readonly MapFeature[] }) {
       if (cancelled || !instance) return;
 
       /**
-       * SPEC §8.4: supercluster on the client below 5k points. A few hundred
+       * Supercluster on the client below 5k points. A few hundred
        * points at Bangkok scale overlap into an unreadable mass; clustering
        * keeps the map legible and the DOM marker count low on cheap phones.
        */

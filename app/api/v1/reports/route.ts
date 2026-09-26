@@ -10,13 +10,13 @@ import { isDatabaseConfigured } from '@/lib/db/index.ts';
 import { log } from '@/lib/log.ts';
 
 /**
- * SPEC §12 `POST /api/v1/reports`. Never cached (Hard rule 9).
+ * `POST /api/v1/reports`. Never cached.
  *
  * Order matters: Turnstile first (cheapest way to shed bot load), then the rate
  * limit, then validation, then the write. A rejected submission must never cost
  * a database write.
  *
- * Photos are Phase 1 — a file part in the multipart body is accepted and ignored.
+ * Photos are — a file part in the multipart body is accepted and ignored.
  */
 export const dynamic = 'force-dynamic';
 
@@ -36,7 +36,7 @@ export async function POST(request: Request) {
   }
   const input = parsed.data;
 
-  // SPEC §6.2: no URLs in notes, plus a profanity tripwire.
+  // No URLs in notes, plus a profanity tripwire.
   const noteCheck = validateNote(input.note ?? null);
   if (!noteCheck.ok) {
     return apiError('invalid_request', { detail: noteCheck.reason });
@@ -57,7 +57,7 @@ export async function POST(request: Request) {
     return apiError('server_error');
   }
 
-  // SPEC §6.2: 5 per 10 min, per device hash AND per IP hash.
+  // 5 per 10 min, per device hash AND per IP hash.
   const now = new Date();
   const counts = await Promise.all([
     bumpRateLimit(`device:${device}`, now),

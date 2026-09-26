@@ -6,8 +6,8 @@ import { pruneOldReadings } from '@/lib/db/queries/ingest.ts';
 import { isDatabaseConfigured } from '@/lib/db/index.ts';
 
 /**
- * SPEC §12 `POST /api/internal/maintain` — expiry, roll-ups and retention.
- * Run nightly (SPEC §11 retention).
+ * `POST /api/internal/maintain` — expiry, roll-ups and retention.
+ * Run nightly.
  */
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60;
@@ -21,9 +21,9 @@ export async function POST(request: Request) {
   const now = new Date();
 
   const expired = await expireOverdueReports(now);
-  // SPEC §11: raw readings are kept for 14 days.
+  // Raw readings are kept for 14 days.
   const readingsPruned = await pruneOldReadings(new Date(now.getTime() - 14 * DAY_MS));
-  // SPEC §6.3: IP hashes are kept 7 days, for rate limiting only.
+  // IP hashes are kept 7 days, for rate limiting only.
   const ipHashesCleared = await clearOldIpHashes(new Date(now.getTime() - 7 * DAY_MS));
   await pruneRateLimits(new Date(now.getTime() - DAY_MS));
 

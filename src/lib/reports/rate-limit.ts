@@ -1,5 +1,5 @@
 /**
- * Submission rate limiting. SPEC §6.2: 5 reports per 10 minutes, per device hash
+ * Submission rate limiting. 5 reports per 10 minutes, per device hash
  * AND per IP hash. Pure window maths here; the counter store lives in the DB
  * (`rate_limits`) so it survives a cold function.
  */
@@ -38,7 +38,7 @@ export function decide(
 
 /**
  * The strictest of several identities wins — a device behind a shared IP and an
- * IP running many devices are both limited (SPEC §6.2 applies both).
+ * IP running many devices are both limited.
  */
 export function combine(
   decisions: readonly RateLimitDecision[],

@@ -4,12 +4,12 @@
  * Why not `drizzle-kit migrate`: the migration set deliberately mixes generated
  * files with hand-written ones (the PostGIS extension has to run before any table
  * that declares a geography column, and GIST indexes and RLS cannot be generated).
- * A plain ledger keeps the whole set portable, which is the point of SPEC §7.1 —
+ * A plain ledger keeps the whole set portable, which is the point of
  * moving to any other Postgres should be a connection-string swap.
  *
  * Uses DATABASE_URL_DIRECT (port 5432): the transaction pooler cannot run DDL.
  *
- * Guardrail (CLAUDE.md): refuses a non-local target unless CONFIRM_MIGRATE names
+ * Guardrail (): refuses a non-local target unless CONFIRM_MIGRATE names
  * that host, so a stray `pnpm db:migrate` can never touch production.
  */
 import { readdirSync, readFileSync } from 'node:fs';

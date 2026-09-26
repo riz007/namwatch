@@ -1,12 +1,12 @@
 import { z } from 'zod';
 
 /**
- * Upstream payload schema for `traffy`. Contract: `docs/sources/traffy.md`.
+ * Upstream payload schema for `traffy`. Contract: the source documentation.
  *
  * Unlike ThaiWater, Traffy always emits every key and expresses absence as an
  * explicit `null` (verified across 2,259 features), so these are `.nullable()`
  * rather than `.optional()`. They are also marked optional defensively — a
- * schema that is too strict would fail the whole payload and, under Hard rule 5,
+ * schema that is too strict would fail the whole payload and, under
  * silently drop the entire layer.
  */
 

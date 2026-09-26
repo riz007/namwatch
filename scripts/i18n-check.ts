@@ -1,11 +1,11 @@
 /**
- * Fails if `th.json` and `en.json` drift apart (Hard rule 15).
+ * Fails if `th.json` and `en.json` drift apart.
  *
  * Checks, for every locale pair:
- *   - identical key sets (a key added to one file must be added to the other)
- *   - no empty or whitespace-only values
- *   - identical ICU placeholders per key, so `{count}` can't go missing in one locale
- *   - every depth band in `src/config/depth-bands.ts` has its label and passability keys
+ * - identical key sets (a key added to one file must be added to the other)
+ * - no empty or whitespace-only values
+ * - identical ICU placeholders per key, so `{count}` can't go missing in one locale
+ * - every depth band in `src/config/depth-bands.ts` has its label and passability keys
  *
  * Run with `pnpm i18n:check`. CI runs it on every push.
  */
@@ -63,7 +63,7 @@ for (const [locale, keys] of flat) {
   }
 }
 
-// Hard rule 4: every depth band must have copy in every locale.
+// Every depth band must have copy in every locale.
 for (const band of DEPTH_BANDS) {
   for (const key of [band.labelKey, band.passabilityKey]) {
     for (const [locale, keys] of flat) {

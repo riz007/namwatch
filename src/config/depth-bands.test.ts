@@ -22,7 +22,7 @@ describe('depth bands', () => {
     expect(depthBand(5).passableBy).toEqual(['none']);
   });
 
-  // Hard rule 4: the CSS tokens must not drift from the config.
+  // The CSS tokens must not drift from the config.
   it('keeps the generated CSS in step with the config', () => {
     const onDisk = readFileSync('src/styles/depth-tokens.css', 'utf8');
     expect(onDisk).toBe(renderDepthTokens());

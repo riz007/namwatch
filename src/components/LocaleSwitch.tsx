@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { routing, type Locale } from '@/i18n/routing.ts';
 
 /**
- * SPEC §9: always visible, shows "ไทย | EN", never flags.
+ * Always visible, shows "ไทย | EN", never flags.
  *
  * Plain anchors rather than a router push, so switching language still works
  * when the JS bundle has not arrived on a weak connection.

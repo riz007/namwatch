@@ -3,7 +3,7 @@
 @import './depth-tokens.css';
 
 /*
- * Base layer. Tokens live in tokens.css (Hallmark) and depth-tokens.css
+ * Base layer. Tokens live in tokens.css and depth-tokens.css
  * (generated from src/config/depth-bands.ts — SPEC-owned, never restyled).
  * Nothing in this file may declare a raw colour or font-family.
  */
@@ -22,15 +22,15 @@ body {
   color: var(--color-ink);
   font-family: var(--font-body);
   font-size: var(--text-base);
-  /* SPEC §9: Thai body text needs generous leading in both languages. */
+  /* Thai body text needs generous leading in both languages. */
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
 }
 
 /*
- * SPEC §9 Thai typography, enforced globally so no component can regress it:
- *  - stacked vowels and tone marks clip at tight leading, so never below 1.6
- *  - letter-spacing breaks Thai cluster shaping, so it is forced off
+ * Thai typography, enforced globally so no component can regress it:
+ * - stacked vowels and tone marks clip at tight leading, so never below 1.6
+ * - letter-spacing breaks Thai cluster shaping, so it is forced off
  */
 :lang(th) {
   line-height: 1.6;
@@ -63,7 +63,7 @@ h3 {
   font-feature-settings: 'tnum';
 }
 
-/* SPEC §8.1 / Hard rule 21: every interactive target clears 48 px. */
+/* every interactive target clears 48 px. */
 button,
 [role='button'],
 a[data-touch],
@@ -101,7 +101,7 @@ summary {
   border-width: 0;
 }
 
-/* One orchestrated entrance for the list, per Hallmark motion discipline. */
+/* A single entrance animation for the list. */
 @keyframes nw-ink-on {
   from {
     opacity: 0;
@@ -118,8 +118,8 @@ summary {
 }
 
 /*
- * Map markers. The outer .nw-marker is MapLibre's positioning element and owns
- * its own transform — never style shape or rotation on it. The inner .nw-shape
+ * Map markers. The outer.nw-marker is MapLibre's positioning element and owns
+ * its own transform — never style shape or rotation on it. The inner.nw-shape
  * carries the appearance.
  *
  * Provenance is distinguished by SHAPE, not colour (colour is fully spent on the
@@ -130,7 +130,7 @@ summary {
   display: grid;
   place-items: center;
   /* Generous transparent hit area; the visible mark stays small so it does not
-   * hide the street underneath. */
+   * Hide the street underneath. */
   width: 28px;
   height: 28px;
   cursor: pointer;
@@ -165,13 +165,13 @@ summary {
 }
 
 /* Cluster bubble. Neutral by design: a cluster mixes provenances and severities,
- * so colouring it would assert something the data does not say. */
+ * So colouring it would assert something the data does not say. */
 .nw-cluster {
   display: grid;
   place-items: center;
   border-radius: 50%;
   /* paper-2 rather than paper: against the dark basemap a paper-coloured bubble
-   * is nearly invisible, and the ink-2 border is what lifts it off the tiles. */
+   * is nearly invisible; the ink-2 border is what lifts it off the tiles. */
   border: 1.5px solid var(--color-ink-2);
   background: var(--color-paper-2);
   color: var(--color-ink);

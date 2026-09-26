@@ -13,14 +13,14 @@ import { SourceStrip } from './SourceStrip.tsx';
 import { useFloodData } from './useFloodData.ts';
 
 /**
- * Screen 1 — Map + List (SPEC §8.3).
+ * Screen 1 — Map + List.
  *
  * Macrostructure: Map / Diagram. The map is the composition; everything else is
  * orientation around it.
  *
- * The map chunk is lazy so the initial bundle stays under the Hard rule 24
+ * The map chunk is lazy so the initial bundle stays under the
  * budget, and so the List view costs nothing on a phone that will never render
- * WebGL.
+ * webGL.
  */
 const MapCanvas = dynamic(() => import('./MapCanvas.tsx').then((m) => m.MapCanvas), {
   ssr: false,
@@ -90,7 +90,7 @@ export function FloodScreen() {
             <MapCanvas features={features} />
           )
         ) : (
-          // pb-20 keeps the last rows clear of the floating report button.
+          // Pb-20 keeps the last rows clear of the floating report button.
           <div className="absolute inset-0 overflow-y-auto pb-20">
             {isLoading && !data ? <ListSkeleton /> : <FloodList features={features} />}
           </div>

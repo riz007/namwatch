@@ -8,7 +8,7 @@ import { isDepthBand } from '@/config/depth-bands.ts';
 import { isExternal, isReport, isStation, type MapFeature } from '@/lib/api/map-types.ts';
 
 /**
- * The List view. Hard rule 22 / SPEC §8.1: a peer of the Map, not a fallback —
+ * The List view. / a peer of the Map, not a fallback —
  * it is the no-WebGL path and it must carry the same information.
  *
  * Every row shows severity (colour + pictogram + text), provenance and age.

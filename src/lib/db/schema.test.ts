@@ -35,7 +35,7 @@ describe('schema', () => {
     ]);
   });
 
-  // Hard rule 28. A new table that forgets RLS is a silent security hole, so the
+  //. A new table that forgets RLS is a silent security hole, so the
   // migration's table list has to stay in step with the schema.
   it('enables RLS on every table', () => {
     const sql = readFileSync(RLS_MIGRATION, 'utf8');
@@ -45,7 +45,7 @@ describe('schema', () => {
     }
   });
 
-  // SPEC §11: GIST on every geom column.
+  // GIST on every geom column.
   it('creates a GIST index for every geography/geometry column', () => {
     const sql = allMigrations();
     const geomColumns = [...sql.matchAll(/"(\w+)" geo(?:graphy|metry)\(/g)].map((m) => m[1]!);

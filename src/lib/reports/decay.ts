@@ -1,5 +1,5 @@
 /**
- * Report freshness and expiry. SPEC §6.2.
+ * Report freshness and expiry..
  *
  * Pure functions, no clock of their own: every entry point takes `now` so the
  * behaviour is deterministic and testable at the exact hour boundaries.
@@ -19,7 +19,7 @@ export const ageHours = (createdAt: Date, now: Date): number =>
   (now.getTime() - createdAt.getTime()) / HOUR_MS;
 
 /**
- * Display opacity for a report pin. SPEC §6.2 gives three anchors: full for the
+ * Display opacity for a report pin. gives three anchors: full for the
  * first hour, 40% by six hours, hidden at twelve (twenty-four for `help`).
  *
  * Between six hours and the hide threshold the value is held at 40% rather than
@@ -52,7 +52,7 @@ export const initialExpiry = (kind: ReportKind, now: Date): Date =>
   new Date(now.getTime() + hiddenAfterHours(kind) * HOUR_MS);
 
 /**
- * A "still flooded" vote restarts the clock (SPEC §6.2: a vote extends the
+ * A "still flooded" vote restarts the clock (a vote extends the
  * report's life), so a confirmed report keeps its full lifetime from the
  * confirmation rather than from when it was first filed.
  */

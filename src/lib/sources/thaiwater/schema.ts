@@ -1,16 +1,16 @@
 import { z } from 'zod';
 
 /**
- * Upstream payload schemas for `thaiwater`. Hard rule 8: validate every upstream
- * payload; Hard rule 12: written against a captured sample, see
- * `docs/sources/thaiwater.md`.
+ * Upstream payload schemas for `thaiwater`. validate every upstream
+ * payload; written against a captured sample, see
+ * the source documentation.
  *
  * Note on `.optional()` vs `.nullable()`: the investigation established that
  * HII **omits** keys rather than nulling them — `tele_station_name.en` is absent
  * for 384/805 stations and never null, and `situation_level` is absent for 15
  * and never null. A few fields genuinely are null (`ground_level`,
  * `waterlevel_m`), so those are both. Getting this wrong makes the whole payload
- * fail to parse, which under Hard rule 5 would silently drop the entire layer.
+ * fail to parse, which under would silently drop the entire layer.
  */
 
 const bilingual = z.object({

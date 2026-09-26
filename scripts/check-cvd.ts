@@ -1,14 +1,14 @@
 /**
- * Validates the depth-band colour ramp (SPEC §10 non-negotiable 1).
+ * Validates the depth-band colour ramp.
  *
  * Asserts, for both light and dark themes:
- *   1. Lightness (CIE L*) decreases strictly across bands 1..5, so the ramp is
- *      readable as a sequence even with no colour perception at all.
- *   2. Adjacent bands stay perceptually separated (CIEDE2000) under normal vision
- *      and under simulated protanopia, deuteranopia and tritanopia.
- *   3. Band 0 ("dry") is clearly distinct from every severity band, since it means
- *      the opposite thing.
- *   4. Each band's `on` colour meets WCAG 2.2 AA (4.5:1) against its background.
+ * 1. Lightness (CIE L*) decreases strictly across bands 1..5, so the ramp is
+ * readable as a sequence even with no colour perception at all.
+ * 2. Adjacent bands stay perceptually separated (CIEDE2000) under normal vision
+ * and under simulated protanopia, deuteranopia and tritanopia.
+ * 3. Band 0 ("dry") is clearly distinct from every severity band, since it means
+ * the opposite thing.
+ * 4. Each band's `on` colour meets WCAG 2.2 AA (4.5:1) against its background.
  *
  * Colour-vision simulation uses the Viénot–Brettel–Mollon (1999) LMS projection.
  * Run with `pnpm check:cvd`. CI runs it, so a hex edit that breaks the scale fails.
@@ -25,7 +25,7 @@ type Theme = 'light' | 'dark';
  * for discriminating large map areas (a just-noticeable difference is ~2-3).
  * Band 0 means the opposite of the ramp, so it is held to a wider margin.
  */
-// Calibrated against reference sequential palettes measured with this same code:
+// calibrated against reference sequential palettes measured with this same code:
 // ColorBrewer YlOrRd-5 reaches 8.5 under deuteranopia, YlOrBr-5 10.9, Reds-5 10.8.
 // 10 therefore sits at the strict end of what a real hazard ramp achieves.
 const MIN_ADJACENT_DE = 10;

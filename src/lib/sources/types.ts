@@ -1,15 +1,15 @@
 /**
- * The contract every source adapter implements. SPEC §5.
+ * The contract every source adapter implements..
  *
- * Hard rule 5: a failing adapter degrades only its own layer and never throws
+ * a failing adapter degrades only its own layer and never throws
  * into page render. `runAdapter` in `registry.ts` is what enforces that — an
  * adapter itself may throw, and the registry converts it into an unhealthy result.
  *
- * Hard rule 12: adapters are written against a real captured sample. Tests run
+ * Adapters are written against a real captured sample. Tests run
  * against `fixtures/` only and never touch the network.
  *
- * Hard rule 14: units are normalised here, not in the UI — water level in metres
- * MSL, road flood in cm, rain in mm — and documented in docs/sources/<id>.md.
+ * Units are normalised here, not in the UI — water level in metres
+ * MSL, road flood in cm, rain in mm — and documented in the source documentation.
  */
 import type { Provenance } from '../db/schema.ts';
 
@@ -40,7 +40,7 @@ export type NormalizedReading = {
   readonly source: SourceId;
   readonly externalId: string;
   readonly observedAt: Date;
-  /** Unit is fixed by the station's `kind` (Hard rule 14). */
+  /** Unit is fixed by the station's `kind`. */
   readonly value: number;
   readonly status: ReadingStatus;
 };
@@ -77,14 +77,14 @@ export type Attribution = {
   readonly nameTh: string;
   readonly nameEn: string;
   readonly url: string;
-  /** Terms of use as understood at the time docs/sources/<id>.md was written. */
+  /** Terms of use as understood at the time the source documentation was written. */
   readonly terms: string;
 };
 
 export type SourceAdapter = {
   readonly id: SourceId;
   readonly provenance: Provenance;
-  /** Publish cadence in minutes. A source is "delayed" past 3× this (SPEC §5). */
+  /** Publish cadence in minutes. A source is "delayed" past 3× this. */
   readonly cadenceMinutes: number;
   readonly attribution: Attribution;
   /** Hits the network. Only called from the ingest route, never from render. */

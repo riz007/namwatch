@@ -10,7 +10,7 @@ export default defineConfig({
   test: {
     environment: 'node',
     include: ['src/**/*.test.ts', 'scripts/**/*.test.ts'],
-    // Hard rule 12: tests run against fixtures. Nothing here may reach the network.
+    // Tests run against fixtures. Nothing here may reach the network.
     globals: false,
     restoreMocks: true,
   },

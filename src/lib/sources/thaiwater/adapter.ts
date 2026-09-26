@@ -4,12 +4,12 @@ import type { IngestPayload, SourceAdapter } from '../types.ts';
 import { mergePayloads, normalizeRain, normalizeWaterLevel } from './normalize.ts';
 
 /**
- * ThaiWater (HII / สสน.) adapter. Contract: `docs/sources/thaiwater.md`.
+ * ThaiWater (HII / สสน.) adapter. Contract: the source documentation.
  *
  * Two endpoints are combined: water level (10-minute cohort) and 24-hour
  * rainfall (hourly, 4.5 MB). Rain is fetched on a slower schedule than water
  * level — every poll is a full transfer with no conditional-request support,
- * and Hard rule 11 asks us not to be wasteful on the free tier.
+ * and asks us not to be wasteful on the free tier.
  */
 
 const BASE = 'https://api-v3.thaiwater.net/api/v1/thaiwater30/public';
@@ -27,7 +27,7 @@ async function getJson(url: string, signal?: AbortSignal): Promise<unknown> {
   const response = await fetch(url, {
     signal,
     headers: {
-      // Hard rule 13: identify ourselves to the agency.
+      // Identify ourselves to the agency.
       'user-agent': APP.userAgent,
       accept: 'application/json',
     },

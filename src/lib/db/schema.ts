@@ -1,16 +1,16 @@
 /**
- * Database schema. SPEC §11.
+ * Database schema..
  *
  * Two documented additions to the spec, agreed before implementation:
  *
- *  1. `provenance` — SPEC distinguishes "official" from "crowd" data (Hard rule 2),
- *     but Traffy Fondue is neither: it is citizen-reported through the official BMA
- *     queue. Collapsing it into either category would mislabel it, so provenance is
- *     a three-valued column and the UI renders a distinct marker per value.
+ * 1. `provenance` — SPEC distinguishes "official" from "crowd" data,
+ * but Traffy Fondue is neither: it is citizen-reported through the official BMA
+ * queue. Collapsing it into either category would mislabel it, so provenance is
+ * a three-valued column and the UI renders a distinct marker per value.
  *
- *  2. `external_reports` — Traffy items are point events with a workflow state. They
- *     are not sensor readings (no `stations`/`station_readings` fit) and not ours
- *     (no device hash, no votes, no expiry), so they get their own table.
+ * 2. `external_reports` — Traffy items are point events with a workflow state. They
+ * are not sensor readings (no `stations`/`station_readings` fit) and not ours
+ * (no device hash, no votes, no expiry), so they get their own table.
  *
  * Indexes and the PostGIS extension are added in the generated migration.
  */
@@ -33,7 +33,7 @@ import {
 import { sql } from 'drizzle-orm';
 import { geographyPoint, geometryMultiPolygon } from './types.ts';
 
-/** How much to trust a datum, and how it must be labelled in the UI (Hard rule 2). */
+/** How much to trust a datum, and how it must be labelled in the UI. */
 export const PROVENANCE = ['official_sensor', 'official_channel', 'crowd'] as const;
 export type Provenance = (typeof PROVENANCE)[number];
 
@@ -74,7 +74,7 @@ export const stations = pgTable(
     nameEn: text('name_en'),
     geom: geographyPoint('geom').notNull(),
     regionId: text('region_id').references(() => regions.id),
-    /** Metres MSL. Documented per source in docs/sources/<id>.md (Hard rule 14). */
+    /** Metres MSL. Documented per source in the source documentation. */
     bankLevelM: numeric('bank_level_m'),
     groundLevelM: numeric('ground_level_m'),
     meta: jsonb('meta').notNull().default({}),
@@ -95,7 +95,7 @@ export const stationReadings = pgTable(
     observedAt: timestamp('observed_at', { withTimezone: true }).notNull(),
     /**
      * Unit depends on the station kind and is normalised in the adapter
-     * (Hard rule 14): water level in metres MSL, road flood in cm, rain in mm.
+     *: water level in metres MSL, road flood in cm, rain in mm.
      */
     value: numeric('value').notNull(),
     status: text('status'),
@@ -121,7 +121,7 @@ export const reports = pgTable(
     note: text('note'),
     locale: text('locale').notNull(),
     /**
-     * Hard rule 10 / SPEC §6.3: the exact point never leaves the server. Public
+     * / the exact point never leaves the server. Public
      * responses use geom_public, which is H3-r9-snapped for `home` and `help`.
      */
     geomExact: geographyPoint('geom_exact').notNull(),
@@ -129,7 +129,7 @@ export const reports = pgTable(
     h3R9: text('h3_r9').notNull(),
     regionId: text('region_id').references(() => regions.id),
     photoKey: text('photo_key'),
-    /** sha256(deviceId + SERVER_SALT). Never the raw id (Hard rule 27). */
+    /** sha256(deviceId + SERVER_SALT). Never the raw id. */
     deviceHash: text('device_hash').notNull(),
     ipHash: text('ip_hash'),
     stillCount: integer('still_count').notNull().default(0),

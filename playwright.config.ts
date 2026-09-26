@@ -1,7 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 
 /**
- * SPEC §8.1 / Hard rule 21: the product is designed at 360 px first, so the mobile
+ * The product is designed at 360 px first, so the mobile
  * project is the primary one and runs every spec.
  */
 export default defineConfig({

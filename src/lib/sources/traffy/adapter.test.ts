@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import { traffyAdapter } from './adapter.ts';
 import { displayText, isFloodTagged, normalizeTraffy, parseTraffyTimestamp, scrubPii } from './normalize.ts';
 
-/** Hard rule 12: fixtures only, never the network. Captured 26 Sep 2026. */
+/** fixtures only, never the network. Captured 26 Sep 2026. */
 const edgeCases = JSON.parse(
   readFileSync('src/lib/sources/traffy/fixtures/edge-cases.json', 'utf8'),
 );
@@ -103,7 +103,7 @@ describe('traffy normalisation against real fixtures', () => {
     expect(payload.externalReports.length).toBeGreaterThan(0);
   });
 
-  // Hard rule 2: this is neither an official sensor nor our own crowd data.
+  // This is neither an official sensor nor our own crowd data.
   it('labels every item official_channel', () => {
     for (const r of payload.externalReports) {
       expect(r.provenance).toBe('official_channel');

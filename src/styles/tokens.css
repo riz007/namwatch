@@ -1,18 +1,14 @@
-/* Hallmark · macrostructure: Map / Diagram · genre: editorial · route: custom (tuned)
- * vibe: "civic utility, calm, institutional, legible in rain"
- * paper: oklch(98.5% 0.003 264) · accent: oklch(45% 0.13 264) indigo (cool)
- * display: IBM Plex Sans Thai 700 · body: IBM Plex Sans Thai 400 · tabular: IBM Plex Mono
- * axes: light / grotesk-sans / cool
- * nav: N9 edge-aligned · footer: none (app screen — source-attribution strip instead)
- * enrichment: none (typography only; the map is the content)
- * pre-emit critique: P5 H4 E4 S5 R5 V4 (first run — no prior output to differ from)
+/*
+ * Design tokens.
  *
- * WHY COOL: the depth-0…5 severity ramp is spec-owned and occupies the entire
- * warm range (amber → ochre → burnt orange → deep red). A warm accent would
- * compete with it, and on a flood map a chrome colour that reads as severity is
- * a safety problem. The accent is therefore indigo, ~65° from the depth-0 teal.
- * Depth tokens stay in their generated hex form: they are validated by
- * `pnpm check:cvd` and must not be re-derived here (SPEC §10 non-negotiable 1).
+ * The accent is cool on purpose. The depth-0…5 severity ramp is defined by the
+ * data model and occupies the entire warm range (amber → ochre → burnt orange →
+ * deep red). A warm accent would compete with it, and on a flood map a chrome
+ * colour that reads as severity is a safety problem. The accent is indigo, about
+ * 65° from the depth-0 teal.
+ *
+ * Depth tokens keep their generated hex form: they are validated by
+ * `pnpm check:cvd` and must not be re-derived here.
  */
 
 @theme {
@@ -39,7 +35,7 @@
   /* — Alert ————————————————————————————
    * The emergency bar is deliberately NOT red. Red belongs to depth-5
    * ("life-threatening"); a permanently-red bar at the top of every page would
-   * both compete with the severity scale and contradict SPEC §8.1 "calm, not
+   * both compete with the severity scale and contradict "calm, not
    * alarmist". It is ink-dark — an official notice strip, always legible. */
   --color-alert: oklch(24% 0.028 264);
   --color-alert-ink: oklch(97% 0.004 264);
@@ -85,8 +81,8 @@
   --rule-hair: 1px;
 }
 
-/* Dark mode. SPEC §10 non-negotiable 5: people check at night during outages,
- * on battery. Same hue family, inverted lightness — never ad-hoc overrides. */
+/* Dark mode. people check at night during outages,
+ * On battery. Same hue family, inverted lightness — never ad-hoc overrides. */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
     --color-paper: oklch(16% 0.012 264);

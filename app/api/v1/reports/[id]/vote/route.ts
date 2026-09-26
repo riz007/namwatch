@@ -7,8 +7,8 @@ import { isDatabaseConfigured } from '@/lib/db/index.ts';
 import { log } from '@/lib/log.ts';
 
 /**
- * SPEC §12 `POST /api/v1/reports/:id/vote`. Never cached.
- * SPEC §6.2: one vote per device per report; a vote extends or ends the
+ * `POST /api/v1/reports/:id/vote`. Never cached.
+ * One vote per device per report; a vote extends or ends the
  * report's life. No Turnstile here — a vote is cheap and the per-device
  * uniqueness constraint already bounds the damage.
  */

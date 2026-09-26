@@ -1,7 +1,7 @@
 /**
- * Resolving a datum to a region. SPEC §11.
+ * Resolving a datum to a region..
  *
- * District boundary geometry is not shipped yet (SPEC §18 open question 3: the
+ * District boundary geometry is not shipped yet (open question 3: the
  * licence is unsettled), so resolution is by the Thai district name that
  * upstream feeds already carry. Point-in-polygon lookup replaces this once we
  * have boundaries we are allowed to use.

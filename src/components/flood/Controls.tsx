@@ -6,9 +6,9 @@ import { TIME_WINDOWS_H, type TimeWindowH } from '@/config/app.config.ts';
 import { DepthPictogram } from '../DepthPictogram.tsx';
 
 /**
- * Map ⇄ List toggle and the filter chips. SPEC §8.3.
+ * Map ⇄ List toggle and the filter chips..
  *
- * The toggle gives both views equal visual weight: Hard rule 22 makes the List
+ * The toggle gives both views equal visual weight: makes the List
  * a peer of the Map, not a fallback, because it is what people on a cheap phone
  * without working WebGL actually use.
  */
@@ -57,7 +57,7 @@ const ListGlyph = () => (
   </svg>
 );
 
-/** Depth ≥ N filter. Renders the pictogram so the chips obey Hard rule 22 too. */
+/** Depth ≥ N filter. Renders the pictogram so the chips obey too. */
 export function DepthFilter({
   min,
   onChange,

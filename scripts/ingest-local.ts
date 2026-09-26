@@ -1,11 +1,11 @@
 /**
- * Runs every adapter once against its committed fixtures. No network (Hard rule 12).
+ * Runs every adapter once against its committed fixtures. No network.
  *
  * With DATABASE_URL set it also persists, which exercises the real ingest path
  * end to end; without one it just reports what each adapter produced.
  *
- *   pnpm ingest:local
- *   DATABASE_URL=postgresql://... pnpm ingest:local
+ * Pnpm ingest:local
+ * DATABASE_URL=postgresql://... pnpm ingest:local
  */
 import 'dotenv/config';
 import { ADAPTERS, runAll } from '../src/lib/sources/registry.ts';

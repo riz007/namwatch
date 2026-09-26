@@ -9,7 +9,7 @@ export default getRequestConfig(async ({ requestLocale }) => {
 
   return {
     locale,
-    // SPEC §9: all times are Asia/Bangkok.
+    // All times are Asia/Bangkok.
     timeZone: APP.timeZone,
     messages: (await import(`./messages/${locale}.json`)).default,
   };

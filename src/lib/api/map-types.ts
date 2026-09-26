@@ -1,6 +1,6 @@
 /**
  * Shapes returned by `GET /api/v1/map`. Shared by the route and the client so
- * the two cannot drift. The client never talks to the database (Hard rule 6);
+ * the two cannot drift. The client never talks to the database;
  * this is the only shape it knows.
  */
 import type { ProvenanceLevel } from '@/components/Provenance.tsx';
@@ -63,7 +63,7 @@ export type MapResponse = {
     sinceHours: number;
     generatedAt: string;
     counts: { reports: number; stations: number; external: number };
-    /** Layers that failed. Hard rule 5: the UI names what is missing. */
+    /** Layers that failed. the UI names what is missing. */
     degraded: string[];
   };
 };

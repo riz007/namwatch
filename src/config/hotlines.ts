@@ -1,7 +1,7 @@
 /**
- * Emergency hotline numbers. SPEC §8.2.
+ * Emergency hotline numbers..
  *
- * Hard rule 1: the emergency bar renders on every public page in both languages,
+ * The emergency bar renders on every public page in both languages,
  * and the numbers come ONLY from this file. Reviewed before every release
  * (see the /release-check command).
  *
@@ -13,14 +13,14 @@ export type Hotline = {
   readonly number: string;
   readonly labelTh: string;
   readonly labelEn: string;
-  /** Operating agency, shown in About (SPEC §5: attribution in Thai and English). */
+  /** Operating agency, shown in About. */
   readonly agencyTh: string;
   readonly agencyEn: string;
 };
 
 /**
  * Numbers valid nationwide in Thailand. Keyed by region id so a province added
- * later (SPEC §16 Phase 2) can override or extend the list without a code change.
+ * later can override or extend the list without a code change.
  */
 const NATIONAL: readonly Hotline[] = [
   {
@@ -64,7 +64,7 @@ const BY_REGION: Readonly<Record<string, readonly Hotline[]>> = {
 
 /**
  * Hotlines for a region, falling back to the nationwide set.
- * Never returns an empty array — Hard rule 1 means the bar always has content.
+ * Never returns an empty array — means the bar always has content.
  */
 export function hotlinesFor(regionId: string | null | undefined): readonly Hotline[] {
   if (!regionId) return BANGKOK;

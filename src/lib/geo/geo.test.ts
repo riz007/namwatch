@@ -34,7 +34,7 @@ describe("bbox", () => {
     }
   });
 
-  // Hard rule 11: no unbounded selects.
+  // No unbounded selects.
   it("clamps an over-wide bbox around its centre instead of erroring", () => {
     const clamped = parseBBox("-180,-90,180,90");
     const [w, s, e, n] = clamped;

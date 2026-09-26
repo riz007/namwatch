@@ -9,11 +9,11 @@ import { log } from '@/lib/log.ts';
 import type { SourceId } from '@/lib/sources/types.ts';
 
 /**
- * SPEC §12 `POST /api/internal/ingest`. Header `x-ingest-secret`, runs all due
- * adapters. Driven by the GitHub Actions cron every 10 minutes (SPEC §7).
+ * `POST /api/internal/ingest`. Header `x-ingest-secret`, runs all due
+ * adapters. Driven by the GitHub Actions cron every 10 minutes.
  *
  * Each adapter is isolated: one failing upstream records its own error and
- * leaves every other layer's data intact (Hard rule 5).
+ * leaves every other layer's data intact.
  *
  * `?source=thaiwater` runs a single adapter, for debugging a specific feed.
  */

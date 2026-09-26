@@ -5,11 +5,11 @@ import { isDatabaseConfigured } from '@/lib/db/index.ts';
 import { CACHE } from '@/lib/api/respond.ts';
 
 /**
- * SPEC §12 `GET /api/v1/health` — source health plus a DB ping. `no-store`.
+ * `GET /api/v1/health` — source health plus a DB ping. `no-store`.
  *
  * Always answers 200 with a body describing what is degraded, rather than
  * failing: a health endpoint that 500s tells a monitor less than one that
- * explains which layer is down (SPEC §14 observability).
+ * explains which layer is down.
  */
 export const dynamic = 'force-dynamic';
 
@@ -33,7 +33,7 @@ export async function GET() {
       };
     });
   } else {
-    // Hard rule 5 in spirit: report the degradation, do not throw.
+    // In spirit: report the degradation, do not throw.
     sources = ADAPTERS.map((a) => ({
       id: a.id,
       ok: false,
