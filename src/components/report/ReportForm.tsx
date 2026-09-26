@@ -30,7 +30,6 @@ export function ReportForm({ siteKey }: { siteKey: string | null }) {
   const [passable, setPassable] = useState<Vehicle[]>([]);
   const [state, setState] = useState<'editing' | 'sending' | 'sent' | 'error'>('editing');
   const [problem, setProblem] = useState<string | null>(null);
-  const [token, setToken] = useState<string | null>(null);
   const turnstile = useRef<TurnstileHandle | null>(null);
 
   const position = geo.state.status === 'ready' ? geo.state : null;
@@ -48,6 +47,14 @@ export function ReportForm({ siteKey }: { siteKey: string | null }) {
     setState('sending');
     setProblem(null);
     try {
+      // Run the challenge now, so the token is fresh when the server checks it.
+      const token = await turnstile.current?.getToken();
+      if (!token) {
+        setProblem(t('report.verifyFailed'));
+        setState('error');
+        return;
+      }
+
       const response = await fetch('/api/v1/reports', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
@@ -59,10 +66,7 @@ export function ReportForm({ siteKey }: { siteKey: string | null }) {
           note: note.trim() || undefined,
           locale,
           passableBy: passable.length > 0 ? passable : undefined,
-          // Turnstile in interaction-only mode issues a token without showing a
-          // challenge most of the time; when it has not, submitting still lets
-          // the server reject cleanly rather than silently dropping the report.
-          turnstileToken: token ?? 'missing',
+          turnstileToken: token,
         }),
       });
 
@@ -237,8 +241,7 @@ export function ReportForm({ siteKey }: { siteKey: string | null }) {
       {siteKey !== null && (
         <Turnstile
           siteKey={siteKey}
-          onToken={setToken}
-          onError={(reason) => setProblem(`verification unavailable (${reason})`)}
+          onError={(reason) => setProblem(`${t('report.verifyFailed')} (${reason})`)}
           handleRef={turnstile}
         />
       )}

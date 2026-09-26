@@ -153,7 +153,8 @@
     "depthRequired": "Pick a water depth before sending",
     "kindRequired": "Pick a type before sending",
     "privacyNote": "Home and help reports are blurred to an approximate area before they appear on the map.",
-    "unavailable": "Community reporting is not open yet — spam protection is still being set up"
+    "unavailable": "Community reporting is not open yet — spam protection is still being set up",
+    "verifyFailed": "Verification did not complete. Please try again."
   },
   "vote": {
     "still": "Still flooded",
