@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, type FormEvent, type ReactNode } from 'react';
+import { useRef, useState, type FormEvent, type ReactNode } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation.ts';
 import { DEPTH_BANDS, type DepthBandValue } from '@/config/depth-bands.ts';
@@ -8,6 +8,7 @@ import { NOTE_MAX_LENGTH } from '@/config/app.config.ts';
 import { REPORT_KINDS } from '@/config/reports.ts';
 import { DepthPictogram } from '../DepthPictogram.tsx';
 import { useGeolocation } from '../flood/useGeolocation.ts';
+import { Turnstile, type TurnstileHandle } from './Turnstile.tsx';
 
 type Kind = (typeof REPORT_KINDS)[number];
 type Vehicle = 'motorbike' | 'car' | 'pickup' | 'none';
@@ -18,7 +19,7 @@ const VEHICLES: readonly Vehicle[] = ['motorbike', 'car', 'pickup', 'none'];
  * One scrolling form, not a wizard. During a flood people abandon multi-step
  * flows, and every step is another chance to lose the report.
  */
-export function ReportForm({ turnstileConfigured }: { turnstileConfigured: boolean }) {
+export function ReportForm({ siteKey }: { siteKey: string | null }) {
   const t = useTranslations();
   const locale = useLocale() as 'th' | 'en';
   const geo = useGeolocation();
@@ -29,9 +30,12 @@ export function ReportForm({ turnstileConfigured }: { turnstileConfigured: boole
   const [passable, setPassable] = useState<Vehicle[]>([]);
   const [state, setState] = useState<'editing' | 'sending' | 'sent' | 'error'>('editing');
   const [problem, setProblem] = useState<string | null>(null);
+  const [token, setToken] = useState<string | null>(null);
+  const turnstile = useRef<TurnstileHandle | null>(null);
 
   const position = geo.state.status === 'ready' ? geo.state : null;
   const missing = !position ? 'location' : depth === null ? 'depth' : kind === null ? 'kind' : null;
+  const blocked = siteKey === null;
 
   const toggleVehicle = (v: Vehicle): void =>
     setPassable((prev) => (prev.includes(v) ? prev.filter((x) => x !== v) : [...prev, v]));
@@ -39,6 +43,7 @@ export function ReportForm({ turnstileConfigured }: { turnstileConfigured: boole
   async function submit(event: FormEvent): Promise<void> {
     event.preventDefault();
     if (missing !== null || !position || depth === null || kind === null) return;
+    if (blocked) return;
 
     setState('sending');
     setProblem(null);
@@ -54,7 +59,10 @@ export function ReportForm({ turnstileConfigured }: { turnstileConfigured: boole
           note: note.trim() || undefined,
           locale,
           passableBy: passable.length > 0 ? passable : undefined,
-          turnstileToken: 'unavailable',
+          // Turnstile in interaction-only mode issues a token without showing a
+          // challenge most of the time; when it has not, submitting still lets
+          // the server reject cleanly rather than silently dropping the report.
+          turnstileToken: token ?? 'missing',
         }),
       });
 
@@ -66,19 +74,22 @@ export function ReportForm({ turnstileConfigured }: { turnstileConfigured: boole
           body?.error ? (locale === 'th' ? body.error.message_th : body.error.message_en) : null,
         );
         setState('error');
+        // The token is single-use, so a retry needs a fresh one.
+        turnstile.current?.reset();
         return;
       }
       setState('sent');
     } catch {
       setState('error');
+      turnstile.current?.reset();
     }
   }
 
   if (state === 'sent') return <Success />;
 
   return (
-    <form onSubmit={submit} className="space-y-7">
-      {!turnstileConfigured && (
+    <form onSubmit={submit} className="space-y-7 pb-4">
+      {blocked && (
         <p
           role="status"
           className="rounded-[var(--radius-md)] border border-[var(--color-rule)] bg-[var(--color-paper-2)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-ink-2)]"
@@ -223,10 +234,21 @@ export function ReportForm({ turnstileConfigured }: { turnstileConfigured: boole
         </p>
       )}
 
-      <div className="sticky bottom-3 space-y-2">
+      {siteKey !== null && (
+        <Turnstile
+          siteKey={siteKey}
+          onToken={setToken}
+          onError={(reason) => setProblem(`verification unavailable (${reason})`)}
+          handleRef={turnstile}
+        />
+      )}
+
+      {/* A solid bar, not a floating button: the transparent version sat on top
+          of the fields below it and hid them. */}
+      <div className="sticky bottom-0 -mx-4 space-y-2 border-t border-[var(--color-rule)] bg-[var(--color-paper)] px-4 pt-3 pb-4">
         <button
           type="submit"
-          disabled={missing !== null || state === 'sending'}
+          disabled={missing !== null || state === 'sending' || blocked}
           className="flex min-h-[calc(var(--size-touch)+4px)] w-full items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-accent)] px-4 text-[var(--text-lg)] font-semibold text-[var(--color-accent-ink)] shadow-[0_2px_10px_rgb(0_0_0/0.18)] transition-transform duration-[var(--dur-fast)] active:translate-y-px disabled:opacity-45"
         >
           {state === 'sending' ? t('report.submitting') : t('report.submit')}

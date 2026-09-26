@@ -11,9 +11,11 @@ Detailed product requirements and the per-source upstream contracts are kept in
 in this file; where a rule depends on a spec detail, that detail is stated here.
 
 ## Project in one paragraph
+
 NamWatch (เฝ้าน้ำ) is a bilingual (Thai/English) flood situational-awareness web app for Bangkok, designed to expand to other Thai provinces. It combines official sensor data (ThaiWater/HII, BMA DDS, Traffy Fondue) with anonymous crowd reports on one map. People use it **during an active disaster**, often on weak connections and cheap phones. Correctness, clarity, and speed matter more than cleverness.
 
 ## Stack
+
 - Next.js (latest stable, App Router, React Server Components), TypeScript `strict`
 - Tailwind CSS v4, tokens in `src/styles/tokens.css`
 - `next-intl` for `th` / `en` routing and messages
@@ -27,6 +29,7 @@ NamWatch (เฝ้าน้ำ) is a bilingual (Thai/English) flood situational
 - Deploy: Vercel, functions pinned to region `sin1`
 
 ## Commands
+
 ```bash
 pnpm install
 pnpm dev                 # local dev
@@ -38,9 +41,11 @@ pnpm db:generate         # drizzle-kit generate (creates SQL migration)
 pnpm db:migrate          # apply migrations to DATABASE_URL
 pnpm ingest:local        # run all adapters once against fixtures (no network)
 ```
+
 Before declaring any task done: `pnpm typecheck && pnpm lint && pnpm test && pnpm i18n:check`.
 
 ## Layout
+
 ```
 app/
   [locale]/              # th | en
@@ -68,6 +73,7 @@ supabase/migrations/     # generated SQL; never edit applied migrations
 ## Hard rules
 
 ### Safety and trust (never break these)
+
 1. The **emergency hotline bar** renders on every public page, in both languages. Numbers come only from `src/config/hotlines.ts`.
 2. **Official data vs crowd data** must always look different and always show **source + relative age**. Never label crowd reports as verified or official.
 3. Never add features that imply we dispatch rescue. "Need help" copy always points to hotlines.
@@ -75,6 +81,7 @@ supabase/migrations/     # generated SQL; never edit applied migrations
 5. A failing source adapter must degrade only its own layer. Never throw into page render.
 
 ### Architecture
+
 6. **The browser never talks to Supabase.** Don't import `@supabase/supabase-js` or any DB client in client components. All data flows through `app/api/*` or server components. This is deliberate: it keeps database credentials off the client entirely, and
    keeps users on one origin, which survives an ISP blocking a third-party domain.
 7. DB access only via `src/lib/db/`. Use the transaction pooler URL with `prepare: false`.
@@ -84,17 +91,20 @@ supabase/migrations/     # generated SQL; never edit applied migrations
 11. Keep the free tier alive: no chatty polling (min 30 s), no N+1 queries, no unbounded selects (always a bbox or limit).
 
 ### Data sources
+
 12. **Before writing or changing an adapter**, fetch a real sample, save it to `fixtures/`, and record the verified contract in `docs/internal/sources/<id>.md` (URL, params, fields, units, cadence, terms, attribution). Tests run against fixtures only; CI never hits upstream.
 13. Scrapers (e.g. `bma-dds`) must: identify the user-agent (`NamWatch/0.x (+repo URL)`), cache ≥ 5 min, back off on errors, and parse defensively. Expect markup to change.
 14. Normalise units in adapters: water levels in metres (MSL), road flood in cm, rain in mm. Document the unit in the column comment.
 
 ### i18n
+
 15. No hard-coded user-facing strings. Every key goes into **both** `th.json` and `en.json` in the same commit.
 16. Write Thai as a native speaker would. No literal translation, no ครับ/ค่ะ in UI chrome. Follow the glossary in `docs/internal/glossary.md`. If unsure of Thai wording, add a `// TODO(th-review)` comment in the PR description, not in the JSON.
 17. Correct `lang` attributes. Never truncate Thai by character count (use `Intl.Segmenter`). No `letter-spacing` on Thai text. Thai body line-height ≥ 1.6.
 18. Times in `Asia/Bangkok`. Relative time for freshness. Thai absolute dates use the Buddhist Era (th-TH default).
 
 ### UI and design
+
 19. **Tokens are law.** Don't introduce colours, fonts, radii or spacing outside `src/styles/tokens.css`. If a need isn't covered, propose a token in the PR.
 20. The depth-band palette is generated and validated — run `pnpm check:cvd` after touching it.
 21. Mobile-first at 360 px width. Touch targets ≥ 48 px. Primary actions in the bottom thumb zone.
@@ -103,16 +113,19 @@ supabase/migrations/     # generated SQL; never edit applied migrations
 24. Performance budget: initial JS < 170 KB gz; the map bundle is lazy-loaded. Don't add dependencies over 30 KB gz without justification.
 
 ### Privacy and analytics
+
 25. GA loads only after consent. Never send coordinates, notes, photo keys, or device IDs to analytics.
 26. Strip EXIF on the client and re-encode on the server. Photos are served only through `/api/v1/photos/:key`.
 27. Store only hashes of device IDs and IPs (`sha256(value + SERVER_SALT)`).
 
 ### Security
+
 28. Secrets only in Vercel env vars / `.env.local` (git-ignored). The service role key is server-only. RLS is enabled on all tables (deny-all; the app uses the server connection).
 29. `/api/internal/*` requires `x-ingest-secret` and constant-time comparison.
 30. Never commit real user data, photos, or production dumps. Fixtures must be upstream public data or synthetic.
 
 ## Environment variables
+
 ```
 DATABASE_URL=                 # Supabase transaction pooler (6543)
 DATABASE_URL_DIRECT=          # direct (5432) for migrations only
@@ -127,11 +140,13 @@ ADMIN_EMAILS=                 # comma-separated allowlist
 ```
 
 ## Git and PRs
+
 - Small PRs, conventional commits (`feat(report): …`, `fix(thaiwater): …`).
 - A PR description includes: what/why, screenshots at 360 px in **both** TH and EN for UI changes, and any `th-review` items.
 - Migrations: one per PR, generated by drizzle-kit, never hand-edited after merge.
 
 ## Definition of done
+
 - [ ] typecheck, lint, tests, i18n:check pass
 - [ ] TH + EN copy present and reviewed for tone
 - [ ] Works at 360 px, keyboard-navigable, labelled for screen readers
