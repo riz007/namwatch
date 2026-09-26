@@ -27,7 +27,7 @@ export function renderDepthTokens(): string {
  * These are semantic tokens, not theme colours: no theme may override them.
  * The ramp is validated by \`pnpm check:cvd\`.
  */
-@theme {
+@theme static {
 ${light.join('\n')}
 }
 

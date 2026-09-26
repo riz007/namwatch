@@ -3,6 +3,16 @@
  * Rename the app here and in the i18n `app.name` keys only (SPEC header note).
  */
 
+/**
+ * Public origin. Used for canonical URLs, share cards and the sitemap.
+ * Vercel sets VERCEL_PROJECT_PRODUCTION_URL on every deployment.
+ */
+export const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL ??
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+    : 'https://namwatch.vercel.app');
+
 export const APP = {
   /** Working name. See SPEC.md header before renaming. */
   nameKey: 'app.name',

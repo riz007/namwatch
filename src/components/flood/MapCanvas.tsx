@@ -2,13 +2,21 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
-import Supercluster from 'supercluster';
 import type { Map as MapLibreMap, Marker } from 'maplibre-gl';
 // Scoped to this lazy chunk, so it never reaches the initial bundle.
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { BANGKOK_BBOX } from '@/config/app.config.ts';
-import { DEPTH_BANDS } from '@/config/depth-bands.ts';
-import { isReport, isStation, type AnyProps, type MapFeature } from '@/lib/api/map-types.ts';
+import type { AnyProps, MapFeature } from '@/lib/api/map-types.ts';
+import {
+  buildIndex,
+  clusterStyle,
+  CLUSTERED,
+  GAUGE_MIN_ZOOM,
+  LAYER_OF,
+  styleFor,
+  type ClusterSummary,
+  type Layer,
+} from './markers.ts';
 
 /**
  * MapLibre GL + OpenFreeMap vector tiles.
@@ -37,15 +45,14 @@ function prefersDark(): boolean {
   return window.matchMedia('(prefers-color-scheme: dark)').matches;
 }
 
-/** Which depth token expresses a station's status, so both views agree. */
-function statusToken(status: string): string | null {
-  if (status === 'critical') return 'depth-4';
-  if (status === 'warning') return 'depth-2';
-  if (status === 'watch') return 'depth-1';
-  return null;
-}
-
-export function MapCanvas({ features }: { features: readonly MapFeature[] }) {
+export function MapCanvas({
+  features,
+  focus,
+}: {
+  features: readonly MapFeature[];
+  /** When set, the map centres here and marks the spot. */
+  focus?: { lon: number; lat: number; accuracyM: number } | null;
+}) {
   const container = useRef<HTMLDivElement | null>(null);
   const [scheme, setScheme] = useState<'light' | 'dark'>('light');
   const map = useRef<MapLibreMap | null>(null);
@@ -136,48 +143,39 @@ export function MapCanvas({ features }: { features: readonly MapFeature[] }) {
       const instance = map.current;
       if (cancelled || !instance) return;
 
-      /**
-       * Supercluster on the client below 5k points. A few hundred
-       * points at Bangkok scale overlap into an unreadable mass; clustering
-       * keeps the map legible and the DOM marker count low on cheap phones.
-       */
-      const index = new Supercluster<AnyProps>({ radius: 52, maxZoom: 15, minPoints: 3 });
-      index.load(
-        features.map((f) => ({
-          type: 'Feature' as const,
-          geometry: f.geometry,
-          properties: f.properties,
-        })),
+      // One index per layer. Clustering across layers would fold a station
+      // reading over its bank into a count beside two hundred complaints.
+      const byLayer = new Map<Layer, MapFeature[]>();
+      for (const f of features) {
+        const layer = LAYER_OF(f.properties);
+        const list = byLayer.get(layer);
+        if (list) list.push(f);
+        else byLayer.set(layer, [f]);
+      }
+      const indexes = new Map(
+        [...byLayer].filter(([l]) => CLUSTERED[l]).map(([l, fs]) => [l, buildIndex(fs)] as const),
       );
 
-      const addPoint = (props: AnyProps, coords: [number, number]): void => {
+      const place = (style: ReturnType<typeof styleFor>, coords: [number, number], onClick?: () => void): void => {
         const element = document.createElement('div');
         element.className = 'nw-marker';
+        element.title = style.title;
 
-        // MapLibre writes `transform: translate(...)` on the marker element
-        // itself, so the diamond's rotation must live on an inner node or it is
-        // silently overwritten on every render.
         const shape = document.createElement('span');
-        element.appendChild(shape);
-
-        if (isReport(props)) {
-          const band = DEPTH_BANDS[props.depthBand] ?? DEPTH_BANDS[0]!;
-          shape.className = 'nw-shape nw-crowd';
-          shape.style.background = `var(--color-${band.token})`;
-          shape.style.borderColor = `var(--color-${band.token}-border)`;
-          shape.style.opacity = String(Math.max(0.4, props.opacity));
-        } else if (isStation(props)) {
-          const token = statusToken(props.status);
-          shape.className = 'nw-shape nw-sensor';
-          shape.style.background = token ? `var(--color-${token})` : 'var(--color-paper-2)';
-          shape.style.borderColor = token ? `var(--color-${token}-border)` : 'var(--color-ink-2)';
-          // An unknown reading must not read as "fine" — it reads as no data.
-          if (!token) shape.style.opacity = '0.8';
-          element.title = (locale === 'th' ? props.nameTh : props.nameEn) ?? props.id;
-        } else {
-          shape.className = 'nw-shape nw-channel';
-          element.title = props.description ?? props.source;
+        shape.className = style.className;
+        if (style.background) shape.style.background = style.background;
+        if (style.borderColor) shape.style.borderColor = style.borderColor;
+        if (style.color) shape.style.color = style.color;
+        if (style.label !== undefined) {
+          shape.textContent = style.label;
+          const px = style.opacity ?? 28;
+          shape.style.width = `${px}px`;
+          shape.style.height = `${px}px`;
+        } else if (style.opacity !== undefined) {
+          shape.style.opacity = String(style.opacity);
         }
+        element.appendChild(shape);
+        if (onClick) element.addEventListener('click', onClick);
 
         markers.current.push(new maplibre.Marker({ element }).setLngLat(coords).addTo(instance));
       };
@@ -187,43 +185,56 @@ export function MapCanvas({ features }: { features: readonly MapFeature[] }) {
         markers.current = [];
 
         const b = instance.getBounds();
-        const clusters = index.getClusters(
-          [b.getWest(), b.getSouth(), b.getEast(), b.getNorth()],
-          Math.round(instance.getZoom()),
-        );
+        const bbox: [number, number, number, number] = [
+          b.getWest(), b.getSouth(), b.getEast(), b.getNorth(),
+        ];
+        const zoom = instance.getZoom();
 
-        for (const c of clusters) {
-          const coords = c.geometry.coordinates as [number, number];
-          const props = c.properties as AnyProps & {
-            cluster?: boolean;
-            cluster_id?: number;
-            point_count?: number;
-          };
+        // Draw quiet layers first so alarms and reports sit on top of them.
+        const order: Layer[] = ['gauge', 'channel', 'crowd', 'alarm'];
 
-          if (props.cluster) {
-            const count = props.point_count ?? 0;
-            const element = document.createElement('div');
-            element.className = 'nw-marker';
-            const bubble = document.createElement('span');
-            bubble.className = 'nw-cluster';
-            bubble.textContent = String(count);
-            const size = Math.min(42, 22 + Math.log2(Math.max(count, 2)) * 4);
-            bubble.style.width = `${size}px`;
-            bubble.style.height = `${size}px`;
-            element.appendChild(bubble);
-            element.addEventListener('click', () => {
-              instance.easeTo({
-                center: coords,
-                zoom: Math.min(17, index.getClusterExpansionZoom(props.cluster_id ?? 0)),
-              });
-            });
-            markers.current.push(
-              new maplibre.Marker({ element }).setLngLat(coords).addTo(instance),
-            );
+        for (const layer of order) {
+          const list = byLayer.get(layer);
+          if (!list || list.length === 0) continue;
+
+          // A field of gauges at city scale buries the alarms; the rainfall
+          // summary above the map carries that signal until the viewer zooms.
+          if (layer === 'gauge' && zoom < GAUGE_MIN_ZOOM) continue;
+
+          if (!CLUSTERED[layer]) {
+            for (const f of list) {
+              place(styleFor(f.properties, locale), f.geometry.coordinates as [number, number]);
+            }
             continue;
           }
 
-          addPoint(props, coords);
+          const index = indexes.get(layer);
+          if (!index) continue;
+
+          for (const c of index.getClusters(bbox, Math.round(zoom))) {
+            const coords = c.geometry.coordinates as [number, number];
+            const props = c.properties as AnyProps & {
+              cluster?: boolean;
+              cluster_id?: number;
+            } & Partial<ClusterSummary>;
+
+            if (props.cluster) {
+              const summary: ClusterSummary = {
+                count: props.count ?? 0,
+                maxDepth: props.maxDepth ?? -1,
+                hasAlarm: props.hasAlarm ?? false,
+              };
+              place(clusterStyle(layer, summary), coords, () => {
+                instance.easeTo({
+                  center: coords,
+                  zoom: Math.min(17, index.getClusterExpansionZoom(props.cluster_id ?? 0)),
+                });
+              });
+              continue;
+            }
+
+            place(styleFor(props, locale), coords);
+          }
         }
       };
 
@@ -241,6 +252,32 @@ export function MapCanvas({ features }: { features: readonly MapFeature[] }) {
       detach?.();
     };
   }, [features, locale, scheme]);
+
+  // Centre on the viewer when they ask to be located, and mark where they are.
+  useEffect(() => {
+    const instance = map.current;
+    if (!instance || !focus) return;
+
+    instance.easeTo({ center: [focus.lon, focus.lat], zoom: Math.max(instance.getZoom(), 14) });
+
+    let marker: Marker | undefined;
+    void (async () => {
+      const maplibre = await import('maplibre-gl');
+      if (!map.current) return;
+      const el = document.createElement('div');
+      el.className = 'nw-marker';
+      const dot = document.createElement('span');
+      dot.className = 'nw-here';
+      el.appendChild(dot);
+      marker = new maplibre.Marker({ element: el })
+        .setLngLat([focus.lon, focus.lat])
+        .addTo(instance);
+    })();
+
+    return () => {
+      marker?.remove();
+    };
+  }, [focus]);
 
   return (
     // `absolute inset-0` rather than `size-full`: the parent is a flex item with

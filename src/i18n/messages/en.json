@@ -152,7 +152,8 @@
     "locationRequired": "Pick a location before sending",
     "depthRequired": "Pick a water depth before sending",
     "kindRequired": "Pick a type before sending",
-    "privacyNote": "Home and help reports are blurred to an approximate area before they appear on the map."
+    "privacyNote": "Home and help reports are blurred to an approximate area before they appear on the map.",
+    "unavailable": "Community reporting is not open yet — spam protection is still being set up"
   },
   "vote": {
     "still": "Still flooded",
@@ -218,6 +219,35 @@
     "cancel": "Cancel",
     "confirm": "Confirm",
     "more": "Show more",
-    "of": "of"
+    "of": "of",
+    "optional": "optional"
+  },
+  "rain": {
+    "none": "No rain",
+    "light": "Light rain",
+    "moderate": "Moderate rain",
+    "heavy": "Heavy rain",
+    "extreme": "Very heavy rain",
+    "label": "Rainfall, 24 h",
+    "gauge": "Rain gauge"
+  },
+  "summary": {
+    "overbank": "over bank",
+    "rising": "rising",
+    "quiet": "No alerts in this area right now"
+  },
+  "legend": {
+    "title": "What the marks mean",
+    "marks": "Data types",
+    "alarm": "Station at or near its bank",
+    "cluster": "Several points — tap to expand",
+    "zoomHint": "Zoom in for rain gauges and individual points",
+    "short": "Key"
+  },
+  "filter": {
+    "showingAll": "Showing all {count} points",
+    "showingAtLeast": "Showing {count} at {label} or deeper · {hidden} hidden",
+    "clear": "Clear filter",
+    "depthHint": "Filter by water depth"
   }
 }

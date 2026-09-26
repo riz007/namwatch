@@ -192,7 +192,9 @@ export function normalizeRain(raw: unknown): IngestPayload {
         observedAt,
         // Millimetres.
         value: mm,
-        // Rainfall has no bank to compare against; severity is not ours to invent.
+        // Rainfall is graded on its own scale, not the water-depth one. The
+        // status column stays 'unknown' because it describes flood severity;
+        // the intensity band is derived from the value at read time.
         status: 'unknown',
       });
     }

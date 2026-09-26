@@ -2,6 +2,7 @@
 
 import { useLocale, useTranslations } from 'next-intl';
 import { DepthChip } from '../DepthChip.tsx';
+import { RainChip } from '../RainChip.tsx';
 import { Freshness } from '../Freshness.tsx';
 import { ProvenanceBadge, ProvenanceMark } from '../Provenance.tsx';
 import { isDepthBand } from '@/config/depth-bands.ts';
@@ -59,15 +60,21 @@ export function FloodList({ features }: { features: readonly MapFeature[] }) {
                     <span className="font-semibold text-[var(--color-ink)]">
                       {(locale === 'th' ? p.nameTh : p.nameEn) ?? p.nameTh ?? p.nameEn ?? p.id}
                     </span>
-                    <StationStatus status={p.status} />
+                    {p.kind === 'rain' && p.rainBand ? (
+                      <RainChip band={p.rainBand} mm={p.value} size="sm" />
+                    ) : (
+                      <StationStatus status={p.status} />
+                    )}
                   </div>
                   <p className="tabular pt-0.5 text-[var(--text-sm)] text-[var(--color-ink-2)]">
-                    {p.value !== null && (
-                      <>
-                        {t('station.waterLevel')} {p.value.toFixed(2)} m
-                      </>
-                    )}
-                    {p.value !== null && p.bankLevelM !== null && (
+                    {p.kind === 'rain'
+                      ? p.value !== null && <>{t('rain.label')}</>
+                      : p.value !== null && (
+                          <>
+                            {t('station.waterLevel')} {p.value.toFixed(2)} m
+                          </>
+                        )}
+                    {p.kind !== 'rain' && p.value !== null && p.bankLevelM !== null && (
                       <>
                         {' · '}
                         {p.value >= p.bankLevelM

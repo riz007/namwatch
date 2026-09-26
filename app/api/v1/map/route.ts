@@ -12,6 +12,7 @@ import {
 } from '@/lib/db/queries/map.ts';
 import { isDatabaseConfigured } from '@/lib/db/index.ts';
 import { decayOpacity, type ReportKind } from '@/lib/reports/decay.ts';
+import { rainBandFor } from '@/config/rain-bands.ts';
 import { log } from '@/lib/log.ts';
 
 /**
@@ -120,6 +121,7 @@ export async function GET(request: Request) {
           value: s.value === null ? null : Number(s.value),
           bankLevelM: s.bankLevelM === null ? null : Number(s.bankLevelM),
           status: s.status ?? 'unknown',
+          rainBand: s.kind === 'rain' ? rainBandFor(s.value === null ? null : Number(s.value)) : null,
           observedAt: s.observedAt?.toISOString() ?? null,
         },
       }),

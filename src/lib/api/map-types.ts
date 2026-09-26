@@ -3,6 +3,7 @@
  * the two cannot drift. The client never talks to the database;
  * this is the only shape it knows.
  */
+import type { RainBand } from '@/config/rain-bands.ts';
 import type { ProvenanceLevel } from '@/components/Provenance.tsx';
 
 export type MapFeatureBase = {
@@ -28,6 +29,8 @@ export type StationProps = MapFeatureBase & {
   layer: 'stations';
   source: string;
   kind: string;
+  /** Intensity band for rain gauges, from the 24-hour accumulation. */
+  rainBand?: RainBand | null;
   nameTh: string | null;
   nameEn: string | null;
   value: number | null;

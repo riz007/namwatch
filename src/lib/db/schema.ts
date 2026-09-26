@@ -33,15 +33,17 @@ import {
 import { sql } from 'drizzle-orm';
 import { geographyPoint, geometryMultiPolygon } from './types.ts';
 
-/** How much to trust a datum, and how it must be labelled in the UI. */
-export const PROVENANCE = ['official_sensor', 'official_channel', 'crowd'] as const;
-export type Provenance = (typeof PROVENANCE)[number];
-
-export const REPORT_KINDS = ['road', 'home', 'canal', 'help'] as const;
-export const REPORT_STATUSES = ['active', 'hidden', 'removed', 'expired'] as const;
-export const STATION_KINDS = ['canal_level', 'river_level', 'road_flood', 'rain'] as const;
-export const READING_STATUSES = ['normal', 'watch', 'warning', 'critical', 'unknown'] as const;
-export const VOTE_KINDS = ['still', 'receded', 'flag'] as const;
+// Re-exported so existing imports from the schema keep working; the values
+// themselves live in config so client code can use them without the driver.
+export {
+  PROVENANCE,
+  REPORT_KINDS,
+  REPORT_STATUSES,
+  STATION_KINDS,
+  READING_STATUSES,
+  VOTE_KINDS,
+} from '@/config/reports.ts';
+export type { Provenance } from '@/config/reports.ts';
 
 // ---------------------------------------------------------------------------
 

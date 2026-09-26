@@ -79,14 +79,15 @@ export function DepthFilter({
             title={`${t('atLeast', { label: t(`${b.band}.label`) })}`}
             onClick={() => onChange(b.band)}
             className={
-              'inline-flex size-9 min-h-0 items-center justify-center rounded-[var(--radius-sm)] border transition-[transform,border-color] duration-[var(--dur-fast)] ' +
-              (active
-                ? 'scale-105 border-[var(--color-ink)]'
-                : 'border-transparent opacity-55 hover:opacity-100')
+              'inline-flex size-10 min-h-0 items-center justify-center rounded-[var(--radius-sm)] transition-transform duration-[var(--dur-fast)] ' +
+              (active ? 'scale-110' : 'hover:scale-105')
             }
             style={{
               backgroundColor: `var(--color-${b.token})`,
               color: `var(--color-${b.token}-on)`,
+              boxShadow: active
+                ? '0 0 0 2px var(--color-ink), 0 1px 4px rgb(0 0 0 / 0.25)'
+                : `inset 0 0 0 1px var(--color-${b.token}-border)`,
             }}
           >
             <DepthPictogram band={b.band} className="size-5" />

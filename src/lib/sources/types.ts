@@ -11,7 +11,7 @@
  * Units are normalised here, not in the UI — water level in metres
  * MSL, road flood in cm, rain in mm — and documented in the source documentation.
  */
-import type { Provenance } from '../db/schema.ts';
+import type { Provenance } from '@/config/reports.ts';
 
 export type SourceId = 'thaiwater' | 'bma-dds' | 'traffy' | 'rainviewer' | 'gistda' | 'openmeteo';
 

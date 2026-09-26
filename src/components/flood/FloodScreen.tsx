@@ -6,11 +6,15 @@ import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation.ts';
 import { BANGKOK_BBOX, type TimeWindowH } from '@/config/app.config.ts';
 import type { DepthBandValue } from '@/config/depth-bands.ts';
-import { isReport, type MapFeature } from '@/lib/api/map-types.ts';
+import type { MapFeature } from '@/lib/api/map-types.ts';
+import { severityBandOf } from './markers.ts';
 import { DepthFilter, TimeFilter, ViewToggle, type View } from './Controls.tsx';
 import { FloodList } from './FloodList.tsx';
+import { LegendControl } from './LegendControl.tsx';
 import { SourceStrip } from './SourceStrip.tsx';
+import { SummaryBar } from './SummaryBar.tsx';
 import { useFloodData } from './useFloodData.ts';
+import { useGeolocation } from './useGeolocation.ts';
 
 /**
  * Screen 1 — Map + List.
@@ -34,14 +38,18 @@ export function FloodScreen() {
   const [hours, setHours] = useState<TimeWindowH>(12);
 
   const { data, error, isLoading } = useFloodData(BANGKOK_BBOX, hours);
+  const geo = useGeolocation();
 
   const features = useMemo<MapFeature[]>(() => {
     if (!data) return [];
     if (minDepth === 0) return data.features;
-    // Depth filters crowd reports; stations and Traffy items have no band, and
-    // hiding them because they lack one would silently drop official data.
-    return data.features.filter((f) => !isReport(f.properties) || f.properties.depthBand >= minDepth);
+    return data.features.filter((f) => {
+      const band = severityBandOf(f.properties);
+      return band !== null && band >= minDepth;
+    });
   }, [data, minDepth]);
+
+  const hiddenCount = (data?.features.length ?? 0) - features.length;
 
   return (
     <div className="flex min-h-[calc(100dvh-96px)] flex-col">
@@ -55,11 +63,30 @@ export function FloodScreen() {
         <TimeFilter hours={hours} onChange={setHours} />
       </div>
 
-      <div className="flex items-center gap-2 overflow-x-auto px-4 pb-2">
-        <span className="shrink-0 text-[var(--text-xs)] font-medium text-[var(--color-muted)]">
-          {t('depth.label')}
-        </span>
-        <DepthFilter min={minDepth} onChange={setMinDepth} />
+      {data && <SummaryBar features={data.features} />}
+
+      <div className="space-y-1.5 px-4 pb-2">
+        <div className="flex items-center gap-2 overflow-x-auto">
+          <DepthFilter min={minDepth} onChange={setMinDepth} />
+        </div>
+        <p className="text-[var(--text-xs)] text-[var(--color-muted)]">
+          {minDepth === 0
+            ? t('filter.showingAll', { count: features.length })
+            : t('filter.showingAtLeast', {
+                label: t(`depth.${minDepth}.label`),
+                count: features.length,
+                hidden: hiddenCount,
+              })}
+          {minDepth > 0 && (
+            <button
+              type="button"
+              onClick={() => setMinDepth(0)}
+              className="ml-1.5 min-h-0 font-medium text-[var(--color-accent)] underline underline-offset-2"
+            >
+              {t('filter.clear')}
+            </button>
+          )}
+        </p>
       </div>
 
       {error && (
@@ -87,7 +114,10 @@ export function FloodScreen() {
           isLoading && !data ? (
             <MapSkeleton />
           ) : (
-            <MapCanvas features={features} />
+            <MapCanvas
+              features={features}
+              focus={geo.state.status === 'ready' ? geo.state : null}
+            />
           )
         ) : (
           // Pb-20 keeps the last rows clear of the floating report button.
@@ -96,11 +126,38 @@ export function FloodScreen() {
           </div>
         )}
 
-        {/* SPEC §8.1: the primary action sits in the bottom thumb zone. */}
+        {view === 'map' && <LegendControl />}
+
+        {/* Locate sits above the primary action, out of the thumb arc. */}
+        {view === 'map' && (
+          <button
+            type="button"
+            onClick={geo.locate}
+            aria-label={t('map.locate')}
+            className="absolute right-3 bottom-20 inline-flex size-12 min-h-0 items-center justify-center rounded-full border border-[var(--color-rule)] bg-[var(--color-paper)] text-[var(--color-ink)] shadow-[0_2px_8px_rgb(0_0_0/0.16)] transition-colors duration-[var(--dur-fast)] hover:bg-[var(--color-paper-2)] disabled:opacity-60"
+            disabled={geo.state.status === 'locating'}
+          >
+            <svg viewBox="0 0 24 24" className="size-5" fill="none" aria-hidden="true">
+              <circle cx="12" cy="12" r="3.2" fill="currentColor" />
+              <circle cx="12" cy="12" r="7.2" stroke="currentColor" strokeWidth="1.7" />
+              <path d="M12 1.4v3.2M12 19.4v3.2M22.6 12h-3.2M4.6 12H1.4" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+            </svg>
+          </button>
+        )}
+
+        {(geo.state.status === 'denied' || geo.state.status === 'unavailable') && (
+          <p
+            role="status"
+            className="absolute inset-x-3 bottom-36 rounded-[var(--radius-md)] border border-[var(--color-rule)] bg-[var(--color-paper)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-ink-2)] shadow-[0_2px_8px_rgb(0_0_0/0.14)]"
+          >
+            {t('report.gpsDenied')}
+          </p>
+        )}
+
         <Link
           href="/report"
           data-touch
-          className="absolute bottom-4 left-1/2 inline-flex min-h-[var(--size-touch)] -translate-x-1/2 items-center gap-2 rounded-[var(--radius-pill)] bg-[var(--color-accent)] px-5 text-[var(--text-base)] font-semibold text-[var(--color-accent-ink)] shadow-[0_2px_10px_rgb(0_0_0/0.18)] transition-transform duration-[var(--dur-fast)] ease-[var(--ease-out)] active:translate-y-px"
+          className="absolute bottom-4 left-1/2 inline-flex min-h-[var(--size-touch)] -translate-x-1/2 items-center gap-2 rounded-[var(--radius-pill)] bg-[var(--color-accent)] px-5 text-[var(--text-base)] font-bold text-white shadow-[0_3px_12px_rgb(0_0_0/0.22)] transition-transform duration-[var(--dur-fast)] ease-[var(--ease-out)] active:translate-y-px"
         >
           <svg viewBox="0 0 16 16" className="size-4" aria-hidden="true" fill="currentColor">
             <path d="M8 1.6 2.2 12.8h11.6L8 1.6Zm0 3.7 3.4 6.5H4.6L8 5.3Zm-.7 1.9h1.4v2.6H7.3V6.9Zm0 3.2h1.4v1.3H7.3v-1.3Z" />

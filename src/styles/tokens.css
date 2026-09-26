@@ -11,7 +11,7 @@
  * `pnpm check:cvd` and must not be re-derived here.
  */
 
-@theme {
+@theme static {
   /* — Paper ————————————————————————————— */
   --color-paper: oklch(98.5% 0.003 264);
   --color-paper-2: oklch(96.2% 0.004 264);
@@ -27,10 +27,21 @@
   --color-rule-2: oklch(92.5% 0.005 264);
 
   /* — Accent ———————————————————————————— */
-  --color-accent: oklch(45% 0.13 264);
+  --color-accent: oklch(48% 0.16 262);
   --color-accent-ink: oklch(98.5% 0.003 264);
-  --color-accent-soft: oklch(94% 0.024 264);
-  --color-focus: oklch(50% 0.19 264);
+  --color-accent-soft: oklch(95% 0.03 262);
+  --color-focus: oklch(52% 0.20 262);
+
+  /* — Rainfall ————————————————————————
+   * A separate scale from water depth: 40 mm of rain and 40 cm of standing
+   * water are different claims. Blue, so it never reads as a depth band. */
+  --color-rain-none: oklch(92% 0.008 240);
+  --color-rain-light: oklch(84% 0.055 235);
+  --color-rain-moderate: oklch(71% 0.105 240);
+  --color-rain-heavy: oklch(56% 0.145 250);
+  --color-rain-extreme: oklch(41% 0.155 265);
+  --color-rain-on: oklch(99% 0.002 240);
+  --color-rain-on-light: oklch(22% 0.03 240);
 
   /* — Alert ————————————————————————————
    * The emergency bar is deliberately NOT red. Red belongs to depth-5
@@ -100,10 +111,24 @@
     --color-alert: oklch(28% 0.030 264);
     --color-alert-ink: oklch(96% 0.005 264);
     --color-alert-rule: oklch(42% 0.038 264);
+    --color-rain-none: oklch(32% 0.010 240);
+    --color-rain-light: oklch(46% 0.060 235);
+    --color-rain-moderate: oklch(60% 0.105 240);
+    --color-rain-heavy: oklch(72% 0.130 245);
+    --color-rain-extreme: oklch(84% 0.120 255);
+    --color-rain-on: oklch(16% 0.012 264);
+    --color-rain-on-light: oklch(96% 0.005 240);
   }
 }
 
 :root[data-theme='dark'] {
+  --color-rain-none: oklch(32% 0.010 240);
+  --color-rain-light: oklch(46% 0.060 235);
+  --color-rain-moderate: oklch(60% 0.105 240);
+  --color-rain-heavy: oklch(72% 0.130 245);
+  --color-rain-extreme: oklch(84% 0.120 255);
+  --color-rain-on: oklch(16% 0.012 264);
+  --color-rain-on-light: oklch(96% 0.005 240);
   --color-paper: oklch(16% 0.012 264);
   --color-paper-2: oklch(20% 0.013 264);
   --color-paper-3: oklch(24.5% 0.014 264);

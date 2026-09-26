@@ -4,7 +4,7 @@
  * These are semantic tokens, not theme colours: no theme may override them.
  * The ramp is validated by `pnpm check:cvd`.
  */
-@theme {
+@theme static {
   --color-depth-0: #356C6D;
   --color-depth-0-on: #FFFFFF;
   --color-depth-0-border: #356C6D;

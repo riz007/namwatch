@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { NOTE_MAX_LENGTH } from '@/config/app.config.ts';
-import { REPORT_KINDS, VOTE_KINDS } from '@/lib/db/schema.ts';
+import { REPORT_KINDS, VOTE_KINDS } from '@/config/reports.ts';
 
 /**
  * Every request body, query string and upstream payload is
