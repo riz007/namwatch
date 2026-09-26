@@ -28,6 +28,9 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
+      - name: Secret scan
+        run: pnpm check:secrets
+
       - name: Typecheck
         run: pnpm typecheck
 

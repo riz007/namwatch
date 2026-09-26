@@ -24,7 +24,8 @@
     "tokens:generate": "tsx scripts/generate-tokens.ts",
     "sync:map-worker": "cp node_modules/maplibre-gl/dist/maplibre-gl-worker.mjs node_modules/maplibre-gl/dist/maplibre-gl-shared.mjs public/",
     "postinstall": "pnpm sync:map-worker",
-    "check:bundle": "tsx scripts/check-bundle.ts"
+    "check:bundle": "tsx scripts/check-bundle.ts",
+    "check:secrets": "tsx scripts/check-secrets.ts"
   },
   "dependencies": {
     "drizzle-orm": "0.45.3",
