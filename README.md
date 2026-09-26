@@ -27,7 +27,7 @@ flood.
 ## Stack
 
 Next.js · TypeScript · Tailwind · next-intl · MapLibre GL + OpenFreeMap ·
-Drizzle + Postgres/PostGIS · Vitest · Playwright
+Drizzle + Postgres/PostGIS · Vitest
 
 ## Running it
 

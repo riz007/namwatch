@@ -100,7 +100,7 @@ installed packages, not from memory:
 | Licence | Packages |
 |---|---|
 | MIT | next, react, react-dom, next-intl, drizzle-kit, swr, zod, pino, tailwindcss, vitest, tsx, eslint, server-only |
-| Apache-2.0 | drizzle-orm, h3-js, typescript, @playwright/test |
+| Apache-2.0 | drizzle-orm, h3-js, typescript |
 | BSD-3-Clause | maplibre-gl |
 | BSD-2-Clause | dotenv |
 | ISC | supercluster |

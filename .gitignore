@@ -13,9 +13,8 @@ playwright-report/
 test-results/
 .vercel
 
-# Internal planning, specifications and tooling config. Not part of the
-# published repository.
+# Internal planning and specifications. AGENTS.md and CLAUDE.md are published —
+# they are the contributor guide.
 /docs/internal/
-/CLAUDE.md
 /.claude/
 /.hallmark/

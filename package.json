@@ -15,7 +15,6 @@
     "lint": "eslint .",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:e2e": "playwright test",
     "i18n:check": "tsx scripts/i18n-check.ts",
     "check:cvd": "tsx scripts/check-cvd.ts",
     "db:generate": "drizzle-kit generate && tsx scripts/fix-postgis-types.ts",
@@ -25,7 +24,8 @@
     "sync:map-worker": "cp node_modules/maplibre-gl/dist/maplibre-gl-worker.mjs node_modules/maplibre-gl/dist/maplibre-gl-shared.mjs public/",
     "postinstall": "pnpm sync:map-worker",
     "check:bundle": "tsx scripts/check-bundle.ts",
-    "check:secrets": "tsx scripts/check-secrets.ts"
+    "check:secrets": "tsx scripts/check-secrets.ts",
+    "ingest:live": "tsx --conditions=react-server scripts/ingest-live.ts"
   },
   "dependencies": {
     "drizzle-orm": "0.45.3",
@@ -43,7 +43,6 @@
     "zod": "4.6.5"
   },
   "devDependencies": {
-    "@playwright/test": "1.63.0",
     "@tailwindcss/postcss": "4.3.3",
     "@types/node": "24.19.0",
     "@types/react": "19.3.0",
