@@ -14,7 +14,8 @@ const allMigrations = (): string =>
     .map((f) => readFileSync(`${DIR}/${f}`, 'utf8'))
     .join('\n');
 
-const tableNames = Object.values(schema)
+// `schema` also exports the const enums, so widen before narrowing to tables.
+const tableNames = (Object.values(schema) as unknown[])
   .filter((v): v is PgTable => is(v, PgTable))
   .map(getTableName)
   .sort();
