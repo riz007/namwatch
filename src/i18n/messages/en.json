@@ -1,0 +1,199 @@
+{
+  "app": {
+    "name": "NamWatch",
+    "tagline": "Live flood conditions across Bangkok",
+    "description": "Official water-level data and community reports on one map"
+  },
+  "nav": {
+    "map": "Map",
+    "list": "List",
+    "report": "Report flood",
+    "help": "Help",
+    "about": "About",
+    "language": "Language",
+    "skipToContent": "Skip to main content"
+  },
+  "emergency": {
+    "title": "Emergency numbers",
+    "expand": "Show all emergency numbers",
+    "collapse": "Hide",
+    "call": "Call {number}",
+    "notice": "NamWatch is not a rescue service. If you need urgent help, call one of the numbers below."
+  },
+  "depth": {
+    "label": "Water depth",
+    "0": { "label": "Dry / receded", "passability": "Passable", "range": "No flooding" },
+    "1": { "label": "Puddles", "passability": "Passable, drive slowly", "range": "Below ankle (under 10 cm)" },
+    "2": { "label": "Shin-deep", "passability": "Cars and pickups OK. Risky for motorbikes", "range": "10–30 cm" },
+    "3": { "label": "Knee-deep", "passability": "Pickups and high vehicles only. Not passable for small cars", "range": "30–50 cm" },
+    "4": { "label": "Waist-deep", "passability": "Not passable. Dangerous", "range": "50–100 cm" },
+    "5": { "label": "Chest-deep or higher", "passability": "Life-threatening", "range": "Over 100 cm" },
+    "atLeast": "{label} and deeper"
+  },
+  "kind": {
+    "label": "Type",
+    "road": "Road",
+    "home": "Home or community",
+    "canal": "Canal overflowing",
+    "help": "Need help"
+  },
+  "vehicle": {
+    "motorbike": "Motorbike",
+    "car": "Car",
+    "pickup": "Pickup",
+    "none": "Not passable"
+  },
+  "freshness": {
+    "justNow": "Just now",
+    "updated": "Updated {time}",
+    "observed": "Measured {time}",
+    "delayed": "Source delayed",
+    "delayedHint": "This source has not updated on its usual schedule",
+    "unknown": "Time unknown"
+  },
+  "provenance": {
+    "officialSensor": "Government sensor station",
+    "officialChannel": "Filed through an official channel",
+    "crowd": "Community report",
+    "crowdNotice": "Reported by the public, not verified",
+    "source": "Source"
+  },
+  "map": {
+    "title": "Flood map",
+    "loading": "Loading map",
+    "empty": "No data in this area",
+    "emptyHint": "Try panning the map or widening the time range",
+    "error": "Could not load data",
+    "retry": "Try again",
+    "locate": "Go to my location",
+    "viewMap": "Map",
+    "viewList": "List",
+    "filters": "Filters",
+    "timeWindow": "Time range",
+    "lastHours": "Last {hours} h",
+    "reportCta": "Report flood",
+    "attribution": "Map data",
+    "layers": "Layers"
+  },
+  "list": {
+    "title": "Flooded areas",
+    "empty": "No reports in this time range yet",
+    "count": "{count} items",
+    "sortRecent": "Most recent",
+    "sortDepth": "Deepest"
+  },
+  "station": {
+    "waterLevel": "Water level",
+    "bankLevel": "Bank level",
+    "aboveBank": "{meters} m above bank",
+    "belowBank": "{meters} m below bank",
+    "trendRising": "Rising",
+    "trendFalling": "Falling",
+    "trendSteady": "Steady",
+    "last24h": "Last 24 hours",
+    "status": {
+      "normal": "Normal",
+      "watch": "Watch",
+      "warning": "Warning",
+      "critical": "Overbank",
+      "unknown": "No data"
+    }
+  },
+  "report": {
+    "title": "Report flooding",
+    "intro": "Takes under 30 seconds. No signup needed.",
+    "locationStep": "Location",
+    "locationHint": "Drag the pin to adjust the exact spot",
+    "useGps": "Use my current location",
+    "gpsDenied": "Location unavailable. Search for a place instead.",
+    "searchPlace": "Search for a place or district",
+    "depthStep": "Water depth",
+    "kindStep": "Type",
+    "noteStep": "Extra detail",
+    "notePlaceholder": "e.g. road closed, small cars cannot pass",
+    "noteHint": "Up to {max} characters. No links.",
+    "noteNoLinks": "Links are not allowed in the note",
+    "passableStep": "What can still get through",
+    "submit": "Send report",
+    "submitting": "Sending",
+    "successTitle": "Report sent. Thank you.",
+    "successBody": "Your report is on the map now. It expires on its own unless someone confirms it.",
+    "traffyTitle": "Also tell the city?",
+    "traffyBody": "Traffy Fondue is the official BMA channel for asking staff to fix a problem.",
+    "traffyCta": "Send to Traffy Fondue",
+    "reportAnother": "Report another spot",
+    "backToMap": "Back to the map",
+    "errorTitle": "Could not send the report",
+    "errorBody": "Check your connection and try again.",
+    "locationRequired": "Pick a location before sending",
+    "depthRequired": "Pick a water depth before sending",
+    "kindRequired": "Pick a type before sending",
+    "privacyNote": "Home and help reports are blurred to an approximate area before they appear on the map."
+  },
+  "vote": {
+    "still": "Still flooded",
+    "receded": "Water receded",
+    "flag": "Report as inappropriate",
+    "thanks": "Thanks for confirming",
+    "already": "You have already confirmed this report",
+    "corroborated": "Near a sensor that also shows flooding",
+    "confirmations": "Confirmed {count} times"
+  },
+  "help": {
+    "title": "Help and safety",
+    "hotlinesTitle": "Emergency hotlines",
+    "notRescueTitle": "NamWatch is not a rescue service",
+    "notRescueBody": "We do not send rescue teams. If you need help, call one of the numbers above.",
+    "safetyTitle": "Staying safe in floodwater",
+    "safetyElectric": "Keep away from lamp posts, junction boxes and any cable sitting in water. If your home floods, switch off the breaker first.",
+    "safetyWade": "Do not wade through fast-moving water or water where you cannot see the ground. Open drain covers are a common hazard.",
+    "safetyDrive": "Water above half a wheel can stall a car and float it. Turning back beats pushing through.",
+    "safetyWater": "Floodwater is usually contaminated. Wash hands and any cuts, and do not drink water that has not been boiled.",
+    "traffyTitle": "Asking the city to fix it",
+    "traffyBody": "Traffy Fondue is the BMA channel that puts your report into the official work queue.",
+    "sheltersTitle": "Shelters",
+    "sheltersBody": "Follow BMA and DDPM announcements for the current list of shelters."
+  },
+  "about": {
+    "title": "About NamWatch",
+    "whatTitle": "What this is",
+    "whatBody": "NamWatch combines official water-level data with reports from people on the ground, so the flood picture sits in one place.",
+    "notOfficialTitle": "Not a government service",
+    "notOfficialBody": "NamWatch is a volunteer project, not a BMA or DDPM service. For official guidance, follow the agencies' own announcements.",
+    "sourcesTitle": "Data sources",
+    "privacyTitle": "Privacy",
+    "privacyBody": "There are no accounts. We do not collect names or phone numbers. Home and help reports are blurred to an approximate area before publication.",
+    "privacyRetention": "We keep hashes of device and IP identifiers purely to limit spam, and delete them within 7 days.",
+    "pdpa": "Handled in line with Thailand's Personal Data Protection Act.",
+    "contactTitle": "Contact and contributing"
+  },
+  "consent": {
+    "title": "Cookies and analytics",
+    "body": "We would like to collect anonymous usage statistics to improve the app. We never send your location, your notes, or any device identifier.",
+    "accept": "Accept",
+    "decline": "Decline",
+    "learnMore": "Read the privacy notice"
+  },
+  "error": {
+    "generic": "Something went wrong",
+    "network": "No connection. Check your internet signal.",
+    "notFound": "Page not found",
+    "notFoundBody": "The link may have expired or been mistyped.",
+    "rateLimited": "Too many reports too quickly. Wait a moment and try again.",
+    "invalid": "That does not look right",
+    "serverBusy": "The service is busy. Please try again.",
+    "backHome": "Back to the map"
+  },
+  "common": {
+    "close": "Close",
+    "back": "Back",
+    "share": "Share",
+    "shareLine": "Share on LINE",
+    "retry": "Try again",
+    "loading": "Loading",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "more": "Show more",
+    "of": "of"
+  }
+}

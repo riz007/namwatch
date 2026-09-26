@@ -1,0 +1,123 @@
+@import 'tailwindcss';
+@import './depth-tokens.css';
+
+/*
+ * INTERIM base tokens. DESIGN.md does not exist yet — once the Hallmark build is
+ * approved and the system is locked, these are replaced by its exported @theme.
+ * The depth-* tokens above are NOT part of that: SPEC §10 non-negotiable 1 makes
+ * them spec-defined semantics that override any theme.
+ */
+@theme {
+  --color-surface: #ffffff;
+  --color-surface-raised: #f6f7f8;
+  --color-surface-sunken: #eceef0;
+  --color-border: #d6dadf;
+  --color-text: #14181d;
+  --color-text-muted: #5b6672;
+  --color-accent: #0c5c8a;
+  --color-accent-on: #ffffff;
+  --color-danger: #a4201a;
+  --color-danger-on: #ffffff;
+
+  --font-sans:
+    var(--font-plex-sans), var(--font-plex-thai), ui-sans-serif, system-ui, sans-serif;
+  --font-thai: var(--font-plex-thai), var(--font-plex-sans), ui-sans-serif, sans-serif;
+
+  /* SPEC §8.1: touch targets are never smaller than this. */
+  --size-touch: 48px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --color-surface: #121417;
+    --color-surface-raised: #1b1f24;
+    --color-surface-sunken: #0c0e11;
+    --color-border: #333a42;
+    --color-text: #e9edf1;
+    --color-text-muted: #9aa5b1;
+    --color-accent: #6fb8e0;
+    --color-accent-on: #05202f;
+    --color-danger: #e2776f;
+    --color-danger-on: #2a0705;
+  }
+}
+
+:root[data-theme='dark'] {
+  --color-surface: #121417;
+  --color-surface-raised: #1b1f24;
+  --color-surface-sunken: #0c0e11;
+  --color-border: #333a42;
+  --color-text: #e9edf1;
+  --color-text-muted: #9aa5b1;
+  --color-accent: #6fb8e0;
+  --color-accent-on: #05202f;
+  --color-danger: #e2776f;
+  --color-danger-on: #2a0705;
+}
+
+html {
+  color-scheme: light dark;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  margin: 0;
+  /* SPEC §9: Thai body text needs generous leading; this is the floor for both. */
+  line-height: 1.6;
+}
+
+/*
+ * SPEC §9 Thai typography, enforced globally so no component can regress it:
+ *  - stacked vowels and tone marks clip at tight leading, so never go below 1.6
+ *  - letter-spacing breaks Thai cluster shaping, so it is forced off
+ */
+:lang(th) {
+  line-height: 1.6;
+  letter-spacing: normal !important;
+  font-family: var(--font-thai);
+}
+
+:lang(th) h1,
+:lang(th) h2,
+:lang(th) h3 {
+  line-height: 1.45;
+}
+
+/* SPEC §8.1 / Hard rule 21: every interactive target clears 48 px. */
+button,
+[role='button'],
+a[data-touch],
+input[type='checkbox'],
+input[type='radio'] {
+  min-height: var(--size-touch);
+}
+
+:where(a, button, [tabindex]):focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border-width: 0;
+}

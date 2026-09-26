@@ -1,0 +1,17 @@
+allowBuilds:
+  '@parcel/watcher': true
+  '@swc/core': true
+  esbuild: false
+  unrs-resolver: true
+  '@tailwindcss/oxide': true
+  sharp: true
+minimumReleaseAgeExclude:
+  - '@types/node@24.19.0'
+  - '@vitest/mocker@5.0.2'
+  - '@vitest/spy@5.0.2'
+  - vitest@5.0.2
+
+# esbuild 0.28.x's platform binary is blocked by the release-age policy, leaving the
+# JS host without a matching binary. Pin the whole tree to a version that resolves.
+overrides:
+  esbuild: 0.25.12
