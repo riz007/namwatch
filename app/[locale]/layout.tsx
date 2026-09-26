@@ -8,6 +8,8 @@ import { routing, HTML_LANG, type Locale } from '@/i18n/routing.ts';
 import { APP, SITE_URL } from '@/config/app.config.ts';
 import { EmergencyBar } from '@/components/EmergencyBar.tsx';
 import { SiteHeader } from '@/components/SiteHeader.tsx';
+import { Analytics } from '@/components/Analytics.tsx';
+import { HotlineTracker } from '@/components/HotlineTracker.tsx';
 import '@/styles/globals.css';
 
 /**
@@ -141,6 +143,9 @@ export default async function LocaleLayout({
           <EmergencyBar />
           <SiteHeader />
           <main id="main">{children}</main>
+          {/* Loads nothing until the viewer accepts. */}
+          <Analytics gaId={process.env.NEXT_PUBLIC_GA_ID ?? null} />
+          <HotlineTracker />
         </NextIntlClientProvider>
       </body>
     </html>

@@ -9,6 +9,8 @@ import { REPORT_KINDS } from '@/config/reports.ts';
 import { DepthPictogram } from '../DepthPictogram.tsx';
 import { useGeolocation } from '../flood/useGeolocation.ts';
 import { Turnstile, type TurnstileHandle } from './Turnstile.tsx';
+import { HelpNotice } from './HelpNotice.tsx';
+import { track } from '@/lib/analytics.ts';
 
 type Kind = (typeof REPORT_KINDS)[number];
 type Vehicle = 'motorbike' | 'car' | 'pickup' | 'none';
@@ -35,6 +37,14 @@ export function ReportForm({ siteKey }: { siteKey: string | null }) {
   const position = geo.state.status === 'ready' ? geo.state : null;
   const missing = !position ? 'location' : depth === null ? 'depth' : kind === null ? 'kind' : null;
   const blocked = siteKey === null;
+
+  const started = useRef(false);
+  const noteStarted = (): void => {
+    if (!started.current) {
+      started.current = true;
+      track('report_started');
+    }
+  };
 
   const toggleVehicle = (v: Vehicle): void =>
     setPassable((prev) => (prev.includes(v) ? prev.filter((x) => x !== v) : [...prev, v]));
@@ -78,18 +88,20 @@ export function ReportForm({ siteKey }: { siteKey: string | null }) {
           body?.error ? (locale === 'th' ? body.error.message_th : body.error.message_en) : null,
         );
         setState('error');
+        track('report_failed');
         // The token is single-use, so a retry needs a fresh one.
         turnstile.current?.reset();
         return;
       }
       setState('sent');
+      track('report_submitted', { depth_band: depth, report_kind: kind });
     } catch {
       setState('error');
       turnstile.current?.reset();
     }
   }
 
-  if (state === 'sent') return <Success />;
+  if (state === 'sent') return <Success isHelp={kind === 'help'} />;
 
   return (
     <form onSubmit={submit} className="space-y-7 pb-4">
@@ -107,7 +119,7 @@ export function ReportForm({ siteKey }: { siteKey: string | null }) {
           type="button"
           onClick={geo.locate}
           disabled={geo.state.status === 'locating'}
-          className="flex min-h-[var(--size-touch)] w-full items-center justify-center gap-2 rounded-[var(--radius-md)] border border-[var(--color-accent)] bg-[var(--color-accent-soft)] px-4 font-semibold text-[var(--color-accent)] transition-colors duration-[var(--dur-fast)] disabled:opacity-60"
+          className="btn press w-full border-[var(--color-accent)] bg-[var(--color-accent-soft)] text-[var(--color-accent)] hover:bg-[color-mix(in_oklab,var(--color-accent-soft)_80%,var(--color-accent))] disabled:opacity-60"
         >
           <LocateGlyph />
           {geo.state.status === 'locating' ? t('common.loading') : t('report.useGps')}
@@ -127,7 +139,7 @@ export function ReportForm({ siteKey }: { siteKey: string | null }) {
       </Step>
 
       <Step n={2} title={t('report.depthStep')}>
-        <div role="radiogroup" aria-label={t('report.depthStep')} className="grid gap-2">
+        <div role="radiogroup" aria-label={t('report.depthStep')} className="grid gap-2.5">
           {DEPTH_BANDS.map((b) => {
             const active = depth === b.band;
             return (
@@ -136,15 +148,17 @@ export function ReportForm({ siteKey }: { siteKey: string | null }) {
                 type="button"
                 role="radio"
                 aria-checked={active}
-                onClick={() => setDepth(b.band)}
-                className={
-                  'flex min-h-[var(--size-touch)] items-center gap-3 rounded-[var(--radius-md)] border-2 px-3 py-2 text-left transition-colors duration-[var(--dur-fast)] ' +
-                  (active ? 'border-[var(--color-ink)]' : 'border-transparent')
-                }
+                onClick={() => {
+                  noteStarted();
+                  setDepth(b.band);
+                }}
+                className="press flex min-h-[calc(var(--size-touch)+0.5rem)] items-center gap-3 rounded-[var(--radius-md)] px-3.5 py-2.5 text-left"
                 style={{
                   backgroundColor: `var(--color-${b.token})`,
                   color: `var(--color-${b.token}-on)`,
-                  boxShadow: active ? 'none' : `inset 0 0 0 1px var(--color-${b.token}-border)`,
+                  boxShadow: active
+                    ? '0 0 0 2.5px var(--color-ink), 0 4px 12px rgb(0 0 0 / 0.2)'
+                    : `inset 0 0 0 1.5px var(--color-${b.token}-border)`,
                 }}
               >
                 <DepthPictogram band={b.band} className="size-7 shrink-0" />
@@ -161,7 +175,7 @@ export function ReportForm({ siteKey }: { siteKey: string | null }) {
       </Step>
 
       <Step n={3} title={t('report.kindStep')}>
-        <div role="radiogroup" aria-label={t('report.kindStep')} className="grid grid-cols-2 gap-2">
+        <div role="radiogroup" aria-label={t('report.kindStep')} className="grid grid-cols-2 gap-2.5">
           {REPORT_KINDS.map((k) => (
             <button
               key={k}
@@ -170,16 +184,18 @@ export function ReportForm({ siteKey }: { siteKey: string | null }) {
               aria-checked={kind === k}
               onClick={() => setKind(k)}
               className={
-                'min-h-[var(--size-touch)] rounded-[var(--radius-md)] border-2 px-3 font-medium transition-colors duration-[var(--dur-fast)] ' +
+                'btn press ' +
                 (kind === k
-                  ? 'border-[var(--color-accent)] bg-[var(--color-accent-soft)] text-[var(--color-accent)]'
-                  : 'border-[var(--color-rule)] text-[var(--color-ink-2)] hover:border-[var(--color-ink-2)]')
+                  ? 'border-[var(--color-accent)] bg-[var(--color-accent-soft)] text-[var(--color-accent)] shadow-[0_0_0_1px_var(--color-accent)]'
+                  : 'btn-secondary')
               }
             >
               {t(`kind.${k}`)}
             </button>
           ))}
         </div>
+
+        {kind === 'help' && <HelpNotice />}
       </Step>
 
       <Step n={4} title={t('report.noteStep')} optional>
@@ -188,19 +204,14 @@ export function ReportForm({ siteKey }: { siteKey: string | null }) {
             <span className="block pb-1.5 text-[var(--text-sm)] text-[var(--color-ink-2)]">
               {t('report.passableStep')}
             </span>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2.5">
               {VEHICLES.map((v) => (
                 <button
                   key={v}
                   type="button"
                   aria-pressed={passable.includes(v)}
                   onClick={() => toggleVehicle(v)}
-                  className={
-                    'min-h-[var(--size-touch)] rounded-[var(--radius-pill)] border px-3.5 text-[var(--text-sm)] font-medium transition-colors duration-[var(--dur-fast)] ' +
-                    (passable.includes(v)
-                      ? 'border-[var(--color-accent)] bg-[var(--color-accent-soft)] text-[var(--color-accent)]'
-                      : 'border-[var(--color-rule)] text-[var(--color-muted)]')
-                  }
+                  className="chip press"
                 >
                   {t(`vehicle.${v}`)}
                 </button>
@@ -254,7 +265,11 @@ export function ReportForm({ siteKey }: { siteKey: string | null }) {
           disabled={missing !== null || state === 'sending' || blocked}
           className="flex min-h-[calc(var(--size-touch)+4px)] w-full items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-accent)] px-4 text-[var(--text-lg)] font-semibold text-[var(--color-accent-ink)] shadow-[0_2px_10px_rgb(0_0_0/0.18)] transition-transform duration-[var(--dur-fast)] active:translate-y-px disabled:opacity-45"
         >
-          {state === 'sending' ? t('report.submitting') : t('report.submit')}
+          {state === 'sending'
+            ? t('report.submitting')
+            : kind === 'help'
+              ? t('report.submitHelp')
+              : t('report.submit')}
         </button>
         {missing !== null && (
           <p className="text-center text-[var(--text-sm)] text-[var(--color-muted)]">
@@ -315,10 +330,16 @@ function Step({
   );
 }
 
-function Success() {
+function Success({ isHelp }: { isHelp: boolean }) {
   const t = useTranslations();
   return (
     <div className="space-y-5 text-center">
+      {/* A help report is not a rescue request. Say so first, again. */}
+      {isHelp && (
+        <div className="text-left">
+          <HelpNotice />
+        </div>
+      )}
       <div className="mx-auto grid size-14 place-items-center rounded-full bg-[var(--color-accent-soft)]">
         <svg
           viewBox="0 0 24 24"
@@ -337,9 +358,11 @@ function Success() {
       </div>
       <div>
         <h2 className="text-[var(--text-xl)] font-bold text-[var(--color-ink)]">
-          {t('report.successTitle')}
+          {isHelp ? t('report.successHelpTitle') : t('report.successTitle')}
         </h2>
-        <p className="pt-1 text-[var(--color-ink-2)]">{t('report.successBody')}</p>
+        <p className="pt-1 text-[var(--color-ink-2)]">
+          {isHelp ? t('report.successHelpBody') : t('report.successBody')}
+        </p>
       </div>
 
       <div className="rounded-[var(--radius-md)] border border-[var(--color-rule)] bg-[var(--color-paper-2)] p-4 text-left">

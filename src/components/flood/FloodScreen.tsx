@@ -15,6 +15,7 @@ import { SourceStrip } from './SourceStrip.tsx';
 import { SummaryBar } from './SummaryBar.tsx';
 import { useFloodData } from './useFloodData.ts';
 import { useGeolocation } from './useGeolocation.ts';
+import { track } from '@/lib/analytics.ts';
 
 /**
  * Screen 1 — Map + List.
@@ -55,10 +56,16 @@ export function FloodScreen() {
     <div className="flex min-h-[calc(100dvh-96px)] flex-col">
       {/* Orientation row — the Map/Diagram macrostructure's small heading beside
           the composition, not a hero above it. */}
-      <div className="flex flex-wrap items-center gap-2 px-4 py-2">
+      <div className="flex flex-wrap items-center gap-2.5 px-4 pt-3 pb-2">
         <h1 className="sr-only">{t('map.title')}</h1>
         <div className="min-w-[180px] flex-1">
-          <ViewToggle view={view} onChange={setView} />
+          <ViewToggle
+            view={view}
+            onChange={(v) => {
+              track('view_toggle', { view: v });
+              setView(v);
+            }}
+          />
         </div>
         <TimeFilter hours={hours} onChange={setHours} />
       </div>
@@ -66,7 +73,10 @@ export function FloodScreen() {
       {data && <SummaryBar features={data.features} />}
 
       <div className="space-y-1.5 px-4 pb-2">
-        <div className="flex items-center gap-2 overflow-x-auto">
+        {/* `overflow-x: auto` clips the other axis too, which cut the top off the
+            selected swatch's ring and lift. The padding gives them room; the
+            negative margin keeps the row's outer spacing unchanged. */}
+        <div className="-mx-1 -my-1.5 flex items-center gap-2 overflow-x-auto px-1 py-1.5">
           <DepthFilter min={minDepth} onChange={setMinDepth} />
         </div>
         <p className="text-[var(--text-xs)] text-[var(--color-muted)]">
@@ -81,7 +91,7 @@ export function FloodScreen() {
             <button
               type="button"
               onClick={() => setMinDepth(0)}
-              className="ml-1.5 min-h-0 font-medium text-[var(--color-accent)] underline underline-offset-2"
+              className="ml-1.5 min-h-0 font-semibold text-[var(--color-accent)] underline underline-offset-2 hover:no-underline"
             >
               {t('filter.clear')}
             </button>
@@ -132,9 +142,12 @@ export function FloodScreen() {
         {view === 'map' && (
           <button
             type="button"
-            onClick={geo.locate}
+            onClick={() => {
+              track('locate_me');
+              geo.locate();
+            }}
             aria-label={t('map.locate')}
-            className="absolute right-3 bottom-20 inline-flex size-12 min-h-0 items-center justify-center rounded-full border border-[var(--color-rule)] bg-[var(--color-paper)] text-[var(--color-ink)] shadow-[0_2px_8px_rgb(0_0_0/0.16)] transition-colors duration-[var(--dur-fast)] hover:bg-[var(--color-paper-2)] disabled:opacity-60"
+            className="press absolute right-3 bottom-20 grid size-12 min-h-0 place-items-center rounded-full border border-[var(--color-rule)] bg-[var(--color-paper)] text-[var(--color-ink)] shadow-[0_2px_8px_rgb(0_0_0/0.16)] hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] disabled:opacity-60"
             disabled={geo.state.status === 'locating'}
           >
             <svg viewBox="0 0 24 24" className="size-5" fill="none" aria-hidden="true">
@@ -157,7 +170,7 @@ export function FloodScreen() {
         <Link
           href="/report"
           data-touch
-          className="absolute bottom-4 left-1/2 inline-flex min-h-[var(--size-touch)] -translate-x-1/2 items-center gap-2 rounded-[var(--radius-pill)] bg-[var(--color-accent)] px-5 text-[var(--text-base)] font-bold text-white shadow-[0_3px_12px_rgb(0_0_0/0.22)] transition-transform duration-[var(--dur-fast)] ease-[var(--ease-out)] active:translate-y-px"
+          className="btn btn-primary press absolute bottom-4 left-1/2 -translate-x-1/2 rounded-[var(--radius-pill)] px-6 text-[var(--text-base)]"
         >
           <svg viewBox="0 0 16 16" className="size-4" aria-hidden="true" fill="currentColor">
             <path d="M8 1.6 2.2 12.8h11.6L8 1.6Zm0 3.7 3.4 6.5H4.6L8 5.3Zm-.7 1.9h1.4v2.6H7.3V6.9Zm0 3.2h1.4v1.3H7.3v-1.3Z" />

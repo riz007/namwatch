@@ -278,3 +278,211 @@ summary {
   font-size: 9px;
   font-weight: 600;
 }
+
+/* ---------------------------------------------------------------------------
+ * Interaction
+ *
+ * Tailwind's reset leaves buttons on `cursor: default`, which makes the whole
+ * app feel like a document rather than something you can operate. Everything
+ * you can press says so, and everything you press responds.
+ * ------------------------------------------------------------------------- */
+
+button:not(:disabled),
+summary,
+[role='button']:not([aria-disabled='true']),
+[role='tab'],
+[role='radio'],
+a[href],
+label[for],
+select,
+input[type='checkbox'],
+input[type='radio'] {
+  cursor: pointer;
+}
+
+button:disabled,
+[aria-disabled='true'] {
+  cursor: not-allowed;
+}
+
+/* One motion language for pressable things: lift slightly on hover, settle on
+ * press. Transform and opacity only, so nothing reflows. */
+.press {
+  transition:
+    transform var(--dur-fast) var(--ease-out),
+    box-shadow var(--dur-fast) var(--ease-out),
+    background-color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
+}
+
+@media (hover: hover) {
+  .press:hover:not(:disabled) {
+    transform: translateY(-1px);
+  }
+}
+
+.press:active:not(:disabled) {
+  transform: translateY(1px) scale(0.985);
+  transition-duration: 60ms;
+}
+
+/* ---- Buttons -------------------------------------------------------------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: var(--size-touch);
+  padding-inline: 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background: var(--color-accent);
+  color: #fff;
+  font-weight: 700;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.16);
+}
+
+@media (hover: hover) {
+  .btn-primary:hover:not(:disabled) {
+    background: color-mix(in oklab, var(--color-accent) 88%, black);
+    box-shadow: 0 4px 14px rgb(0 0 0 / 0.22);
+  }
+}
+
+.btn-primary:disabled {
+  opacity: 0.42;
+  box-shadow: none;
+}
+
+.btn-secondary {
+  background: var(--color-paper);
+  border-color: var(--color-rule);
+  color: var(--color-ink);
+}
+
+@media (hover: hover) {
+  .btn-secondary:hover:not(:disabled) {
+    border-color: var(--color-accent);
+    background: var(--color-paper-2);
+  }
+}
+
+.btn-quiet {
+  background: transparent;
+  color: var(--color-ink-2);
+}
+
+@media (hover: hover) {
+  .btn-quiet:hover:not(:disabled) {
+    background: var(--color-paper-2);
+    color: var(--color-ink);
+  }
+}
+
+/* ---- Chips ---------------------------------------------------------------- */
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  min-height: 2.5rem;
+  padding-inline: 0.875rem;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid var(--color-rule);
+  background: var(--color-paper);
+  color: var(--color-ink-2);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+@media (hover: hover) {
+  .chip:hover:not(:disabled) {
+    border-color: var(--color-ink-2);
+    color: var(--color-ink);
+  }
+}
+
+.chip[aria-pressed='true'],
+.chip[aria-checked='true'],
+.chip[data-on='true'] {
+  border-color: var(--color-accent);
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
+/* ---- Segmented control ---------------------------------------------------- */
+
+.segmented {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 0.25rem;
+  padding: 0.25rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-rule);
+  background: var(--color-paper-2);
+}
+
+.segmented > [role='tab'] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  min-height: calc(var(--size-touch) - 0.625rem);
+  border-radius: calc(var(--radius-md) - 1px);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-muted);
+  white-space: nowrap;
+}
+
+@media (hover: hover) {
+  .segmented > [role='tab']:hover[aria-selected='false'] {
+    color: var(--color-ink);
+    background: color-mix(in oklab, var(--color-paper) 60%, transparent);
+  }
+}
+
+.segmented > [role='tab'][aria-selected='true'] {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.12);
+}
+
+/* ---- Depth swatch --------------------------------------------------------- */
+
+.swatch {
+  display: inline-grid;
+  place-items: center;
+  width: 2.625rem;
+  height: 2.625rem;
+  min-height: 0;
+  border-radius: var(--radius-md);
+}
+
+.swatch[aria-pressed='false'] {
+  opacity: 0.92;
+}
+
+@media (hover: hover) {
+  .swatch:hover {
+    transform: translateY(-2px);
+    opacity: 1;
+  }
+}
+
+.swatch[aria-pressed='true'] {
+  transform: translateY(-2px);
+  opacity: 1;
+}

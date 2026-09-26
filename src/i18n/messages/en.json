@@ -154,7 +154,13 @@
     "kindRequired": "Pick a type before sending",
     "privacyNote": "Home and help reports are blurred to an approximate area before they appear on the map.",
     "unavailable": "Community reporting is not open yet — spam protection is still being set up",
-    "verifyFailed": "Verification did not complete. Please try again."
+    "verifyFailed": "Verification did not complete. Please try again.",
+    "helpUrgentTitle": "If life is in danger, call now",
+    "helpUrgentBody": "NamWatch is not a rescue service. We do not send help, and nobody is watching this report around the clock. Call one of these first.",
+    "helpStillSend": "You can still send the report after calling, so neighbours and volunteers can see this spot on the map.",
+    "submitHelp": "Send report (after calling)",
+    "successHelpTitle": "Report sent — do not wait for us",
+    "successHelpBody": "Your report is on the map for people nearby. It does not reach rescue services. If you have not called yet, call now."
   },
   "vote": {
     "still": "Still flooded",
