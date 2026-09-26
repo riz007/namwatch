@@ -15,7 +15,7 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import postgres from 'postgres';
-import 'dotenv/config';
+import './load-env.ts';
 
 const DIR = 'supabase/migrations';
 const LOCAL_HOSTS = new Set(['localhost', '127.0.0.1', '::1', 'db.localhost']);

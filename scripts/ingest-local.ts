@@ -7,7 +7,7 @@
  * Pnpm ingest:local
  * DATABASE_URL=postgresql://... pnpm ingest:local
  */
-import 'dotenv/config';
+import './load-env.ts';
 import { ADAPTERS, runAll } from '../src/lib/sources/registry.ts';
 import { REGIONS } from '../src/config/regions.ts';
 
