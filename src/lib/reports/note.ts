@@ -2,9 +2,9 @@
  * Note validation. SPEC §6.2: "Profanity and link filter on notes. No URLs
  * allowed in notes."
  */
-import { NOTE_MAX_LENGTH } from '@/config/app.config.ts';
+import { NOTE_MAX_LENGTH } from "@/config/app.config.ts";
 
-export type NoteRejection = 'too_long' | 'contains_link' | 'contains_profanity';
+export type NoteRejection = "too_long" | "contains_link" | "contains_profanity";
 
 /**
  * URL-ish patterns, deliberately broad. Spammers write "example dot com" and
@@ -29,8 +29,19 @@ const LINK_PATTERNS: readonly RegExp[] = [
  * rejected with a message asking for a rephrase, and nothing is silently dropped.
  */
 const PROFANITY: readonly string[] = [
-  'ควย', 'เหี้ย', 'สัส', 'สัตว์เดรัจฉาน', 'อีดอก', 'กระหรี่', 'แม่ง', 'ไอ้สัส',
-  'fuck', 'shit', 'cunt', 'bitch', 'asshole',
+  "ควย",
+  "เหี้ย",
+  "สัส",
+  "สัตว์เดรัจฉาน",
+  "อีดอก",
+  "กระหรี่",
+  "แม่ง",
+  "ไอ้สัส",
+  "fuck",
+  "shit",
+  "cunt",
+  "bitch",
+  "asshole",
 ];
 
 export function validateNote(note: string | null | undefined): {
@@ -39,19 +50,20 @@ export function validateNote(note: string | null | undefined): {
 } {
   if (note == null) return { ok: true };
   const trimmed = note.trim();
-  if (trimmed === '') return { ok: true };
+  if (trimmed === "") return { ok: true };
 
   // SPEC §9: never measure Thai by JS char count for display, but the DB
   // constraint is char_length, so this must match the DB exactly.
-  if ([...trimmed].length > NOTE_MAX_LENGTH) return { ok: false, reason: 'too_long' };
+  if ([...trimmed].length > NOTE_MAX_LENGTH)
+    return { ok: false, reason: "too_long" };
 
   if (LINK_PATTERNS.some((re) => re.test(trimmed))) {
-    return { ok: false, reason: 'contains_link' };
+    return { ok: false, reason: "contains_link" };
   }
 
   const lowered = trimmed.toLowerCase();
   if (PROFANITY.some((word) => lowered.includes(word))) {
-    return { ok: false, reason: 'contains_profanity' };
+    return { ok: false, reason: "contains_profanity" };
   }
 
   return { ok: true };

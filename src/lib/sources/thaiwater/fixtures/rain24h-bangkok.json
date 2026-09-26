@@ -1,0 +1,2327 @@
+{
+  "data": [
+    {
+      "agency": {
+        "agency_name": {
+          "en": "Hydro – Informatics Institute (Public Organization)",
+          "jp": "",
+          "th": "สถาบันสารสนเทศทรัพยากรน้ำ (องค์การมหาชน)"
+        },
+        "agency_shortname": {
+          "en": "HII",
+          "jp": "",
+          "th": "สสน."
+        }
+      },
+      "basin": {
+        "basin_code": 10,
+        "basin_name": {
+          "en": "Chao Phraya Basin",
+          "th": "ลุ่มน้ำเจ้าพระยา"
+        },
+        "id": 10
+      },
+      "geocode": {
+        "amphoe_name": {
+          "en": "Bang Kapi District",
+          "th": "บางกะปิ"
+        },
+        "area_code": "1",
+        "area_name": {
+          "en": "Bangkok",
+          "th": "กรุงเทพมหานคร"
+        },
+        "province_code": "10",
+        "province_name": {
+          "en": "Bangkok",
+          "th": "กรุงเทพมหานคร"
+        },
+        "tumbon_name": {
+          "en": "Hua Mak",
+          "th": "หัวหมาก"
+        },
+        "warning_zone": "06"
+      },
+      "id": 312083165,
+      "rain_1h": 3,
+      "rain_24h": 198.2,
+      "rainfall_datetime": "2026-09-26 12:00",
+      "station": {
+        "id": 2,
+        "sub_basin_id": "1002",
+        "tele_station_lat": 13.76131,
+        "tele_station_long": 100.61601,
+        "tele_station_name": {
+          "en": "Krung Thep 8",
+          "th": "คลองแสนแสบ บางกะปิ"
+        },
+        "tele_station_oldcode": "BKK008",
+        "tele_station_type": "rainfall_24h"
+      },
+      "station_type": "rainfall_24h"
+    },
+    {
+      "agency": {
+        "agency_name": {
+          "en": "Thai Meteorological Department",
+          "jp": "",
+          "th": "กรมอุตุนิยมวิทยา "
+        },
+        "agency_shortname": {
+          "en": "TMD",
+          "jp": "",
+          "th": "อต."
+        }
+      },
+      "basin": {
+        "basin_code": 15,
+        "basin_name": {
+          "en": "Bang Pakong Basin",
+          "th": "ลุ่มน้ำบางปะกง"
+        },
+        "id": 16
+      },
+      "geocode": {
+        "amphoe_name": {
+          "en": "Mueang Samut Prakan District",
+          "th": "เมืองสมุทรปราการ"
+        },
+        "area_code": "2",
+        "area_name": {
+          "en": "Central",
+          "th": "ภาคกลาง"
+        },
+        "province_code": "11",
+        "province_name": {
+          "en": "Samut Prakan",
+          "th": "สมุทรปราการ"
+        },
+        "tumbon_name": {
+          "en": "Bang Pu",
+          "th": "บางปู"
+        },
+        "warning_zone": "06"
+      },
+      "id": 312077899,
+      "rain_24h": 193.5,
+      "rainfall_datetime": "2026-09-26 10:00",
+      "station": {
+        "id": 3691,
+        "sub_basin_id": "1510",
+        "tele_station_lat": 13.51667,
+        "tele_station_long": 100.76167,
+        "tele_station_name": {
+          "en": "Samut Prakarn",
+          "th": "สมุทรปราการ สกษ."
+        },
+        "tele_station_oldcode": "48420",
+        "tele_station_type": "rainfall_24h"
+      },
+      "station_type": "rainfall_24h"
+    },
+    {
+      "agency": {
+        "agency_name": {
+          "en": "Hydro – Informatics Institute (Public Organization)",
+          "jp": "",
+          "th": "สถาบันสารสนเทศทรัพยากรน้ำ (องค์การมหาชน)"
+        },
+        "agency_shortname": {
+          "en": "HII",
+          "jp": "",
+          "th": "สสน."
+        }
+      },
+      "basin": {
+        "basin_code": 99,
+        "basin_name": {
+          "en": "Not specify",
+          "th": "ไม่ระบุ"
+        },
+        "id": 28
+      },
+      "geocode": {
+        "amphoe_name": {
+          "en": "Chatuchak District",
+          "th": "จตุจักร"
+        },
+        "area_code": "1",
+        "area_name": {
+          "en": "Bangkok",
+          "th": "กรุงเทพมหานคร"
+        },
+        "province_code": "10",
+        "province_name": {
+          "en": "Bangkok",
+          "th": "กรุงเทพมหานคร"
+        },
+        "tumbon_name": {
+          "en": "Lat Yao",
+          "th": "ลาดยาว"
+        },
+        "warning_zone": "06"
+      },
+      "id": 312085105,
+      "rain_1h": 12,
+      "rain_24h": 193,
+      "rainfall_datetime": "2026-09-26 12:00",
+      "station": {
+        "id": 1129393,
+        "sub_basin_id": "1002",
+        "tele_station_lat": 13.85604,
+        "tele_station_long": 100.57558,
+        "tele_station_name": {
+          "en": "Hydro-Informatics Institute (Public Organization)",
+          "th": "อาคารเลขที่ ๙๐๑"
+        },
+        "tele_station_oldcode": "HII001",
+        "tele_station_type": "rainfall_24h"
+      },
+      "station_type": "rainfall_24h"
+    },
+    {
+      "agency": {
+        "agency_name": {
+          "en": "Hydro – Informatics Institute (Public Organization)",
+          "jp": "",
+          "th": "สถาบันสารสนเทศทรัพยากรน้ำ (องค์การมหาชน)"
+        },
+        "agency_shortname": {
+          "en": "HII",
+          "jp": "",
+          "th": "สสน."
+        }
+      },
+      "basin": {
+        "basin_code": 15,
+        "basin_name": {
+          "en": "Bang Pakong Basin",
+          "th": "ลุ่มน้ำบางปะกง"
+        },
+        "id": 16
+      },
+      "geocode": {
+        "amphoe_name": {
+          "en": "Lat Krabang District",
+          "th": "ลาดกระบัง"
+        },
+        "area_code": "1",
+        "area_name": {
+          "en": "Bangkok",
+          "th": "กรุงเทพมหานคร"
+        },
+        "province_code": "10",
+        "province_name": {
+          "en": "Bangkok",
+          "th": "กรุงเทพมหานคร"
+        },
+        "tumbon_name": {
+          "en": "Lat Krabang",
+          "th": "ลาดกระบัง"
+        },
+        "warning_zone": "06"
+      },
+      "id": 312083166,
+      "rain_1h": 4,
+      "rain_24h": 188.8,
+      "rainfall_datetime": "2026-09-26 12:00",
+      "station": {
+        "id": 3,
+        "sub_basin_id": "1510",
+        "tele_station_lat": 13.7407,
+        "tele_station_long": 100.79468,
+        "tele_station_name": {
+          "en": "Krung Thep 9",
+          "th": "คลองลำปลาทิว ลาดกระบัง"
+        },
+        "tele_station_oldcode": "BKK009",
+        "tele_station_type": "rainfall_24h"
+      },
+      "station_type": "rainfall_24h"
+    },
+    {
+      "agency": {
+        "agency_name": {
+          "en": "Thai Meteorological Department",
+          "jp": "",
+          "th": "กรมอุตุนิยมวิทยา "
+        },
+        "agency_shortname": {
+          "en": "TMD",
+          "jp": "",
+          "th": "อต."
+        }
+      },
+      "basin": {
+        "basin_code": 10,
+        "basin_name": {
+          "en": "Chao Phraya Basin",
+          "th": "ลุ่มน้ำเจ้าพระยา"
+        },
+        "id": 10
+      },
+      "geocode": {
+        "amphoe_name": {
+          "en": "Bang Na District",
+          "th": "บางนา"
+        },
+        "area_code": "1",
+        "area_name": {
+          "en": "Bangkok",
+          "th": "กรุงเทพมหานคร"
+        },
+        "province_code": "10",
+        "province_name": {
+          "en": "Bangkok",
+          "th": "กรุงเทพมหานคร"
+        },
+        "tumbon_name": {
+          "en": "Bang Na",
+          "th": "บางนา"
+        },
+        "warning_zone": "06"
+      },
+      "id": 312077961,
+      "rain_24h": 188.7,
+      "rainfall_datetime": "2026-09-26 10:00",
+      "station": {
+        "id": 3709,
+        "sub_basin_id": "1002",
+        "tele_station_lat": 13.66639,
+        "tele_station_long": 100.60611,
+        "tele_station_name": {
+          "en": "BANG NA AGROMET.",
+          "th": "กรุงเทพฯ บางนา สกษ."
+        },
+        "tele_station_oldcode": "48453",
+        "tele_station_type": "rainfall_24h"
+      },
+      "station_type": "rainfall_24h"
+    },
+    {
+      "agency": {
+        "agency_name": {
+          "en": "Hydro – Informatics Institute (Public Organization)",
+          "jp": "",
+          "th": "สถาบันสารสนเทศทรัพยากรน้ำ (องค์การมหาชน)"
+        },
+        "agency_shortname": {
+          "en": "HII",
+          "jp": "",
+          "th": "สสน."
+        }
+      },
+      "basin": {
+        "basin_code": 15,
+        "basin_name": {
+          "en": "Bang Pakong Basin",
+          "th": "ลุ่มน้ำบางปะกง"
+        },
+        "id": 16
+      },
+      "geocode": {
+        "amphoe_name": {
+          "en": "Bang Sao Thong District",
+          "th": "บางเสาธง"
+        },
+        "area_code": "2",
+        "area_name": {
+          "en": "Central",
+          "th": "ภาคกลาง"
+        },
+        "province_code": "11",
+        "province_name": {
+          "en": "Samut Prakan",
+          "th": "สมุทรปราการ"
+        },
+        "tumbon_name": {
+          "en": "Sisa Chorakhe Noi",
+          "th": "ศีรษะจรเข้น้อย"
+        },
+        "warning_zone": "06"
+      },
+      "id": 312083173,
+      "rain_1h": 3.2,
+      "rain_24h": 183.4,
+      "rainfall_datetime": "2026-09-26 12:00",
+      "station": {
+        "id": 20,
+        "sub_basin_id": "1510",
+        "tele_station_lat": 13.67777,
+        "tele_station_long": 100.7945,
+        "tele_station_name": {
+          "en": "Sisa Chorakhe Noi",
+          "th": "อบต.ศีรษะจรเข้น้อย"
+        },
+        "tele_station_oldcode": "BST1",
+        "tele_station_type": "rainfall_24h"
+      },
+      "station_type": "rainfall_24h"
+    },
+    {
+      "agency": {
+        "agency_name": {
+          "en": "Hydro – Informatics Institute (Public Organization)",
+          "jp": "",
+          "th": "สถาบันสารสนเทศทรัพยากรน้ำ (องค์การมหาชน)"
+        },
+        "agency_shortname": {
+          "en": "HII",
+          "jp": "",
+          "th": "สสน."
+        }
+      },
+      "basin": {
+        "basin_code": 15,
+        "basin_name": {
+          "en": "Bang Pakong Basin",
+          "th": "ลุ่มน้ำบางปะกง"
+        },
+        "id": 16
+      },
+      "geocode": {
+        "amphoe_name": {
+          "en": "Lat Phrao District",
+          "th": "ลาดพร้าว"
+        },
+        "area_code": "1",
+        "area_name": {
+          "en": "Bangkok",
+          "th": "กรุงเทพมหานคร"
+        },
+        "province_code": "10",
+        "province_name": {
+          "en": "Bangkok",
+          "th": "กรุงเทพมหานคร"
+        },
+        "tumbon_name": {
+          "en": "Lat Phrao",
+          "th": "ลาดพร้าว"
+        },
+        "warning_zone": "06"
+      },
+      "id": 312083169,
+      "rain_1h": 8.8,
+      "rain_24h": 180.8,
+      "rainfall_datetime": "2026-09-26 12:00",
+      "station": {
+        "id": 8,
+        "sub_basin_id": "1507",
+        "tele_station_lat": 13.93183,
+        "tele_station_long": 100.63952,
+        "tele_station_name": {
+          "en": "Klong Ladprao Klong 2 Sai Tai",
+          "th": "คลองลาดพร้าว ปากคลอง2สายใต้"
+        },
+        "tele_station_oldcode": "BKK020",
+        "tele_station_type": "rainfall_24h"
+      },
+      "station_type": "rainfall_24h"
+    },
+    {
+      "agency": {
+        "agency_name": {
+          "en": "Hydro – Informatics Institute (Public Organization)",
+          "jp": "",
+          "th": "สถาบันสารสนเทศทรัพยากรน้ำ (องค์การมหาชน)"
+        },
+        "agency_shortname": {
+          "en": "HII",
+          "jp": "",
+          "th": "สสน."
+        }
+      },
+      "basin": {
+        "basin_code": 10,
+        "basin_name": {
+          "en": "Chao Phraya Basin",
+          "th": "ลุ่มน้ำเจ้าพระยา"
+        },
+        "id": 10
+      },
+      "geocode": {
+        "amphoe_name": {
+          "en": "Bang Khen District",
+          "th": "บางเขน"
+        },
+        "area_code": "1",
+        "area_name": {
+          "en": "Bangkok",
+          "th": "กรุงเทพมหานคร"
+        },
+        "province_code": "10",
+        "province_name": {
+          "en": "Bangkok",
+          "th": "กรุงเทพมหานคร"
+        },
+        "tumbon_name": {
+          "en": "Anusawari",
+          "th": "อนุสาวรีย์"
+        },
+        "warning_zone": "06"
+      },
+      "id": 312083156,
+      "rain_1h": 3.8,
+      "rain_24h": 177.2,
+      "rainfall_datetime": "2026-09-26 12:00",
+      "station": {
+        "id": 1,
+        "sub_basin_id": "1002",
+        "tele_station_lat": 13.85402,
+        "tele_station_long": 100.58746,
+        "tele_station_name": {
+          "en": "Klong Ladprao Bang Bua Temple",
+          "th": "คลองลาดพร้าว วัดบางบัว"
+        },
+        "tele_station_oldcode": "BKK021",
+        "tele_station_type": "rainfall_24h"
+      },
+      "station_type": "rainfall_24h"
+    },
+    {
+      "agency": {
+        "agency_name": {
+          "en": "Hydro – Informatics Institute (Public Organization)",
+          "jp": "",
+          "th": "สถาบันสารสนเทศทรัพยากรน้ำ (องค์การมหาชน)"
+        },
+        "agency_shortname": {
+          "en": "HII",
+          "jp": "",
+          "th": "สสน."
+        }
+      },
+      "basin": {
+        "basin_code": 10,
+        "basin_name": {
+          "en": "Chao Phraya Basin",
+          "th": "ลุ่มน้ำเจ้าพระยา"
+        },
+        "id": 10
+      },
+      "geocode": {
+        "amphoe_name": {
+          "en": "Sai Mai District",
+          "th": "สายไหม"
+        },
+        "area_code": "1",
+        "area_name": {
+          "en": "Bangkok",
+          "th": "กรุงเทพมหานคร"
+        },
+        "province_code": "10",
+        "province_name": {
+          "en": "Bangkok",
+          "th": "กรุงเทพมหานคร"
+        },
+        "tumbon_name": {
+          "en": "Sai Mai",
+          "th": "สายไหม"
+        },
+        "warning_zone": "06"
+      },
+      "id": 312083171,
+      "rain_1h": 8.2,
+      "rain_24h": 165.8,
+      "rainfall_datetime": "2026-09-26 12:00",
+      "station": {
+        "id": 11,
+        "sub_basin_id": "1002",
+        "tele_station_lat": 13.92245,
+        "tele_station_long": 100.63438,
+        "tele_station_name": {
+          "en": "Krung Thep 1",
+          "th": "คลองลาดพร้าว ท้ายปตร.คลอง2"
+        },
+        "tele_station_oldcode": "BKK001",
+        "tele_station_type": "rainfall_24h"
+      },
+      "station_type": "rainfall_24h"
+    },
+    {
+      "agency": {
+        "agency_name": {
+          "en": "Thai Meteorological Department",
+          "jp": "",
+          "th": "กรมอุตุนิยมวิทยา "
+        },
+        "agency_shortname": {
+          "en": "TMD",
+          "jp": "",
+          "th": "อต."
+        }
+      },
+      "basin": {
+        "basin_code": 10,
+        "basin_name": {
+          "en": "Chao Phraya Basin",
+          "th": "ลุ่มน้ำเจ้าพระยา"
+        },
+        "id": 10
+      },
+      "geocode": {
+        "amphoe_name": {
+          "en": "Khlong Toei District",
+          "th": "คลองเตย"
+        },
+        "area_code": "1",
+        "area_name": {
+          "en": "Bangkok",
+          "th": "กรุงเทพมหานคร"
+        },
+        "province_code": "10",
+        "province_name": {
+          "en": "Bangkok",
+          "th": "กรุงเทพมหานคร"
+        },
+        "tumbon_name": {
+          "en": "Khlong Toei",
+          "th": "คลองเตย"
+        },
+        "warning_zone": "06"
+      },
+      "id": 312077965,
+      "rain_24h": 163.6,
+      "rainfall_datetime": "2026-09-26 10:00",
+      "station": {
+        "id": 3710,
+        "sub_basin_id": "1002",
+        "tele_station_lat": 13.70694,
+        "tele_station_long": 100.56805,
+        "tele_station_name": {
+          "en": "BANGKOK PORT (KLONG TOEI)",
+          "th": "กรุงเทพฯ ท่าเรือคลองเตย"
+        },
+        "tele_station_oldcode": "48454",
+        "tele_station_type": "rainfall_24h"
+      },
+      "station_type": "rainfall_24h"
+    },
+    {
+      "agency": {
+        "agency_name": {
+          "en": "Hydro – Informatics Institute (Public Organization)",
+          "jp": "",
+          "th": "สถาบันสารสนเทศทรัพยากรน้ำ (องค์การมหาชน)"
+        },
+        "agency_shortname": {
+          "en": "HII",
+          "jp": "",
+          "th": "สสน."
+        }
+      },
+      "basin": {
+        "basin_code": 15,
+        "basin_name": {
+          "en": "Bang Pakong Basin",
+          "th": "ลุ่มน้ำบางปะกง"
+        },
+        "id": 16
+      },
+      "geocode": {
+        "amphoe_name": {
+          "en": "Bang Sao Thong District",
+          "th": "บางเสาธง"
+        },
+        "area_code": "2",
+        "area_name": {
+          "en": "Central",
+          "th": "ภาคกลาง"
+        },
+        "province_code": "11",
+        "province_name": {
+          "en": "Samut Prakan",
+          "th": "สมุทรปราการ"
+        },
+        "tumbon_name": {
+          "en": "Sisa Chorakhe Yai",
+          "th": "ศีรษะจรเข้ใหญ่"
+        },
+        "warning_zone": "06"
+      },
+      "id": 312083174,
+      "rain_1h": 1.8,
+      "rain_24h": 163,
+      "rainfall_datetime": "2026-09-26 12:00",
+      "station": {
+        "id": 21,
+        "sub_basin_id": "1510",
+        "tele_station_lat": 13.66949,
+        "tele_station_long": 100.80058,
+        "tele_station_name": {
+          "en": "Sri Varee Noi Temple",
+          "th": "คลองจระเข้ใหญ่ บางเสาธง (วัดศรีวารีน้อย)"
+        },
+        "tele_station_oldcode": "BKK017",
+        "tele_station_type": "rainfall_24h"
+      },
+      "station_type": "rainfall_24h"
+    },
+    {
+      "agency": {
+        "agency_name": {
+          "en": "Hydro – Informatics Institute (Public Organization)",
+          "jp": "",
+          "th": "สถาบันสารสนเทศทรัพยากรน้ำ (องค์การมหาชน)"
+        },
+        "agency_shortname": {
+          "en": "HII",
+          "jp": "",
+          "th": "สสน."
+        }
+      },
+      "basin": {
+        "basin_code": 10,
+        "basin_name": {
+          "en": "Chao Phraya Basin",
+          "th": "ลุ่มน้ำเจ้าพระยา"
+        },
+        "id": 10
+      },
+      "geocode": {
+        "amphoe_name": {
+          "en": "Pak Kret District",
+          "th": "ปากเกร็ด"
+        },
+        "area_code": "2",
+        "area_name": {
+          "en": "Central",
+          "th": "ภาคกลาง"
+        },
+        "province_code": "12",
+        "province_name": {
+          "en": "Nonthaburi",
+          "th": "นนทบุรี"
+        },
+        "tumbon_name": {
+          "en": "Ban Mai",
+          "th": "บ้านใหม่"
+        },
+        "warning_zone": "06"
+      },
+      "id": 312083179,
+      "rain_1h": 5,
+      "rain_24h": 161.6,
+      "rainfall_datetime": "2026-09-26 12:00",
+      "station": {
+        "id": 26,
+        "sub_basin_id": "1002",
+        "tele_station_lat": 13.94749,
+        "tele_station_long": 100.53507,
+        "tele_station_name": {
+          "en": "Chao Phraya 14",
+          "th": "สะพานนวลฉวี"
+        },
+        "tele_station_oldcode": "CPY014",
+        "tele_station_type": "rainfall_24h"
+      },
+      "station_type": "rainfall_24h"
+    },
+    {
+      "agency": {
+        "agency_name": {
+          "en": "Hydro – Informatics Institute (Public Organization)",
+          "jp": "",
+          "th": "สถาบันสารสนเทศทรัพยากรน้ำ (องค์การมหาชน)"
+        },
+        "agency_shortname": {
+          "en": "HII",
+          "jp": "",
+          "th": "สสน."
+        }
+      },
+      "basin": {
+        "basin_code": 10,
+        "basin_name": {
+          "en": "Chao Phraya Basin",
+          "th": "ลุ่มน้ำเจ้าพระยา"
+        },
+        "id": 10
+      },
+      "geocode": {
+        "amphoe_name": {
+          "en": "Thanyaburi District",
+          "th": "ธัญบุรี"
+        },
+        "area_code": "2",
+        "area_name": {
+          "en": "Central",
+          "th": "ภาคกลาง"
+        },
+        "province_code": "13",
+        "province_name": {
+          "en": "Pathum Thani",
+          "th": "ปทุมธานี"
+        },
+        "tumbon_name": {
+          "en": "Bueng Nam Rak",
+          "th": "บึงน้ำรักษ์"
+        },
+        "warning_zone": "06"
+      },
+      "id": 312084777,
+      "rain_1h": 7.4,
+      "rain_24h": 161.2,
+      "rainfall_datetime": "2026-09-26 12:00",
+      "station": {
+        "id": 492350,
+        "sub_basin_id": "1002",
+        "tele_station_lat": 14.07771,
+        "tele_station_long": 100.89208,
+        "tele_station_name": {
+          "en": "Upper Dhammaraja Gate",
+          "th": "เหนือปตร.พระธรรมราชา"
+        },
+        "tele_station_oldcode": "ATG081",
+        "tele_station_type": "rainfall_24h"
+      },
+      "station_type": "rainfall_24h"
+    },
+    {
+      "agency": {
+        "agency_name": {
+          "en": "Hydro – Informatics Institute (Public Organization)",
+          "jp": "",
+          "th": "สถาบันสารสนเทศทรัพยากรน้ำ (องค์การมหาชน)"
+        },
+        "agency_shortname": {
+          "en": "HII",
+          "jp": "",
+          "th": "สสน."
+        }
+      },
+      "basin": {
+        "basin_code": 10,
+        "basin_name": {
+          "en": "Chao Phraya Basin",
+          "th": "ลุ่มน้ำเจ้าพระยา"
+        },
+        "id": 10
+      },
+      "geocode": {
+        "amphoe_name": {
+          "en": "Thanyaburi District",
+          "th": "ธัญบุรี"
+        },
+        "area_code": "2",
+        "area_name": {
+          "en": "Central",
+          "th": "ภาคกลาง"
+        },
+        "province_code": "13",
+        "province_name": {
+          "en": "Pathum Thani",
+          "th": "ปทุมธานี"
+        },
+        "tumbon_name": {
+          "en": "Bueng Nam Rak",
+          "th": "บึงน้ำรักษ์"
+        },
+        "warning_zone": "06"
+      },
+      "id": 312084778,
+      "rain_1h": 7.4,
+      "rain_24h": 160,
+      "rainfall_datetime": "2026-09-26 12:00",
+      "station": {
+        "id": 492351,
+        "sub_basin_id": "1002",
+        "tele_station_lat": 14.07636,
+        "tele_station_long": 100.89392,
+        "tele_station_name": {
+          "en": "Dhammaraja Gate",
+          "th": "ท้ายปตร.พระธรรมราชา"
+        },
+        "tele_station_oldcode": "ATG082",
+        "tele_station_type": "rainfall_24h"
+      },
+      "station_type": "rainfall_24h"
+    },
+    {
+      "agency": {
+        "agency_name": {
+          "en": "Hydro – Informatics Institute (Public Organization)",
+          "jp": "",
+          "th": "สถาบันสารสนเทศทรัพยากรน้ำ (องค์การมหาชน)"
+        },
+        "agency_shortname": {
+          "en": "HII",
+          "jp": "",
+          "th": "สสน."
+        }
+      },
+      "basin": {
+        "basin_code": 10,
+        "basin_name": {
+          "en": "Chao Phraya Basin",
+          "th": "ลุ่มน้ำเจ้าพระยา"
+        },
+        "id": 10
+      },
+      "geocode": {
+        "amphoe_name": {
+          "en": "Bang Khae District",
+          "th": "บางแค"
+        },
+        "area_code": "1",
+        "area_name": {
+          "en": "Bangkok",
+          "th": "กรุงเทพมหานคร"
+        },
+        "province_code": "10",
+        "province_name": {
+          "en": "Bangkok",
+          "th": "กรุงเทพมหานคร"
+        },
+        "tumbon_name": {
+          "en": "Lak Song",
+          "th": "หลักสอง"
+        },
+        "warning_zone": "06"
+      },
+      "id": 312045177,
+      "rain_1h": 0.2,
+      "rain_24h": 159.6,
+      "rainfall_datetime": "2026-09-26 05:00",
+      "station": {
+        "id": 10,
+        "sub_basin_id": "1002",
+        "tele_station_lat": 13.69158,
+        "tele_station_long": 100.38127,
+        "tele_station_name": {
+          "en": "Krung Thep 5",
+          "th": "คลองภาษีเจริญ เพชรเกษม69"
+        },
+        "tele_station_oldcode": "BKK005",
+        "tele_station_type": "rainfall_24h"
+      },
+      "station_type": "rainfall_24h"
+    },
+    {
+      "agency": {
+        "agency_name": {
+          "en": "Thai Meteorological Department",
+          "jp": "",
+          "th": "กรมอุตุนิยมวิทยา "
+        },
+        "agency_shortname": {
+          "en": "TMD",
+          "jp": "",
+          "th": "อต."
+        }
+      },
+      "basin": {
+        "basin_code": 15,
+        "basin_name": {
+          "en": "Bang Pakong Basin",
+          "th": "ลุ่มน้ำบางปะกง"
+        },
+        "id": 16
+      },
+      "geocode": {
+        "amphoe_name": {
+          "en": "Bang Phli District",
+          "th": "บางพลี"
+        },
+        "area_code": "2",
+        "area_name": {
+          "en": "Central",
+          "th": "ภาคกลาง"
+        },
+        "province_code": "11",
+        "province_name": {
+          "en": "Samut Prakan",
+          "th": "สมุทรปราการ"
+        },
+        "tumbon_name": {
+          "en": "Nong Prue",
+          "th": "หนองปรือ"
+        },
+        "warning_zone": "06"
+      },
+      "id": 312077922,
+      "rain_24h": 157.8,
+      "rainfall_datetime": "2026-09-26 10:00",
+      "station": {
+        "id": 3696,
+        "sub_basin_id": "1510",
+        "tele_station_lat": 13.68639,
+        "tele_station_long": 100.7675,
+        "tele_station_name": {
+          "en": "SUVARNABHUMI AIRPORT",
+          "th": "สนามบินสุวรรณภูมิ"
+        },
+        "tele_station_oldcode": "48429",
+        "tele_station_type": "rainfall_24h"
+      },
+      "station_type": "rainfall_24h"
+    },
+    {
+      "agency": {
+        "agency_name": {
+          "en": "Thai Meteorological Department",
+          "jp": "",
+          "th": "กรมอุตุนิยมวิทยา "
+        },
+        "agency_shortname": {
+          "en": "TMD",
+          "jp": "",
+          "th": "อต."
+        }
+      },
+      "basin": {
+        "basin_code": 10,
+        "basin_name": {
+          "en": "Chao Phraya Basin",
+          "th": "ลุ่มน้ำเจ้าพระยา"
+        },
+        "id": 10
+      },
+      "geocode": {
+        "amphoe_name": {
+          "en": "Khlong Toei District",
+          "th": "คลองเตย"
+        },
+        "area_code": "1",
+        "area_name": {
+          "en": "Bangkok",
+          "th": "กรุงเทพมหานคร"
+        },
+        "province_code": "10",
+        "province_name": {
+          "en": "Bangkok",
+          "th": "กรุงเทพมหานคร"
+        },
+        "tumbon_name": {
+          "en": "Khlong Toei",
+          "th": "คลองเตย"
+        },
+        "warning_zone": "06"
+      },
+      "id": 312077971,
+      "rain_24h": 154,
+      "rainfall_datetime": "2026-09-26 10:00",
+      "station": {
+        "id": 3711,
+        "sub_basin_id": "1002",
+        "tele_station_lat": 13.72639,
+        "tele_station_long": 100.56,
+        "tele_station_name": {
+          "en": "BANGKOK METROPOLIS",
+          "th": "กรุงเทพมหานคร"
+        },
+        "tele_station_oldcode": "48455",
+        "tele_station_type": "rainfall_24h"
+      },
+      "station_type": "rainfall_24h"
+    },
+    {
+      "agency": {
+        "agency_name": {
+          "en": "Hydro – Informatics Institute (Public Organization)",
+          "jp": "",
+          "th": "สถาบันสารสนเทศทรัพยากรน้ำ (องค์การมหาชน)"
+        },
+        "agency_shortname": {
+          "en": "HII",
+          "jp": "",
+          "th": "สสน."
+        }
+      },
+      "basin": {
+        "basin_code": 10,
+        "basin_name": {
+          "en": "Chao Phraya Basin",
+          "th": "ลุ่มน้ำเจ้าพระยา"
+        },
+        "id": 10
+      },
+      "geocode": {
+        "amphoe_name": {
+          "en": "Khlong Luang District",
+          "th": "คลองหลวง"
+        },
+        "area_code": "2",
+        "area_name": {
+          "en": "Central",
+          "th": "ภาคกลาง"
+        },
+        "province_code": "13",
+        "province_name": {
+          "en": "Pathum Thani",
+          "th": "ปทุมธานี"
+        },
+        "tumbon_name": {
+          "en": "Khlong Chet",
+          "th": "คลองเจ็ด"
+        },
+        "warning_zone": "06"
+      },
+      "id": 312083182,
+      "rain_1h": 17.8,
+      "rain_24h": 149,
+      "rainfall_datetime": "2026-09-26 12:00",
+      "station": {
+        "id": 29,
+        "sub_basin_id": "1002",
+        "tele_station_lat": 14.20612,
+        "tele_station_long": 100.74476,
+        "tele_station_name": {
+          "en": "Rabibadhana West Section",
+          "th": "คลองระพีพัฒน์แยกตก"
+        },
+        "tele_station_oldcode": "CAN001",
+        "tele_station_type": "rainfall_24h"
+      },
+      "station_type": "rainfall_24h"
+    },
+    {
+      "agency": {
+        "agency_name": {
+          "en": "Hydro – Informatics Institute (Public Organization)",
+          "jp": "",
+          "th": "สถาบันสารสนเทศทรัพยากรน้ำ (องค์การมหาชน)"
+        },
+        "agency_shortname": {
+          "en": "HII",
+          "jp": "",
+          "th": "สสน."
+        }
+      },
+      "basin": {
+        "basin_code": 10,
+        "basin_name": {
+          "en": "Chao Phraya Basin",
+          "th": "ลุ่มน้ำเจ้าพระยา"
+        },
+        "id": 10
+      },
+      "geocode": {
+        "amphoe_name": {
+          "en": "Thanyaburi District",
+          "th": "ธัญบุรี"
+        },
+        "area_code": "2",
+        "area_name": {
+          "en": "Central",
+          "th": "ภาคกลาง"
+        },
+        "province_code": "13",
+        "province_name": {
+          "en": "Pathum Thani",
+          "th": "ปทุมธานี"
+        },
+        "tumbon_name": {
+          "en": "Pracha Thipat",
+          "th": "ประชาธิปัตย์"
+        },
+        "warning_zone": "06"
+      },
+      "id": 312084757,
+      "rain_1h": 6.2,
+      "rain_24h": 143.8,
+      "rainfall_datetime": "2026-09-26 12:00",
+      "station": {
+        "id": 492324,
+        "sub_basin_id": "1002",
+        "tele_station_lat": 13.98135,
+        "tele_station_long": 100.6057,
+        "tele_station_name": {
+          "en": "Chulalongkorn Gate",
+          "th": "ปตร.จุฬาลงกรณ์"
+        },
+        "tele_station_oldcode": "ATG101",
+        "tele_station_type": "rainfall_24h"
+      },
+      "station_type": "rainfall_24h"
+    },
+    {
+      "agency": {
+        "agency_name": {
+          "en": "Hydro – Informatics Institute (Public Organization)",
+          "jp": "",
+          "th": "สถาบันสารสนเทศทรัพยากรน้ำ (องค์การมหาชน)"
+        },
+        "agency_shortname": {
+          "en": "HII",
+          "jp": "",
+          "th": "สสน."
+        }
+      },
+      "basin": {
+        "basin_code": 10,
+        "basin_name": {
+          "en": "Chao Phraya Basin",
+          "th": "ลุ่มน้ำเจ้าพระยา"
+        },
+        "id": 10
+      },
+      "geocode": {
+        "amphoe_name": {
+          "en": "Mueang Pathum Thani District",
+          "th": "เมืองปทุมธานี"
+        },
+        "area_code": "2",
+        "area_name": {
+          "en": "Central",
+          "th": "ภาคกลาง"
+        },
+        "province_code": "13",
+        "province_name": {
+          "en": "Pathum Thani",
+          "th": "ปทุมธานี"
+        },
+        "tumbon_name": {
+          "en": "Lak Hok",
+          "th": "หลักหก"
+        },
+        "warning_zone": "06"
+      },
+      "id": 312083180,
+      "rain_1h": 5.8,
+      "rain_24h": 134.4,
+      "rainfall_datetime": "2026-09-26 12:00",
+      "station": {
+        "id": 27,
+        "sub_basin_id": "1002",
+        "tele_station_lat": 13.96562,
+        "tele_station_long": 100.60262,
+        "tele_station_name": {
+          "en": "Krung Thep 2",
+          "th": "คลองเปรมประชากร หลักหก"
+        },
+        "tele_station_oldcode": "BKK002",
+        "tele_station_type": "rainfall_24h"
+      },
+      "station_type": "rainfall_24h"
+    },
+    {
+      "agency": {
+        "agency_name": {
+          "en": "Thai Meteorological Department",
+          "jp": "",
+          "th": "กรมอุตุนิยมวิทยา "
+        },
+        "agency_shortname": {
+          "en": "TMD",
+          "jp": "",
+          "th": "อต."
+        }
+      },
+      "basin": {
+        "basin_code": 10,
+        "basin_name": {
+          "en": "Chao Phraya Basin",
+          "th": "ลุ่มน้ำเจ้าพระยา"
+        },
+        "id": 10
+      },
+      "geocode": {
+        "amphoe_name": {
+          "en": "Don Mueang District",
+          "th": "ดอนเมือง"
+        },
+        "area_code": "1",
+        "area_name": {
+          "en": "Bangkok",
+          "th": "กรุงเทพมหานคร"
+        },
+        "province_code": "10",
+        "province_name": {
+          "en": "Bangkok",
+          "th": "กรุงเทพมหานคร"
+        },
+        "tumbon_name": {
+          "en": "Si Kan",
+          "th": "สีกัน"
+        },
+        "warning_zone": "06"
+      },
+      "id": 312077974,
+      "rain_24h": 133.6,
+      "rainfall_datetime": "2026-09-26 10:00",
+      "station": {
+        "id": 3712,
+        "sub_basin_id": "1002",
+        "tele_station_lat": 13.91917,
+        "tele_station_long": 100.605,
+        "tele_station_name": {
+          "en": "DON MUANG AIRPORT",
+          "th": "สนามบินดอนเมือง"
+        },
+        "tele_station_oldcode": "48456",
+        "tele_station_type": "rainfall_24h"
+      },
+      "station_type": "rainfall_24h"
+    },
+    {
+      "agency": {
+        "agency_name": {
+          "en": "Hydro – Informatics Institute (Public Organization)",
+          "jp": "",
+          "th": "สถาบันสารสนเทศทรัพยากรน้ำ (องค์การมหาชน)"
+        },
+        "agency_shortname": {
+          "en": "HII",
+          "jp": "",
+          "th": "สสน."
+        }
+      },
+      "basin": {
+        "basin_code": 10,
+        "basin_name": {
+          "en": "Chao Phraya Basin",
+          "th": "ลุ่มน้ำเจ้าพระยา"
+        },
+        "id": 10
+      },
+      "geocode": {
+        "amphoe_name": {
+          "en": "Khlong Luang District",
+          "th": "คลองหลวง"
+        },
+        "area_code": "2",
+        "area_name": {
+          "en": "Central",
+          "th": "ภาคกลาง"
+        },
+        "province_code": "13",
+        "province_name": {
+          "en": "Pathum Thani",
+          "th": "ปทุมธานี"
+        },
+        "tumbon_name": {
+          "en": "Khlong Chet",
+          "th": "คลองเจ็ด"
+        },
+        "warning_zone": "06"
+      },
+      "id": 312083181,
+      "rain_1h": 13.8,
+      "rain_24h": 133.4,
+      "rainfall_datetime": "2026-09-26 12:00",
+      "station": {
+        "id": 28,
+        "sub_basin_id": "1002",
+        "tele_station_lat": 14.19111,
+        "tele_station_long": 100.75421,
+        "tele_station_name": {
+          "en": "Rangsit Khlong 7",
+          "th": "รร.วัดอู่ข้าว"
+        },
+        "tele_station_oldcode": "RSK7",
+        "tele_station_type": "rainfall_24h"
+      },
+      "station_type": "rainfall_24h"
+    },
+    {
+      "agency": {
+        "agency_name": {
+          "en": "Hydro – Informatics Institute (Public Organization)",
+          "jp": "",
+          "th": "สถาบันสารสนเทศทรัพยากรน้ำ (องค์การมหาชน)"
+        },
+        "agency_shortname": {
+          "en": "HII",
+          "jp": "",
+          "th": "สสน."
+        }
+      },
+      "basin": {
+        "basin_code": 15,
+        "basin_name": {
+          "en": "Bang Pakong Basin",
+          "th": "ลุ่มน้ำบางปะกง"
+        },
+        "id": 16
+      },
+      "geocode": {
+        "amphoe_name": {
+          "en": "Lam Luk Ka District",
+          "th": "ลำลูกกา"
+        },
+        "area_code": "2",
+        "area_name": {
+          "en": "Central",
+          "th": "ภาคกลาง"
+        },
+        "province_code": "13",
+        "province_name": {
+          "en": "Pathum Thani",
+          "th": "ปทุมธานี"
+        },
+        "tumbon_name": {
+          "en": "Lam Luk Ka",
+          "th": "ลำลูกกา"
+        },
+        "warning_zone": "06"
+      },
+      "id": 312083188,
+      "rain_1h": 1,
+      "rain_24h": 123.2,
+      "rainfall_datetime": "2026-09-26 12:00",
+      "station": {
+        "id": 37,
+        "sub_basin_id": "1507",
+        "tele_station_lat": 13.9416,
+        "tele_station_long": 100.77499,
+        "tele_station_name": {
+          "en": "Lam Luk Ka Klong8",
+          "th": "คลองหกวา ลำลูกกา คลอง8"
+        },
+        "tele_station_oldcode": "BKK015",
+        "tele_station_type": "rainfall_24h"
+      },
+      "station_type": "rainfall_24h"
+    },
+    {
+      "agency": {
+        "agency_name": {
+          "en": "Hydro – Informatics Institute (Public Organization)",
+          "jp": "",
+          "th": "สถาบันสารสนเทศทรัพยากรน้ำ (องค์การมหาชน)"
+        },
+        "agency_shortname": {
+          "en": "HII",
+          "jp": "",
+          "th": "สสน."
+        }
+      },
+      "basin": {
+        "basin_code": 10,
+        "basin_name": {
+          "en": "Chao Phraya Basin",
+          "th": "ลุ่มน้ำเจ้าพระยา"
+        },
+        "id": 10
+      },
+      "geocode": {
+        "amphoe_name": {
+          "en": "Sai Noi District",
+          "th": "ไทรน้อย"
+        },
+        "area_code": "2",
+        "area_name": {
+          "en": "Central",
+          "th": "ภาคกลาง"
+        },
+        "province_code": "12",
+        "province_name": {
+          "en": "Nonthaburi",
+          "th": "นนทบุรี"
+        },
+        "tumbon_name": {
+          "en": "Sai Noi",
+          "th": "ไทรน้อย"
+        },
+        "warning_zone": "06"
+      },
+      "id": 312083175,
+      "rain_1h": 3.4,
+      "rain_24h": 121.4,
+      "rainfall_datetime": "2026-09-26 12:00",
+      "station": {
+        "id": 24,
+        "sub_basin_id": "1002",
+        "tele_station_lat": 13.97396,
+        "tele_station_long": 100.31901,
+        "tele_station_name": {
+          "en": "Phra Pimol Sai Noi",
+          "th": "คลองพระพิมล (ไทรน้อย)"
+        },
+        "tele_station_oldcode": "BKK018",
+        "tele_station_type": "rainfall_24h"
+      },
+      "station_type": "rainfall_24h"
+    },
+    {
+      "agency": {
+        "agency_name": {
+          "en": "Hydro – Informatics Institute (Public Organization)",
+          "jp": "",
+          "th": "สถาบันสารสนเทศทรัพยากรน้ำ (องค์การมหาชน)"
+        },
+        "agency_shortname": {
+          "en": "HII",
+          "jp": "",
+          "th": "สสน."
+        }
+      },
+      "basin": {
+        "basin_code": 10,
+        "basin_name": {
+          "en": "Chao Phraya Basin",
+          "th": "ลุ่มน้ำเจ้าพระยา"
+        },
+        "id": 10
+      },
+      "geocode": {
+        "amphoe_name": {
+          "en": "Taling Chan District",
+          "th": "ตลิ่งชัน"
+        },
+        "area_code": "1",
+        "area_name": {
+          "en": "Bangkok",
+          "th": "กรุงเทพมหานคร"
+        },
+        "province_code": "10",
+        "province_name": {
+          "en": "Bangkok",
+          "th": "กรุงเทพมหานคร"
+        },
+        "tumbon_name": {
+          "en": "Taling Chan",
+          "th": "ตลิ่งชัน"
+        },
+        "warning_zone": "06"
+      },
+      "id": 312083168,
+      "rain_1h": 4,
+      "rain_24h": 113.6,
+      "rainfall_datetime": "2026-09-26 12:00",
+      "station": {
+        "id": 5,
+        "sub_basin_id": "1002",
+        "tele_station_lat": 13.79965,
+        "tele_station_long": 100.43863,
+        "tele_station_name": {
+          "en": "Krung Thep 3",
+          "th": "คลองมหาสวัสดิ บางกรวย-สวนผัก"
+        },
+        "tele_station_oldcode": "BKK003",
+        "tele_station_type": "rainfall_24h"
+      },
+      "station_type": "rainfall_24h"
+    },
+    {
+      "agency": {
+        "agency_name": {
+          "en": "Hydro – Informatics Institute (Public Organization)",
+          "jp": "",
+          "th": "สถาบันสารสนเทศทรัพยากรน้ำ (องค์การมหาชน)"
+        },
+        "agency_shortname": {
+          "en": "HII",
+          "jp": "",
+          "th": "สสน."
+        }
+      },
+      "basin": {
+        "basin_code": 10,
+        "basin_name": {
+          "en": "Chao Phraya Basin",
+          "th": "ลุ่มน้ำเจ้าพระยา"
+        },
+        "id": 10
+      },
+      "geocode": {
+        "amphoe_name": {
+          "en": "Phra Samut Chedi District",
+          "th": "พระสมุทรเจดีย์"
+        },
+        "area_code": "2",
+        "area_name": {
+          "en": "Central",
+          "th": "ภาคกลาง"
+        },
+        "province_code": "11",
+        "province_name": {
+          "en": "Samut Prakan",
+          "th": "สมุทรปราการ"
+        },
+        "tumbon_name": {
+          "en": "Laem Fa Pha",
+          "th": "แหลมฟ้าผ่า"
+        },
+        "warning_zone": "06"
+      },
+      "id": 312083172,
+      "rain_1h": 0.8,
+      "rain_24h": 112.4,
+      "rainfall_datetime": "2026-09-26 12:00",
+      "station": {
+        "id": 18,
+        "sub_basin_id": "1002",
+        "tele_station_lat": 13.54701,
+        "tele_station_long": 100.53756,
+        "tele_station_name": {
+          "en": "Laem Fa Pha",
+          "th": "อบต.แหลมฟ้าผ่า"
+        },
+        "tele_station_oldcode": "PPCH",
+        "tele_station_type": "rainfall_24h"
+      },
+      "station_type": "rainfall_24h"
+    },
+    {
+      "agency": {
+        "agency_name": {
+          "en": "Hydro – Informatics Institute (Public Organization)",
+          "jp": "",
+          "th": "สถาบันสารสนเทศทรัพยากรน้ำ (องค์การมหาชน)"
+        },
+        "agency_shortname": {
+          "en": "HII",
+          "jp": "",
+          "th": "สสน."
+        }
+      },
+      "basin": {
+        "basin_code": 10,
+        "basin_name": {
+          "en": "Chao Phraya Basin",
+          "th": "ลุ่มน้ำเจ้าพระยา"
+        },
+        "id": 10
+      },
+      "geocode": {
+        "amphoe_name": {
+          "en": "Nong Suea District",
+          "th": "หนองเสือ"
+        },
+        "area_code": "2",
+        "area_name": {
+          "en": "Central",
+          "th": "ภาคกลาง"
+        },
+        "province_code": "13",
+        "province_name": {
+          "en": "Pathum Thani",
+          "th": "ปทุมธานี"
+        },
+        "tumbon_name": {
+          "en": "Bueng Cham O",
+          "th": "บึงชำอ้อ"
+        },
+        "warning_zone": "06"
+      },
+      "id": 312083184,
+      "rain_1h": 29,
+      "rain_24h": 111.4,
+      "rainfall_datetime": "2026-09-26 12:00",
+      "station": {
+        "id": 35,
+        "sub_basin_id": "1002",
+        "tele_station_lat": 14.1652,
+        "tele_station_long": 100.77855,
+        "tele_station_name": {
+          "en": "Ban Noi Sawang",
+          "th": "บ้านน้อยสว่าง"
+        },
+        "tele_station_oldcode": "LK13",
+        "tele_station_type": "rainfall_24h"
+      },
+      "station_type": "rainfall_24h"
+    },
+    {
+      "agency": {
+        "agency_name": {
+          "en": "Hydro – Informatics Institute (Public Organization)",
+          "jp": "",
+          "th": "สถาบันสารสนเทศทรัพยากรน้ำ (องค์การมหาชน)"
+        },
+        "agency_shortname": {
+          "en": "HII",
+          "jp": "",
+          "th": "สสน."
+        }
+      },
+      "basin": {
+        "basin_code": 10,
+        "basin_name": {
+          "en": "Chao Phraya Basin",
+          "th": "ลุ่มน้ำเจ้าพระยา"
+        },
+        "id": 10
+      },
+      "geocode": {
+        "amphoe_name": {
+          "en": "Phra Pradaeng District",
+          "th": "พระประแดง"
+        },
+        "area_code": "2",
+        "area_name": {
+          "en": "Central",
+          "th": "ภาคกลาง"
+        },
+        "province_code": "11",
+        "province_name": {
+          "en": "Samut Prakan",
+          "th": "สมุทรปราการ"
+        },
+        "tumbon_name": {
+          "en": "Bang Yo",
+          "th": "บางยอ"
+        },
+        "warning_zone": "06"
+      },
+      "id": 312084818,
+      "rain_1h": 1,
+      "rain_24h": 108.2,
+      "rainfall_datetime": "2026-09-26 12:00",
+      "station": {
+        "id": 575567,
+        "sub_basin_id": "1002",
+        "tele_station_lat": 13.676162,
+        "tele_station_long": 100.553085,
+        "tele_station_name": {
+          "en": "Khlong Lat Bang Yo 1 Gate",
+          "th": "ปตร. คลองลัดบางยอ 1"
+        },
+        "tele_station_oldcode": "BKC003",
+        "tele_station_type": "rainfall_24h"
+      },
+      "station_type": "rainfall_24h"
+    },
+    {
+      "agency": {
+        "agency_name": {
+          "en": "Hydro – Informatics Institute (Public Organization)",
+          "jp": "",
+          "th": "สถาบันสารสนเทศทรัพยากรน้ำ (องค์การมหาชน)"
+        },
+        "agency_shortname": {
+          "en": "HII",
+          "jp": "",
+          "th": "สสน."
+        }
+      },
+      "basin": {
+        "basin_code": 10,
+        "basin_name": {
+          "en": "Chao Phraya Basin",
+          "th": "ลุ่มน้ำเจ้าพระยา"
+        },
+        "id": 10
+      },
+      "geocode": {
+        "amphoe_name": {
+          "en": "Phra Pradaeng District",
+          "th": "พระประแดง"
+        },
+        "area_code": "2",
+        "area_name": {
+          "en": "Central",
+          "th": "ภาคกลาง"
+        },
+        "province_code": "11",
+        "province_name": {
+          "en": "Samut Prakan",
+          "th": "สมุทรปราการ"
+        },
+        "tumbon_name": {
+          "en": "Bang Krachao",
+          "th": "บางกระเจ้า"
+        },
+        "warning_zone": "06"
+      },
+      "id": 312084816,
+      "rain_1h": 1.2,
+      "rain_24h": 107.6,
+      "rainfall_datetime": "2026-09-26 12:00",
+      "station": {
+        "id": 575566,
+        "sub_basin_id": "1002",
+        "tele_station_lat": 13.689612,
+        "tele_station_long": 100.554886,
+        "tele_station_name": {
+          "en": "Wat Bangkachao Nok Gate",
+          "th": "ปตร.วัดบางกระเจ้านอก"
+        },
+        "tele_station_oldcode": "BKC002",
+        "tele_station_type": "rainfall_24h"
+      },
+      "station_type": "rainfall_24h"
+    },
+    {
+      "agency": {
+        "agency_name": {
+          "en": "Hydro – Informatics Institute (Public Organization)",
+          "jp": "",
+          "th": "สถาบันสารสนเทศทรัพยากรน้ำ (องค์การมหาชน)"
+        },
+        "agency_shortname": {
+          "en": "HII",
+          "jp": "",
+          "th": "สสน."
+        }
+      },
+      "basin": {
+        "basin_code": 10,
+        "basin_name": {
+          "en": "Chao Phraya Basin",
+          "th": "ลุ่มน้ำเจ้าพระยา"
+        },
+        "id": 10
+      },
+      "geocode": {
+        "amphoe_name": {
+          "en": "Phra Pradaeng District",
+          "th": "พระประแดง"
+        },
+        "area_code": "2",
+        "area_name": {
+          "en": "Central",
+          "th": "ภาคกลาง"
+        },
+        "province_code": "11",
+        "province_name": {
+          "en": "Samut Prakan",
+          "th": "สมุทรปราการ"
+        },
+        "tumbon_name": {
+          "en": "Bang Ko Bua",
+          "th": "บางกอบัว"
+        },
+        "warning_zone": "06"
+      },
+      "id": 312084820,
+      "rain_1h": 1,
+      "rain_24h": 102,
+      "rainfall_datetime": "2026-09-26 12:00",
+      "station": {
+        "id": 575571,
+        "sub_basin_id": "1002",
+        "tele_station_lat": 13.694974,
+        "tele_station_long": 100.58231,
+        "tele_station_name": {
+          "en": "Khlong Phae Gate",
+          "th": "ปตร. คลองแพ"
+        },
+        "tele_station_oldcode": "BKC007",
+        "tele_station_type": "rainfall_24h"
+      },
+      "station_type": "rainfall_24h"
+    },
+    {
+      "agency": {
+        "agency_name": {
+          "en": "Hydro – Informatics Institute (Public Organization)",
+          "jp": "",
+          "th": "สถาบันสารสนเทศทรัพยากรน้ำ (องค์การมหาชน)"
+        },
+        "agency_shortname": {
+          "en": "HII",
+          "jp": "",
+          "th": "สสน."
+        }
+      },
+      "basin": {
+        "basin_code": 10,
+        "basin_name": {
+          "en": "Chao Phraya Basin",
+          "th": "ลุ่มน้ำเจ้าพระยา"
+        },
+        "id": 10
+      },
+      "geocode": {
+        "amphoe_name": {
+          "en": "Nong Suea District",
+          "th": "หนองเสือ"
+        },
+        "area_code": "2",
+        "area_name": {
+          "en": "Central",
+          "th": "ภาคกลาง"
+        },
+        "province_code": "13",
+        "province_name": {
+          "en": "Pathum Thani",
+          "th": "ปทุมธานี"
+        },
+        "tumbon_name": {
+          "en": "Noppharat",
+          "th": "นพรัตน์"
+        },
+        "warning_zone": "06"
+      },
+      "id": 312083187,
+      "rain_1h": 16,
+      "rain_24h": 100.4,
+      "rainfall_datetime": "2026-09-26 12:00",
+      "station": {
+        "id": 36,
+        "sub_basin_id": "1002",
+        "tele_station_lat": 14.2206,
+        "tele_station_long": 100.89168,
+        "tele_station_name": {
+          "en": "Rabibadhana Nong Suea",
+          "th": "คลองระพีพัฒน์แยกใต้ หนองเสือ"
+        },
+        "tele_station_oldcode": "BKK013",
+        "tele_station_type": "rainfall_24h"
+      },
+      "station_type": "rainfall_24h"
+    },
+    {
+      "agency": {
+        "agency_name": {
+          "en": "Hydro – Informatics Institute (Public Organization)",
+          "jp": "",
+          "th": "สถาบันสารสนเทศทรัพยากรน้ำ (องค์การมหาชน)"
+        },
+        "agency_shortname": {
+          "en": "HII",
+          "jp": "",
+          "th": "สสน."
+        }
+      },
+      "basin": {
+        "basin_code": 10,
+        "basin_name": {
+          "en": "Chao Phraya Basin",
+          "th": "ลุ่มน้ำเจ้าพระยา"
+        },
+        "id": 10
+      },
+      "geocode": {
+        "amphoe_name": {
+          "en": "Vadhana District",
+          "th": "วัฒนา"
+        },
+        "area_code": "1",
+        "area_name": {
+          "en": "Bangkok",
+          "th": "กรุงเทพมหานคร"
+        },
+        "province_code": "10",
+        "province_name": {
+          "en": "Bangkok",
+          "th": "กรุงเทพมหานคร"
+        },
+        "tumbon_name": {
+          "en": "Khlong Toei Nuea",
+          "th": "คลองเตยเหนือ"
+        },
+        "warning_zone": "06"
+      },
+      "id": 312084837,
+      "rain_1h": 3.6,
+      "rain_24h": 88.8,
+      "rainfall_datetime": "2026-09-26 12:00",
+      "station": {
+        "id": 852087,
+        "sub_basin_id": "1002",
+        "tele_station_lat": 13.74325,
+        "tele_station_long": 100.562164,
+        "tele_station_name": {
+          "en": "Asok",
+          "th": "อโศก"
+        },
+        "tele_station_oldcode": "AIT001",
+        "tele_station_type": "rainfall_24h"
+      },
+      "station_type": "rainfall_24h"
+    },
+    {
+      "agency": {
+        "agency_name": {
+          "en": "Hydro – Informatics Institute (Public Organization)",
+          "jp": "",
+          "th": "สถาบันสารสนเทศทรัพยากรน้ำ (องค์การมหาชน)"
+        },
+        "agency_shortname": {
+          "en": "HII",
+          "jp": "",
+          "th": "สสน."
+        }
+      },
+      "basin": {
+        "basin_code": 10,
+        "basin_name": {
+          "en": "Chao Phraya Basin",
+          "th": "ลุ่มน้ำเจ้าพระยา"
+        },
+        "id": 10
+      },
+      "geocode": {
+        "amphoe_name": {
+          "en": "Phra Pradaeng District",
+          "th": "พระประแดง"
+        },
+        "area_code": "2",
+        "area_name": {
+          "en": "Central",
+          "th": "ภาคกลาง"
+        },
+        "province_code": "11",
+        "province_name": {
+          "en": "Samut Prakan",
+          "th": "สมุทรปราการ"
+        },
+        "tumbon_name": {
+          "en": "Bang Nam Phueng",
+          "th": "บางน้ำผึ้ง"
+        },
+        "warning_zone": "06"
+      },
+      "id": 312084821,
+      "rain_1h": 0.8,
+      "rain_24h": 85,
+      "rainfall_datetime": "2026-09-26 12:00",
+      "station": {
+        "id": 575572,
+        "sub_basin_id": "1002",
+        "tele_station_lat": 13.678656,
+        "tele_station_long": 100.57356,
+        "tele_station_name": {
+          "en": "Bang Namphueng Market",
+          "th": "ตลาดน้ำบางน้ำผึ้ง"
+        },
+        "tele_station_oldcode": "BKC008",
+        "tele_station_type": "rainfall_24h"
+      },
+      "station_type": "rainfall_24h"
+    },
+    {
+      "agency": {
+        "agency_name": {
+          "en": "Thai Meteorological Department",
+          "jp": "",
+          "th": "กรมอุตุนิยมวิทยา "
+        },
+        "agency_shortname": {
+          "en": "TMD",
+          "jp": "",
+          "th": "อต."
+        }
+      },
+      "basin": {
+        "basin_code": 10,
+        "basin_name": {
+          "en": "Chao Phraya Basin",
+          "th": "ลุ่มน้ำเจ้าพระยา"
+        },
+        "id": 10
+      },
+      "geocode": {
+        "amphoe_name": {
+          "en": "Khlong Luang District",
+          "th": "คลองหลวง"
+        },
+        "area_code": "2",
+        "area_name": {
+          "en": "Central",
+          "th": "ภาคกลาง"
+        },
+        "province_code": "13",
+        "province_name": {
+          "en": "Pathum Thani",
+          "th": "ปทุมธานี"
+        },
+        "tumbon_name": {
+          "en": "Khlong Nueng",
+          "th": "คลองหนึ่ง"
+        },
+        "warning_zone": "06"
+      },
+      "id": 312077897,
+      "rain_24h": 70.8,
+      "rainfall_datetime": "2026-09-26 10:00",
+      "station": {
+        "id": 3690,
+        "sub_basin_id": "1002",
+        "tele_station_lat": 14.1,
+        "tele_station_long": 100.61667,
+        "tele_station_name": {
+          "en": "PATHUMTHANI",
+          "th": "ปทุมธานี สกษ."
+        },
+        "tele_station_oldcode": "48419",
+        "tele_station_type": "rainfall_24h"
+      },
+      "station_type": "rainfall_24h"
+    },
+    {
+      "agency": {
+        "agency_name": {
+          "en": "Hydro – Informatics Institute (Public Organization)",
+          "jp": "",
+          "th": "สถาบันสารสนเทศทรัพยากรน้ำ (องค์การมหาชน)"
+        },
+        "agency_shortname": {
+          "en": "HII",
+          "jp": "",
+          "th": "สสน."
+        }
+      },
+      "basin": {
+        "basin_code": 10,
+        "basin_name": {
+          "en": "Chao Phraya Basin",
+          "th": "ลุ่มน้ำเจ้าพระยา"
+        },
+        "id": 10
+      },
+      "geocode": {
+        "amphoe_name": {
+          "en": "Sai Noi District",
+          "th": "ไทรน้อย"
+        },
+        "area_code": "2",
+        "area_name": {
+          "en": "Central",
+          "th": "ภาคกลาง"
+        },
+        "province_code": "12",
+        "province_name": {
+          "en": "Nonthaburi",
+          "th": "นนทบุรี"
+        },
+        "tumbon_name": {
+          "en": "Rat Niyom",
+          "th": "ราษฎร์นิยม"
+        },
+        "warning_zone": "06"
+      },
+      "id": 312083176,
+      "rain_1h": 1.8,
+      "rain_24h": 69.4,
+      "rainfall_datetime": "2026-09-26 12:00",
+      "station": {
+        "id": 25,
+        "sub_basin_id": "1002",
+        "tele_station_lat": 14.10388,
+        "tele_station_long": 100.32209,
+        "tele_station_name": {
+          "en": "Rajniyom",
+          "th": "อบต.ราษฎร์นิยม"
+        },
+        "tele_station_oldcode": "BKNH",
+        "tele_station_type": "rainfall_24h"
+      },
+      "station_type": "rainfall_24h"
+    },
+    {
+      "agency": {
+        "agency_name": {
+          "en": "Thai Meteorological Department",
+          "jp": "",
+          "th": "กรมอุตุนิยมวิทยา "
+        },
+        "agency_shortname": {
+          "en": "TMD",
+          "jp": "",
+          "th": "อต."
+        }
+      },
+      "basin": {
+        "basin_code": 99,
+        "basin_name": {
+          "en": "Not specify",
+          "th": "ไม่ระบุ"
+        },
+        "id": 28
+      },
+      "geocode": {
+        "amphoe_name": {
+          "en": "Phra Samut Chedi District",
+          "th": "พระสมุทรเจดีย์"
+        },
+        "area_code": "2",
+        "area_name": {
+          "en": "Central",
+          "th": "ภาคกลาง"
+        },
+        "province_code": "11",
+        "province_name": {
+          "en": "Samut Prakan",
+          "th": "สมุทรปราการ"
+        },
+        "tumbon_name": {
+          "en": "Laem Fa Pha",
+          "th": "แหลมฟ้าผ่า"
+        },
+        "warning_zone": "06"
+      },
+      "id": 312077978,
+      "rain_24h": 36.5,
+      "rainfall_datetime": "2026-09-26 10:00",
+      "station": {
+        "id": 3713,
+        "sub_basin_id": "9999",
+        "tele_station_lat": 13.37722,
+        "tele_station_long": 100.59944,
+        "tele_station_name": {
+          "en": "PILOT STATION",
+          "th": "นำร่อง"
+        },
+        "tele_station_oldcode": "48457",
+        "tele_station_type": "rainfall_24h"
+      },
+      "station_type": "rainfall_24h"
+    },
+    {
+      "agency": {
+        "agency_name": {
+          "en": "Hydro – Informatics Institute (Public Organization)",
+          "jp": "",
+          "th": "สถาบันสารสนเทศทรัพยากรน้ำ (องค์การมหาชน)"
+        },
+        "agency_shortname": {
+          "en": "HII",
+          "jp": "",
+          "th": "สสน."
+        }
+      },
+      "basin": {
+        "basin_code": 10,
+        "basin_name": {
+          "en": "Chao Phraya Basin",
+          "th": "ลุ่มน้ำเจ้าพระยา"
+        },
+        "id": 10
+      },
+      "geocode": {
+        "amphoe_name": {
+          "en": "Phra Pradaeng District",
+          "th": "พระประแดง"
+        },
+        "area_code": "2",
+        "area_name": {
+          "en": "Central",
+          "th": "ภาคกลาง"
+        },
+        "province_code": "11",
+        "province_name": {
+          "en": "Samut Prakan",
+          "th": "สมุทรปราการ"
+        },
+        "tumbon_name": {
+          "en": "Bang Nam Phueng",
+          "th": "บางน้ำผึ้ง"
+        },
+        "warning_zone": "06"
+      },
+      "id": 312084819,
+      "rain_1h": 0.4,
+      "rain_24h": 3.8,
+      "rainfall_datetime": "2026-09-26 12:00",
+      "station": {
+        "id": 575570,
+        "sub_basin_id": "1002",
+        "tele_station_lat": 13.676648,
+        "tele_station_long": 100.58207,
+        "tele_station_name": {
+          "en": "Khlong Bang Namphueng Gate",
+          "th": "ปตร. คลองบางน้ำผึ้ง"
+        },
+        "tele_station_oldcode": "BKC006",
+        "tele_station_type": "rainfall_24h"
+      },
+      "station_type": "rainfall_24h"
+    },
+    {
+      "agency": {
+        "agency_name": {
+          "en": "Hydro – Informatics Institute (Public Organization)",
+          "jp": "",
+          "th": "สถาบันสารสนเทศทรัพยากรน้ำ (องค์การมหาชน)"
+        },
+        "agency_shortname": {
+          "en": "HII",
+          "jp": "",
+          "th": "สสน."
+        }
+      },
+      "basin": {
+        "basin_name": {},
+        "id": 0
+      },
+      "geocode": {
+        "amphoe_name": {
+          "en": "Thon Buri District",
+          "th": "ธนบุรี"
+        },
+        "area_code": "2",
+        "area_name": {
+          "en": "Bangkok",
+          "th": "กรุงเทพมหานคร"
+        },
+        "province_code": "10",
+        "province_name": {
+          "en": "Bangkok",
+          "th": "กรุงเทพมหานคร"
+        },
+        "tumbon_name": {
+          "en": "Dao Khanong",
+          "th": "ดาวคะนอง"
+        },
+        "warning_zone": "06"
+      },
+      "id": 312083167,
+      "rain_1h": 0,
+      "rain_24h": 0,
+      "rainfall_datetime": "2026-09-26 12:00",
+      "station": {
+        "id": 4,
+        "sub_basin_id": "1002",
+        "tele_station_lat": 13.700301,
+        "tele_station_long": 100.49277,
+        "tele_station_name": {
+          "en": "Chao Phraya 15",
+          "th": "สะพานกรุงเทพ"
+        },
+        "tele_station_oldcode": "CPY015",
+        "tele_station_type": "rainfall_24h"
+      },
+      "station_type": "rainfall_24h"
+    },
+    {
+      "agency": {
+        "agency_name": {
+          "en": "Department of Water Resources",
+          "jp": "",
+          "th": "กรมทรัพยากรน้ำ"
+        },
+        "agency_shortname": {
+          "en": "DWR",
+          "jp": "",
+          "th": "ทน."
+        }
+      },
+      "basin": {
+        "basin_name": {},
+        "id": 0
+      },
+      "geocode": {
+        "amphoe_name": {
+          "en": "Phaya Thai District",
+          "th": "พญาไท"
+        },
+        "area_code": "1",
+        "area_name": {
+          "en": "Bangkok",
+          "th": "กรุงเทพมหานคร"
+        },
+        "province_code": "10",
+        "province_name": {
+          "en": "Bangkok",
+          "th": "กรุงเทพมหานคร"
+        },
+        "tumbon_name": {
+          "en": "Sam Sen Nai",
+          "th": "สามเสนใน"
+        },
+        "warning_zone": "06"
+      },
+      "id": 312084880,
+      "rain_24h": 0,
+      "rainfall_datetime": "2026-09-26 11:00",
+      "station": {
+        "id": 2072,
+        "sub_basin_id": "1002",
+        "tele_station_lat": 13.785535,
+        "tele_station_long": 100.53908,
+        "tele_station_name": {
+          "th": "กรมทรัพยากรน้ำ"
+        },
+        "tele_station_oldcode": "STN1064",
+        "tele_station_type": "rainfall_24h"
+      },
+      "station_type": "rainfall_24h"
+    }
+  ],
+  "result": "OK"
+}

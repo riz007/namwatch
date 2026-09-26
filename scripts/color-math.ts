@@ -4,26 +4,6 @@
  * dichromat simulation.
  */
 export type RGB = [number, number, number];
-type Theme = 'light' | 'dark';
-
-/**
- * Thresholds. Lightness does the ordering work — it is the one channel every
- * dichromat retains — so the L* step is the strict gate. ΔE00 then only has to
- * prove adjacent bands are not literally the same swatch; ~10 is a solid target
- * for discriminating large map areas (a just-noticeable difference is ~2-3).
- * Band 0 means the opposite of the ramp, so it is held to a wider margin.
- */
-const MIN_ADJACENT_DE = 10;
-const MIN_BAND0_DE = 20;
-const MIN_L_STEP = 8;
-const MIN_CONTRAST = 4.5;
-/**
- * WCAG 2.2 SC 1.4.11 (non-text contrast): a band swatch is a graphical object
- * conveying information, so it needs 3:1 against the surface behind it.
- */
-const MIN_SURFACE_CONTRAST = 3;
-const SURFACE = { light: '#FFFFFF', dark: '#121417' } as const;
-
 export function hexToRgb(hex: string): RGB {
   const h = hex.replace('#', '');
   return [

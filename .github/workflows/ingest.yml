@@ -1,0 +1,54 @@
+name: Ingest
+
+# SPEC §7: GitHub Actions cron every 10 minutes drives ingest. This also keeps
+# the Supabase free tier from pausing after 7 days of inactivity (SPEC §7.1).
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+    inputs:
+      source:
+        description: 'Run a single source (blank = all)'
+        required: false
+        type: string
+
+concurrency:
+  # Never let a slow run overlap the next tick.
+  group: ingest
+  cancel-in-progress: false
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Trigger ingest
+        env:
+          BASE_URL: ${{ vars.PUBLIC_BASE_URL }}
+          INGEST_SECRET: ${{ secrets.INGEST_SECRET }}
+          SOURCE: ${{ inputs.source }}
+        run: |
+          if [ -z "$BASE_URL" ] || [ -z "$INGEST_SECRET" ]; then
+            echo "::error::Set the PUBLIC_BASE_URL variable and the INGEST_SECRET secret"
+            exit 1
+          fi
+
+          url="$BASE_URL/api/internal/ingest"
+          [ -n "$SOURCE" ] && url="$url?source=$SOURCE"
+
+          code=$(curl -sS -o response.json -w '%{http_code}' \
+            --max-time 120 --retry 2 --retry-delay 10 \
+            -X POST "$url" -H "x-ingest-secret: $INGEST_SECRET")
+
+          echo "HTTP $code"
+          cat response.json | head -c 4000
+          echo
+
+          # 207 means at least one source degraded but the run itself succeeded
+          # (Hard rule 5). Surface it as a warning, not a failed workflow.
+          if [ "$code" = "207" ]; then
+            echo "::warning::One or more sources degraded — see /api/v1/health"
+            exit 0
+          fi
+          [ "$code" = "200" ] || exit 1
+

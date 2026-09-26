@@ -1,8 +1,11 @@
 /**
  * Crowd trust signals. SPEC §6.2.
  */
-import { CORROBORATION_RADIUS_M, FLAGS_TO_AUTOHIDE } from '@/config/app.config.ts';
-import type { LonLat } from '../sources/types.ts';
+import {
+  CORROBORATION_RADIUS_M,
+  FLAGS_TO_AUTOHIDE,
+} from "@/config/app.config.ts";
+import type { LonLat } from "../sources/types.ts";
 
 /**
  * How many independent "water receded" votes retire a report.
@@ -22,7 +25,8 @@ export type VoteCounts = {
 };
 
 /** SPEC §6.2: three distinct device flags auto-hide a report pending review. */
-export const shouldAutoHide = (counts: VoteCounts): boolean => counts.flags >= FLAGS_TO_AUTOHIDE;
+export const shouldAutoHide = (counts: VoteCounts): boolean =>
+  counts.flags >= FLAGS_TO_AUTOHIDE;
 
 /** SPEC §6.2: the crowd can retract a report by agreeing the water has gone. */
 export const shouldExpireFromVotes = (counts: VoteCounts): boolean =>
@@ -37,14 +41,15 @@ export function distanceMeters(a: LonLat, b: LonLat): number {
   const lat1 = toRad(a.lat);
   const lat2 = toRad(b.lat);
   const h =
-    Math.sin(dLat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) ** 2;
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) ** 2;
   return 2 * R * Math.asin(Math.min(1, Math.sqrt(h)));
 }
 
 export type NearbyStation = {
   readonly point: LonLat;
   /** Normalised reading status from the adapter. */
-  readonly status: 'normal' | 'watch' | 'warning' | 'critical' | 'unknown';
+  readonly status: "normal" | "watch" | "warning" | "critical" | "unknown";
 };
 
 /**
@@ -58,7 +63,7 @@ export function isCorroborated(
 ): boolean {
   return stations.some(
     (s) =>
-      (s.status === 'critical' || s.status === 'warning') &&
+      (s.status === "critical" || s.status === "warning") &&
       distanceMeters(report, s.point) <= radiusM,
   );
 }

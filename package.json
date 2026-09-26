@@ -19,8 +19,8 @@
     "i18n:check": "tsx scripts/i18n-check.ts",
     "check:cvd": "tsx scripts/check-cvd.ts",
     "db:generate": "drizzle-kit generate && tsx scripts/fix-postgis-types.ts",
-    "db:migrate": "tsx scripts/db-migrate.ts",
-    "ingest:local": "tsx scripts/ingest-local.ts",
+    "db:migrate": "tsx --conditions=react-server scripts/db-migrate.ts",
+    "ingest:local": "tsx --conditions=react-server scripts/ingest-local.ts",
     "tokens:generate": "tsx scripts/generate-tokens.ts"
   },
   "dependencies": {
@@ -39,7 +39,6 @@
     "zod": "4.6.5"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3.3.7",
     "@playwright/test": "1.63.0",
     "@tailwindcss/postcss": "4.3.3",
     "@types/node": "24.19.0",

@@ -3,7 +3,7 @@
  * AND per IP hash. Pure window maths here; the counter store lives in the DB
  * (`rate_limits`) so it survives a cold function.
  */
-import { RATE_LIMIT } from '@/config/app.config.ts';
+import { RATE_LIMIT } from "@/config/app.config.ts";
 
 export type RateLimitDecision = {
   readonly allowed: boolean;
@@ -13,7 +13,10 @@ export type RateLimitDecision = {
 };
 
 /** Fixed windows, so a key is simply (identity, window start). */
-export function windowStart(now: Date, windowMs: number = RATE_LIMIT.windowMs): Date {
+export function windowStart(
+  now: Date,
+  windowMs: number = RATE_LIMIT.windowMs,
+): Date {
   return new Date(Math.floor(now.getTime() / windowMs) * windowMs);
 }
 
@@ -27,7 +30,9 @@ export function decide(
   return {
     allowed,
     remaining: Math.max(0, max - currentCount),
-    retryAfter: allowed ? null : new Date(windowStart(now, windowMs).getTime() + windowMs),
+    retryAfter: allowed
+      ? null
+      : new Date(windowStart(now, windowMs).getTime() + windowMs),
   };
 }
 
@@ -35,7 +40,9 @@ export function decide(
  * The strictest of several identities wins — a device behind a shared IP and an
  * IP running many devices are both limited (SPEC §6.2 applies both).
  */
-export function combine(decisions: readonly RateLimitDecision[]): RateLimitDecision {
+export function combine(
+  decisions: readonly RateLimitDecision[],
+): RateLimitDecision {
   const blocked = decisions.filter((d) => !d.allowed);
   if (blocked.length === 0) {
     return {
@@ -44,9 +51,10 @@ export function combine(decisions: readonly RateLimitDecision[]): RateLimitDecis
       retryAfter: null,
     };
   }
-  const retryAfter = blocked
-    .map((d) => d.retryAfter)
-    .filter((d): d is Date => d !== null)
-    .sort((a, b) => b.getTime() - a.getTime())[0] ?? null;
+  const retryAfter =
+    blocked
+      .map((d) => d.retryAfter)
+      .filter((d): d is Date => d !== null)
+      .sort((a, b) => b.getTime() - a.getTime())[0] ?? null;
   return { allowed: false, remaining: 0, retryAfter };
 }

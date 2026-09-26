@@ -4,15 +4,15 @@
  * Pure functions, no clock of their own: every entry point takes `now` so the
  * behaviour is deterministic and testable at the exact hour boundaries.
  */
-import { DECAY } from '@/config/app.config.ts';
+import { DECAY } from "@/config/app.config.ts";
 
-export type ReportKind = 'road' | 'home' | 'canal' | 'help';
+export type ReportKind = "road" | "home" | "canal" | "help";
 
 const HOUR_MS = 3_600_000;
 
 /** Hours after which a report is hidden unless reconfirmed. `help` lasts longer. */
 export function hiddenAfterHours(kind: ReportKind): number {
-  return kind === 'help' ? DECAY.helpHiddenAtH : DECAY.hiddenAtH;
+  return kind === "help" ? DECAY.helpHiddenAtH : DECAY.hiddenAtH;
 }
 
 export const ageHours = (createdAt: Date, now: Date): number =>
@@ -26,7 +26,11 @@ export const ageHours = (createdAt: Date, now: Date): number =>
  * fading further — the spec names 40% as the floor, and continuing to fade would
  * make a still-valid report nearly invisible before it actually expires.
  */
-export function decayOpacity(createdAt: Date, kind: ReportKind, now: Date): number {
+export function decayOpacity(
+  createdAt: Date,
+  kind: ReportKind,
+  now: Date,
+): number {
   const age = ageHours(createdAt, now);
   const hidden = hiddenAfterHours(kind);
 

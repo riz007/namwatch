@@ -1,0 +1,34 @@
+name: Maintain
+
+# SPEC §11 retention: a nightly job expires overdue reports, prunes raw readings
+# past 14 days and clears IP hashes past 7 days (SPEC §6.3).
+# 19:00 UTC is 02:00 Asia/Bangkok — the quietest hour for our users.
+on:
+  schedule:
+    - cron: '0 19 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: maintain
+  cancel-in-progress: false
+
+jobs:
+  maintain:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Run maintenance
+        env:
+          BASE_URL: ${{ vars.PUBLIC_BASE_URL }}
+          INGEST_SECRET: ${{ secrets.INGEST_SECRET }}
+        run: |
+          if [ -z "$BASE_URL" ] || [ -z "$INGEST_SECRET" ]; then
+            echo "::error::Set the PUBLIC_BASE_URL variable and the INGEST_SECRET secret"
+            exit 1
+          fi
+          code=$(curl -sS -o response.json -w '%{http_code}' --max-time 120 \
+            -X POST "$BASE_URL/api/internal/maintain" -H "x-ingest-secret: $INGEST_SECRET")
+          echo "HTTP $code"
+          cat response.json | head -c 2000
+          echo
+          [ "$code" = "200" ] || exit 1

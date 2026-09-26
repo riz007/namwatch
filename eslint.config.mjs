@@ -1,30 +1,48 @@
-import { FlatCompat } from '@eslint/eslintrc';
+import coreWebVitals from 'eslint-config-next/core-web-vitals';
+import typescriptConfig from 'eslint-config-next/typescript';
 
-const compat = new FlatCompat({ baseDirectory: import.meta.dirname });
-
-export default [
+/** eslint-config-next 16 ships native flat config; no FlatCompat needed. */
+const config = [
   {
-    ignores: ['.next/**', 'node_modules/**', 'playwright-report/**', 'test-results/**', 'coverage/**'],
+    ignores: [
+      '.next/**',
+      'node_modules/**',
+      'playwright-report/**',
+      'test-results/**',
+      'coverage/**',
+      'supabase/migrations/**',
+    ],
   },
-  ...compat.extends('next/core-web-vitals', 'next/typescript'),
+  ...coreWebVitals,
+  ...typescriptConfig,
   {
     rules: {
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
-      '@typescript-eslint/consistent-type-imports': 'error',
     },
   },
   {
-    // Hard rule 6: the browser never talks to Supabase, and never imports the DB layer.
-    files: ['src/components/**/*.tsx', 'src/components/**/*.ts'],
+    // Hard rule 6: a client component must never reach the database directly.
+    files: ['src/components/**/*.{ts,tsx}'],
     rules: {
       'no-restricted-imports': [
         'error',
         {
           patterns: [
-            { group: ['@supabase/*', 'postgres', 'drizzle-orm', '@/lib/db', '@/lib/db/*'], message: 'Hard rule 6: client components must not import a DB client. Go through app/api/* or a server component.' },
+            {
+              group: ['@supabase/*', 'postgres', 'drizzle-orm', 'drizzle-orm/*', '@/lib/db', '@/lib/db/*'],
+              message:
+                'Hard rule 6: client components must not import a DB client. Go through app/api/* or a server component.',
+            },
           ],
         },
       ],
     },
   },
+  {
+    // Scripts and tests are Node programs, not part of the app bundle.
+    files: ['scripts/**/*.ts', '**/*.test.ts', 'e2e/**/*.ts'],
+    rules: { 'no-console': 'off', '@typescript-eslint/no-explicit-any': 'off' },
+  },
 ];
+
+export default config;

@@ -6,17 +6,20 @@
  * upstream feeds already carry. Point-in-polygon lookup replaces this once we
  * have boundaries we are allowed to use.
  */
-import { BANGKOK_BBOX } from '@/config/app.config.ts';
-import { regionByThaiDistrict, type Region } from '@/config/regions.ts';
-import { contains } from './bbox.ts';
-import type { LonLat } from '../sources/types.ts';
+import { BANGKOK_BBOX } from "@/config/app.config.ts";
+import { regionByThaiDistrict, type Region } from "@/config/regions.ts";
+import type { LonLat } from "../sources/types.ts";
+import { contains } from "./bbox.ts";
 
-export function resolveRegionId(districtTh: string | null | undefined): string | null {
+export function resolveRegionId(
+  districtTh: string | null | undefined,
+): string | null {
   return regionByThaiDistrict(districtTh)?.id ?? null;
 }
 
-export const resolveRegion = (districtTh: string | null | undefined): Region | undefined =>
-  regionByThaiDistrict(districtTh);
+export const resolveRegion = (
+  districtTh: string | null | undefined,
+): Region | undefined => regionByThaiDistrict(districtTh);
 
 /** Whether a point falls inside the served area. */
 export const isInBangkok = (point: LonLat): boolean =>
