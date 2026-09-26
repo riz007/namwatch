@@ -1,83 +1,40 @@
 @import 'tailwindcss';
+@import './tokens.css';
 @import './depth-tokens.css';
 
 /*
- * INTERIM base tokens. DESIGN.md does not exist yet — once the Hallmark build is
- * approved and the system is locked, these are replaced by its exported @theme.
- * The depth-* tokens above are NOT part of that: SPEC §10 non-negotiable 1 makes
- * them spec-defined semantics that override any theme.
+ * Base layer. Tokens live in tokens.css (Hallmark) and depth-tokens.css
+ * (generated from src/config/depth-bands.ts — SPEC-owned, never restyled).
+ * Nothing in this file may declare a raw colour or font-family.
  */
-@theme {
-  --color-surface: #ffffff;
-  --color-surface-raised: #f6f7f8;
-  --color-surface-sunken: #eceef0;
-  --color-border: #d6dadf;
-  --color-text: #14181d;
-  --color-text-muted: #5b6672;
-  --color-accent: #0c5c8a;
-  --color-accent-on: #ffffff;
-  --color-danger: #a4201a;
-  --color-danger-on: #ffffff;
-
-  --font-sans:
-    var(--font-plex-sans), var(--font-plex-thai), ui-sans-serif, system-ui, sans-serif;
-  --font-thai: var(--font-plex-thai), var(--font-plex-sans), ui-sans-serif, sans-serif;
-
-  /* SPEC §8.1: touch targets are never smaller than this. */
-  --size-touch: 48px;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) {
-    --color-surface: #121417;
-    --color-surface-raised: #1b1f24;
-    --color-surface-sunken: #0c0e11;
-    --color-border: #333a42;
-    --color-text: #e9edf1;
-    --color-text-muted: #9aa5b1;
-    --color-accent: #6fb8e0;
-    --color-accent-on: #05202f;
-    --color-danger: #e2776f;
-    --color-danger-on: #2a0705;
-  }
-}
-
-:root[data-theme='dark'] {
-  --color-surface: #121417;
-  --color-surface-raised: #1b1f24;
-  --color-surface-sunken: #0c0e11;
-  --color-border: #333a42;
-  --color-text: #e9edf1;
-  --color-text-muted: #9aa5b1;
-  --color-accent: #6fb8e0;
-  --color-accent-on: #05202f;
-  --color-danger: #e2776f;
-  --color-danger-on: #2a0705;
-}
 
 html {
   color-scheme: light dark;
   -webkit-text-size-adjust: 100%;
+  /* Gate 34: no horizontal scroll, and clip (never hidden) so sticky still works. */
+  overflow-x: clip;
 }
 
 body {
-  background-color: var(--color-surface);
-  color: var(--color-text);
-  font-family: var(--font-sans);
+  overflow-x: clip;
   margin: 0;
-  /* SPEC §9: Thai body text needs generous leading; this is the floor for both. */
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  /* SPEC §9: Thai body text needs generous leading in both languages. */
   line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
 }
 
 /*
  * SPEC §9 Thai typography, enforced globally so no component can regress it:
- *  - stacked vowels and tone marks clip at tight leading, so never go below 1.6
+ *  - stacked vowels and tone marks clip at tight leading, so never below 1.6
  *  - letter-spacing breaks Thai cluster shaping, so it is forced off
  */
 :lang(th) {
   line-height: 1.6;
   letter-spacing: normal !important;
-  font-family: var(--font-thai);
 }
 
 :lang(th) h1,
@@ -86,18 +43,39 @@ body {
   line-height: 1.45;
 }
 
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  /* Gate 38a: display type is always roman. */
+  font-style: normal;
+  /* Gate 51: long words wrap rather than forcing a scrollbar. */
+  overflow-wrap: anywhere;
+  min-width: 0;
+  margin: 0;
+}
+
+/* Readings, levels, times and counts are compared down a column — they line up. */
+.tabular {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum';
+}
+
 /* SPEC §8.1 / Hard rule 21: every interactive target clears 48 px. */
 button,
 [role='button'],
 a[data-touch],
-input[type='checkbox'],
-input[type='radio'] {
+summary {
   min-height: var(--size-touch);
 }
 
-:where(a, button, [tabindex]):focus-visible {
-  outline: 3px solid var(--color-accent);
+/* Focus must appear instantly — never animated. */
+:where(a, button, summary, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--color-focus);
   outline-offset: 2px;
+  border-radius: var(--radius-sm);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -105,6 +83,7 @@ input[type='radio'] {
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
@@ -120,4 +99,85 @@ input[type='radio'] {
   clip-path: inset(50%);
   white-space: nowrap;
   border-width: 0;
+}
+
+/* One orchestrated entrance for the list, per Hallmark motion discipline. */
+@keyframes nw-ink-on {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.ink-on {
+  animation: nw-ink-on var(--dur-slow) var(--ease-out) both;
+}
+
+/*
+ * Map markers. The outer .nw-marker is MapLibre's positioning element and owns
+ * its own transform — never style shape or rotation on it. The inner .nw-shape
+ * carries the appearance.
+ *
+ * Provenance is distinguished by SHAPE, not colour (colour is fully spent on the
+ * depth scale): circle = crowd, square = government sensor, diamond = filed
+ * through an official channel.
+ */
+.nw-marker {
+  display: grid;
+  place-items: center;
+  /* Generous transparent hit area; the visible mark stays small so it does not
+   * hide the street underneath. */
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+}
+
+.nw-shape {
+  width: 11px;
+  height: 11px;
+  border: 1.5px solid;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.35);
+}
+
+.nw-crowd {
+  border-radius: 50%;
+}
+
+.nw-sensor {
+  border-radius: 1px;
+}
+
+.nw-channel {
+  border-radius: 1px;
+  background: var(--color-paper-2);
+  border-color: var(--color-ink-2);
+  transform: rotate(45deg);
+}
+
+.nw-marker:hover .nw-shape,
+.nw-marker:focus-visible .nw-shape {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+/* Cluster bubble. Neutral by design: a cluster mixes provenances and severities,
+ * so colouring it would assert something the data does not say. */
+.nw-cluster {
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  /* paper-2 rather than paper: against the dark basemap a paper-coloured bubble
+   * is nearly invisible, and the ink-2 border is what lifts it off the tiles. */
+  border: 1.5px solid var(--color-ink-2);
+  background: var(--color-paper-2);
+  color: var(--color-ink);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.28);
 }

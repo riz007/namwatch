@@ -11,6 +11,8 @@ const config = [
       'test-results/**',
       'coverage/**',
       'supabase/migrations/**',
+      // Vendored MapLibre worker chunks, copied by `pnpm sync:map-worker`.
+      'public/*.mjs',
     ],
   },
   ...coreWebVitals,

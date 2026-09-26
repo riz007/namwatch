@@ -1,0 +1,126 @@
+/* Hallmark · macrostructure: Map / Diagram · genre: editorial · route: custom (tuned)
+ * vibe: "civic utility, calm, institutional, legible in rain"
+ * paper: oklch(98.5% 0.003 264) · accent: oklch(45% 0.13 264) indigo (cool)
+ * display: IBM Plex Sans Thai 700 · body: IBM Plex Sans Thai 400 · tabular: IBM Plex Mono
+ * axes: light / grotesk-sans / cool
+ * nav: N9 edge-aligned · footer: none (app screen — source-attribution strip instead)
+ * enrichment: none (typography only; the map is the content)
+ * pre-emit critique: P5 H4 E4 S5 R5 V4 (first run — no prior output to differ from)
+ *
+ * WHY COOL: the depth-0…5 severity ramp is spec-owned and occupies the entire
+ * warm range (amber → ochre → burnt orange → deep red). A warm accent would
+ * compete with it, and on a flood map a chrome colour that reads as severity is
+ * a safety problem. The accent is therefore indigo, ~65° from the depth-0 teal.
+ * Depth tokens stay in their generated hex form: they are validated by
+ * `pnpm check:cvd` and must not be re-derived here (SPEC §10 non-negotiable 1).
+ */
+
+@theme {
+  /* — Paper ————————————————————————————— */
+  --color-paper: oklch(98.5% 0.003 264);
+  --color-paper-2: oklch(96.2% 0.004 264);
+  --color-paper-3: oklch(93.4% 0.005 264);
+
+  /* — Ink ——————————————————————————————— */
+  --color-ink: oklch(21% 0.014 264);
+  --color-ink-2: oklch(42% 0.012 264);
+  --color-muted: oklch(52% 0.011 264);
+
+  /* — Rules ————————————————————————————— */
+  --color-rule: oklch(87.5% 0.006 264);
+  --color-rule-2: oklch(92.5% 0.005 264);
+
+  /* — Accent ———————————————————————————— */
+  --color-accent: oklch(45% 0.13 264);
+  --color-accent-ink: oklch(98.5% 0.003 264);
+  --color-accent-soft: oklch(94% 0.024 264);
+  --color-focus: oklch(50% 0.19 264);
+
+  /* — Alert ————————————————————————————
+   * The emergency bar is deliberately NOT red. Red belongs to depth-5
+   * ("life-threatening"); a permanently-red bar at the top of every page would
+   * both compete with the severity scale and contradict SPEC §8.1 "calm, not
+   * alarmist". It is ink-dark — an official notice strip, always legible. */
+  --color-alert: oklch(24% 0.028 264);
+  --color-alert-ink: oklch(97% 0.004 264);
+  --color-alert-rule: oklch(38% 0.035 264);
+
+  /* — Type ————————————————————————————— */
+  --font-display: var(--font-plex-thai), var(--font-plex-sans), ui-sans-serif, sans-serif;
+  --font-body: var(--font-plex-thai), var(--font-plex-sans), ui-sans-serif, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, monospace;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.8125rem;
+  --text-base: 0.9375rem;
+  --text-lg: 1.0625rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.9375rem;
+
+  /* — Space (4 pt) ——————————————————————— */
+  --space-2xs: 0.25rem;
+  --space-xs: 0.5rem;
+  --space-sm: 0.75rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+
+  /* — Radius ———————————————————————————— */
+  --radius-sm: 3px;
+  --radius-md: 5px;
+  --radius-pill: 999px;
+
+  /* — Motion ———————————————————————————— */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-fast: 120ms;
+  --dur-base: 200ms;
+  --dur-slow: 320ms;
+
+  /* — Touch ————————————————————————————— */
+  --size-touch: 48px;
+  --rule-hair: 1px;
+}
+
+/* Dark mode. SPEC §10 non-negotiable 5: people check at night during outages,
+ * on battery. Same hue family, inverted lightness — never ad-hoc overrides. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --color-paper: oklch(16% 0.012 264);
+    --color-paper-2: oklch(20% 0.013 264);
+    --color-paper-3: oklch(24.5% 0.014 264);
+    --color-ink: oklch(93% 0.008 264);
+    --color-ink-2: oklch(74% 0.010 264);
+    --color-muted: oklch(63% 0.011 264);
+    --color-rule: oklch(32% 0.013 264);
+    --color-rule-2: oklch(26% 0.012 264);
+    --color-accent: oklch(74% 0.125 264);
+    --color-accent-ink: oklch(16% 0.012 264);
+    --color-accent-soft: oklch(28% 0.040 264);
+    --color-focus: oklch(80% 0.16 264);
+    --color-alert: oklch(28% 0.030 264);
+    --color-alert-ink: oklch(96% 0.005 264);
+    --color-alert-rule: oklch(42% 0.038 264);
+  }
+}
+
+:root[data-theme='dark'] {
+  --color-paper: oklch(16% 0.012 264);
+  --color-paper-2: oklch(20% 0.013 264);
+  --color-paper-3: oklch(24.5% 0.014 264);
+  --color-ink: oklch(93% 0.008 264);
+  --color-ink-2: oklch(74% 0.010 264);
+  --color-muted: oklch(63% 0.011 264);
+  --color-rule: oklch(32% 0.013 264);
+  --color-rule-2: oklch(26% 0.012 264);
+  --color-accent: oklch(74% 0.125 264);
+  --color-accent-ink: oklch(16% 0.012 264);
+  --color-accent-soft: oklch(28% 0.040 264);
+  --color-focus: oklch(80% 0.16 264);
+  --color-alert: oklch(28% 0.030 264);
+  --color-alert-ink: oklch(96% 0.005 264);
+  --color-alert-rule: oklch(42% 0.038 264);
+}

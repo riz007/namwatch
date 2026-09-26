@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 import { notFound } from 'next/navigation';
 import { NextIntlClientProvider, hasLocale } from 'next-intl';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { IBM_Plex_Sans, IBM_Plex_Sans_Thai } from 'next/font/google';
+import { IBM_Plex_Mono, IBM_Plex_Sans, IBM_Plex_Sans_Thai } from 'next/font/google';
 import { routing, HTML_LANG, type Locale } from '@/i18n/routing.ts';
 import { EmergencyBar } from '@/components/EmergencyBar.tsx';
 import { SiteHeader } from '@/components/SiteHeader.tsx';
@@ -24,6 +24,14 @@ const plexSans = IBM_Plex_Sans({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700'],
   variable: '--font-plex-sans',
+  display: 'swap',
+});
+
+/** Tabular figures for water levels, times and counts — they get compared down a column. */
+const plexMono = IBM_Plex_Mono({
+  subsets: ['latin'],
+  weight: ['400', '500'],
+  variable: '--font-plex-mono',
   display: 'swap',
 });
 
@@ -71,7 +79,7 @@ export default async function LocaleLayout({
   const t = await getTranslations({ locale, namespace: 'nav' });
 
   return (
-    <html lang={HTML_LANG[locale as Locale]} className={`${plexSans.variable} ${plexThai.variable}`}>
+    <html lang={HTML_LANG[locale as Locale]} className={`${plexSans.variable} ${plexThai.variable} ${plexMono.variable}`}>
       <body>
         <NextIntlClientProvider>
           <a href="#main" className="sr-only focus:not-sr-only">

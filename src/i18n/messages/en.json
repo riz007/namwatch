@@ -14,7 +14,7 @@
     "skipToContent": "Skip to main content"
   },
   "emergency": {
-    "title": "Emergency numbers",
+    "title": "Emergency",
     "expand": "Show all emergency numbers",
     "collapse": "Hide",
     "call": "Call {number}",
@@ -22,12 +22,36 @@
   },
   "depth": {
     "label": "Water depth",
-    "0": { "label": "Dry / receded", "passability": "Passable", "range": "No flooding" },
-    "1": { "label": "Puddles", "passability": "Passable, drive slowly", "range": "Below ankle (under 10 cm)" },
-    "2": { "label": "Shin-deep", "passability": "Cars and pickups OK. Risky for motorbikes", "range": "10–30 cm" },
-    "3": { "label": "Knee-deep", "passability": "Pickups and high vehicles only. Not passable for small cars", "range": "30–50 cm" },
-    "4": { "label": "Waist-deep", "passability": "Not passable. Dangerous", "range": "50–100 cm" },
-    "5": { "label": "Chest-deep or higher", "passability": "Life-threatening", "range": "Over 100 cm" },
+    "0": {
+      "label": "Dry / receded",
+      "passability": "Passable",
+      "range": "No flooding"
+    },
+    "1": {
+      "label": "Puddles",
+      "passability": "Passable, drive slowly",
+      "range": "Below ankle (under 10 cm)"
+    },
+    "2": {
+      "label": "Shin-deep",
+      "passability": "Cars and pickups OK. Risky for motorbikes",
+      "range": "10–30 cm"
+    },
+    "3": {
+      "label": "Knee-deep",
+      "passability": "Pickups and high vehicles only. Not passable for small cars",
+      "range": "30–50 cm"
+    },
+    "4": {
+      "label": "Waist-deep",
+      "passability": "Not passable. Dangerous",
+      "range": "50–100 cm"
+    },
+    "5": {
+      "label": "Chest-deep or higher",
+      "passability": "Life-threatening",
+      "range": "Over 100 cm"
+    },
     "atLeast": "{label} and deeper"
   },
   "kind": {
@@ -70,9 +94,9 @@
     "viewList": "List",
     "filters": "Filters",
     "timeWindow": "Time range",
-    "lastHours": "Last {hours} h",
+    "lastHours": "{hours} h",
     "reportCta": "Report flood",
-    "attribution": "Map data",
+    "attribution": "Map © OpenFreeMap · OpenMapTiles · Data from OpenStreetMap",
     "layers": "Layers"
   },
   "list": {

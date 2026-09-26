@@ -1,15 +1,20 @@
+import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { FloodScreen } from '@/components/flood/FloodScreen.tsx';
 
-/** Placeholder. Replaced by the Map/List screen in Stage 6 (SPEC §8.3 screen 1). */
+/** Screen 1 — Map + List. SPEC §8.3. */
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'map' });
+  return { title: t('title') };
+}
+
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const t = await getTranslations();
-
-  return (
-    <div className="px-4 py-6">
-      <h1 className="text-xl font-bold">{t('map.title')}</h1>
-      <p className="pt-2 text-[var(--color-text-muted)]">{t('app.description')}</p>
-    </div>
-  );
+  return <FloodScreen />;
 }

@@ -84,6 +84,13 @@ export type MapStation = {
 };
 
 /**
+ * Raw `execute()` bypasses Drizzle's type mapping, so timestamps arrive as
+ * strings and numerics as strings. Coerce once here rather than letting the
+ * declared type lie to every caller.
+ */
+type RawStationRow = Omit<MapStation, 'observedAt'> & { observedAt: string | Date | null };
+
+/**
  * Stations with their most recent reading.
  *
  * Uses a LATERAL join rather than fetching stations and then their readings,
@@ -93,7 +100,7 @@ export async function stationsInBBox(
   bbox: BBox,
   limit: number = MAX_MAP_FEATURES,
 ): Promise<readonly MapStation[]> {
-  const rows = await db().execute<MapStation>(sql`
+  const rows = await db().execute<RawStationRow>(sql`
     select
       s.id,
       s.source,
@@ -119,7 +126,11 @@ export async function stationsInBBox(
     order by r.observed_at desc nulls last
     limit ${limit}
   `);
-  return rows as unknown as readonly MapStation[];
+
+  return (rows as unknown as readonly RawStationRow[]).map((r) => ({
+    ...r,
+    observedAt: r.observedAt === null ? null : new Date(r.observedAt),
+  }));
 }
 
 export type MapExternalReport = {

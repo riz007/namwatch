@@ -21,7 +21,10 @@
     "db:generate": "drizzle-kit generate && tsx scripts/fix-postgis-types.ts",
     "db:migrate": "tsx --conditions=react-server scripts/db-migrate.ts",
     "ingest:local": "tsx --conditions=react-server scripts/ingest-local.ts",
-    "tokens:generate": "tsx scripts/generate-tokens.ts"
+    "tokens:generate": "tsx scripts/generate-tokens.ts",
+    "sync:map-worker": "cp node_modules/maplibre-gl/dist/maplibre-gl-worker.mjs node_modules/maplibre-gl/dist/maplibre-gl-shared.mjs public/",
+    "postinstall": "pnpm sync:map-worker",
+    "check:bundle": "tsx scripts/check-bundle.ts"
   },
   "dependencies": {
     "drizzle-orm": "0.45.3",
