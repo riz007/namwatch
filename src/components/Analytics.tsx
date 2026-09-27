@@ -2,6 +2,7 @@
 
 import { Link } from "@/i18n/navigation.ts";
 import { consentStore, setConsent } from "@/lib/analytics.ts";
+import { Analytics as VercelAnalytics } from "@vercel/analytics/next";
 import { useTranslations } from "next-intl";
 import Script from "next/script";
 import { useCallback, useEffect, useRef, useSyncExternalStore } from "react";
@@ -9,9 +10,10 @@ import { useCallback, useEffect, useRef, useSyncExternalStore } from "react";
 /**
  * Consent gate and analytics loader.
  *
- * The Google tag is not merely configured to deny — it is never fetched at all
- * until someone accepts. That is the difference between "we set a flag" and
- * "no request left the device", and it is what the PDPA notice promises.
+ * Neither the Google tag nor Vercel Web Analytics is merely configured to deny
+ * — neither is fetched at all until someone accepts. That is the difference
+ * between "we set a flag" and "no request left the device", and it is what the
+ * PDPA notice promises.
  *
  * Consent Mode v2 defaults are still declared, so that if the tag is ever
  * loaded by another route it starts denied rather than granted.
@@ -36,7 +38,11 @@ export function Analytics({ gaId }: { gaId: string | null }) {
 
   // Server-rendered as null, so the banner only appears after hydration has
   // read the stored choice — it never flashes for someone who already decided.
-  const showBanner = consent === null && gaId !== null;
+  //
+  // Not conditional on `gaId`: Vercel Web Analytics ships with the deployment,
+  // so there is something to consent to even where no Google tag is set. Tying
+  // the banner to the GA id alone would leave that ungated.
+  const showBanner = consent === null;
 
   // The banner is fixed to the bottom, so without this it sits on top of
   // whatever is there — which on the report page is the emergency hotlines.
@@ -62,6 +68,18 @@ export function Analytics({ gaId }: { gaId: string | null }) {
 
   return (
     <>
+      {/* Cookieless, and it only ever sees a path. The callback drops any
+          query string before it is sent: no route carries personal data in one
+          today, and this keeps that true if one ever does. */}
+      {consent === "granted" && (
+        <VercelAnalytics
+          beforeSend={(event) => ({
+            ...event,
+            url: event.url.split(/[?#]/)[0] ?? event.url,
+          })}
+        />
+      )}
+
       {gaId !== null && consent === "granted" && (
         <>
           <Script

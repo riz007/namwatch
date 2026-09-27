@@ -30,6 +30,7 @@
     "format:check": "prettier --check ."
   },
   "dependencies": {
+    "@vercel/analytics": "2.0.1",
     "drizzle-orm": "0.45.3",
     "h3-js": "4.5.0",
     "maplibre-gl": "6.11.2",
