@@ -67,6 +67,7 @@ h3 {
 button,
 [role="button"],
 a[data-touch],
+select,
 summary {
   min-height: var(--size-touch);
 }

@@ -2,6 +2,7 @@
 
 import { NOTE_MAX_LENGTH } from "@/config/app.config.ts";
 import { DEPTH_BANDS, type DepthBandValue } from "@/config/depth-bands.ts";
+import { BANGKOK_REGION_ID, districtsOf } from "@/config/regions.ts";
 import { REPORT_KINDS } from "@/config/reports.ts";
 import { Link } from "@/i18n/navigation.ts";
 import { track } from "@/lib/analytics.ts";
@@ -28,6 +29,7 @@ export function ReportForm({ siteKey }: { siteKey: string | null }) {
 
   const [depth, setDepth] = useState<DepthBandValue | null>(null);
   const [kind, setKind] = useState<Kind | null>(null);
+  const [districtTh, setDistrictTh] = useState("");
   const [note, setNote] = useState("");
   const [passable, setPassable] = useState<Vehicle[]>([]);
   const [state, setState] = useState<"editing" | "sending" | "sent" | "error">(
@@ -85,6 +87,7 @@ export function ReportForm({ siteKey }: { siteKey: string | null }) {
           lon: position.lon,
           lat: position.lat,
           note: note.trim() || undefined,
+          districtTh: districtTh || undefined,
           locale,
           passableBy: passable.length > 0 ? passable : undefined,
           turnstileToken: token,
@@ -157,6 +160,36 @@ export function ReportForm({ siteKey }: { siteKey: string | null }) {
             {t("report.gpsDenied")}
           </p>
         )}
+
+        {/* A coordinate alone is hard to act on. The district is how agencies,
+            hotline operators and neighbours actually name a place, and we have
+            no boundary polygons to derive it from — so the person reporting,
+            who knows where they are standing, is the best source. */}
+        <div className="pt-3">
+          <label
+            htmlFor="district"
+            className="block pb-1.5 text-[var(--text-sm)] font-semibold text-[var(--color-ink)]"
+          >
+            {t("report.districtStep")}
+          </label>
+          <select
+            id="district"
+            value={districtTh}
+            onChange={(e) => setDistrictTh(e.target.value)}
+            data-touch
+            className="w-full rounded-[var(--radius-md)] border border-[var(--color-rule)] bg-[var(--color-paper)] px-3 text-[var(--color-ink)] hover:border-[var(--color-accent)] focus-visible:border-[var(--color-accent)]"
+          >
+            <option value="">{t("report.districtUnsure")}</option>
+            {districtsOf(BANGKOK_REGION_ID).map((r) => (
+              <option key={r.id} value={r.nameTh}>
+                {locale === "th" ? r.nameTh : `${r.nameEn} / ${r.nameTh}`}
+              </option>
+            ))}
+          </select>
+          <p className="pt-1.5 text-[var(--text-xs)] leading-relaxed text-[var(--color-muted)]">
+            {t("report.districtHint")}
+          </p>
+        </div>
       </Step>
 
       <Step n={2} title={t("report.depthStep")}>

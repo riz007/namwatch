@@ -2,7 +2,7 @@ import "server-only";
 
 import { sql } from "drizzle-orm";
 import { db, isDatabaseConfigured } from "../index.ts";
-import { sourceHealth } from "../schema.ts";
+import { rateLimits, sourceHealth } from "../schema.ts";
 
 export type SourceHealthRow = {
   readonly source: string;
@@ -90,3 +90,40 @@ export async function readFreshness(): Promise<{
 
 /** Three times the fastest source cadence, matching the per-datum delayed badge. */
 const STALE_AFTER_MS = 30 * 60_000;
+
+/**
+ * How long a stalled feed is left alone before a page view revives it. Matches
+ * the cron's intended cadence, so this never ingests more often than designed.
+ */
+export const AUTO_INGEST_EVERY_MS = 10 * 60_000;
+
+const AUTO_INGEST_KEY = "auto-ingest";
+
+/**
+ * Claim the right to run one automatic ingest, or return false.
+ *
+ * GitHub's scheduled workflows are best-effort and are dropped under load — in
+ * practice a ten-minute cron has fired every two or three hours, which during
+ * a flood means the map silently shows hours-old water. This is the backstop: a
+ * page view revives the feed. It is not a second scheduler, so it is bounded
+ * hard by one claim per window no matter how much traffic arrives.
+ *
+ * The claim is a single atomic upsert — the row's count comes back as 1 for
+ * exactly one caller per window, so concurrent requests cannot both win.
+ */
+export async function claimIngestSlot(
+  now: Date = new Date(),
+  everyMs: number = AUTO_INGEST_EVERY_MS,
+): Promise<boolean> {
+  const bucket = new Date(Math.floor(now.getTime() / everyMs) * everyMs);
+  const [row] = await db()
+    .insert(rateLimits)
+    .values({ key: AUTO_INGEST_KEY, windowStart: bucket, count: 1 })
+    .onConflictDoUpdate({
+      target: [rateLimits.key, rateLimits.windowStart],
+      set: { count: sql`${rateLimits.count} + 1` },
+    })
+    .returning({ count: rateLimits.count });
+
+  return (row?.count ?? 0) === 1;
+}

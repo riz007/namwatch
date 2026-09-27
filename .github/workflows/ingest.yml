@@ -1,7 +1,14 @@
 name: Ingest
 
-# GitHub Actions cron every 10 minutes drives ingest. This also keeps
-# the Supabase free tier from pausing after 7 days of inactivity.
+# GitHub only promises scheduled workflows on a best-effort basis, and drops
+# them under load: this one asked for every 10 minutes and got roughly one
+# firing every two to three hours, which during a flood means the map shows
+# hours-old water. So each firing now stays alive and ticks for most of an
+# hour rather than ingesting once and exiting.
+#
+# This is a floor, not the only defence — the app revives a stalled feed off
+# the back of a page view too (see claimIngestSlot). Actions minutes are free
+# on public repositories, so the long job costs nothing.
 on:
   schedule:
     - cron: "*/10 * * * *"
@@ -13,20 +20,24 @@ on:
         type: string
 
 concurrency:
-  # Never let a slow run overlap the next tick.
+  # A newer firing replaces the running looper rather than queueing behind it,
+  # which would pile up runs that each want most of an hour.
   group: ingest
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   ingest:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 55
     steps:
       - name: Trigger ingest
         env:
           BASE_URL: ${{ vars.PUBLIC_BASE_URL }}
           INGEST_SECRET: ${{ secrets.INGEST_SECRET }}
           SOURCE: ${{ inputs.source }}
+          # Six ticks ten minutes apart, then exit before the next firing is due.
+          TICKS: "6"
+          INTERVAL_S: "600"
         run: |
           if [ -z "$BASE_URL" ] || [ -z "$INGEST_SECRET" ]; then
             echo "::error::Set the PUBLIC_BASE_URL variable and the INGEST_SECRET secret"
@@ -36,18 +47,36 @@ jobs:
           url="$BASE_URL/api/internal/ingest"
           [ -n "$SOURCE" ] && url="$url?source=$SOURCE"
 
-          code=$(curl -sS -o response.json -w '%{http_code}' \
-            --max-time 120 --retry 2 --retry-delay 10 \
-            -X POST "$url" -H "x-ingest-secret: $INGEST_SECRET")
+          ok=0
+          for i in $(seq 1 "$TICKS"); do
+            code=$(curl -sS -o response.json -w '%{http_code}' \
+              --max-time 120 --retry 2 --retry-delay 10 \
+              -X POST "$url" -H "x-ingest-secret: $INGEST_SECRET" || echo 000)
 
-          echo "HTTP $code"
-          cat response.json | head -c 4000
-          echo
+            echo "tick $i/$TICKS — HTTP $code"
+            # GitHub runs this with `bash -e`, so anything that can fail must
+            # say so explicitly: a missing response file would otherwise abort
+            # the whole loop on the first tick.
+            [ -f response.json ] && head -c 2000 response.json || true
+            echo
 
-          # 207 means at least one source degraded but the run itself succeeded
-          #. Surface it as a warning, not a failed workflow.
-          if [ "$code" = "207" ]; then
-            echo "::warning::One or more sources degraded — see /api/v1/health"
-            exit 0
+            # 207 means at least one source degraded but the run itself
+            # succeeded. Surface it as a warning, not a failed workflow.
+            case "$code" in
+              200) ok=$((ok + 1)) ;;
+              207) ok=$((ok + 1)); echo "::warning::A source degraded on tick $i — see /api/v1/health" ;;
+              401) echo "::error::Rejected: INGEST_SECRET does not match the deployment"; exit 1 ;;
+              *)   echo "::warning::Tick $i failed with HTTP $code" ;;
+            esac
+
+            if [ "$i" -lt "$TICKS" ]; then
+              sleep "$INTERVAL_S"
+            fi
+          done
+
+          # One bad tick is an upstream hiccup; none landing is a real outage.
+          if [ "$ok" -eq 0 ]; then
+            echo "::error::Every tick failed"
+            exit 1
           fi
-          [ "$code" = "200" ] || exit 1
+          echo "$ok/$TICKS ticks succeeded"

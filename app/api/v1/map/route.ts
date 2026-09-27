@@ -2,7 +2,7 @@ import { rainBandFor } from "@/config/rain-bands.ts";
 import { apiError, CACHE } from "@/lib/api/respond.ts";
 import { mapQuerySchema } from "@/lib/api/schemas.ts";
 import { isDatabaseConfigured } from "@/lib/db/index.ts";
-import { readFreshness } from "@/lib/db/queries/health.ts";
+import { claimIngestSlot, readFreshness } from "@/lib/db/queries/health.ts";
 import {
   externalReportsInBBox,
   reportsInBBox,
@@ -18,7 +18,8 @@ import {
   decayOpacity,
   type ReportKind,
 } from "@/lib/reports/decay.ts";
-import { NextResponse } from "next/server";
+import { runIngest } from "@/lib/sources/run.ts";
+import { after, NextResponse } from "next/server";
 
 /**
  * `GET /api/v1/map?bbox=&layers=&since=` — combined GeoJSON for the
@@ -31,6 +32,9 @@ import { NextResponse } from "next/server";
  * Report geometry comes from `geom_public`, never `geom_exact`.
  */
 export const dynamic = "force-dynamic";
+// Only reached when a stalled feed is revived after the response is sent; a
+// normal request finishes long before this.
+export const maxDuration = 60;
 
 type Feature = {
   type: "Feature";
@@ -95,6 +99,24 @@ export async function GET(request: Request) {
     newestAt: null,
     staleSources: [],
   }));
+
+  // If the cron has not fired, revive the feed off the back of this request.
+  // `after` runs once the response is flushed, so nobody waits for it, and the
+  // claim is atomic, so heavy traffic still produces one ingest per window.
+  if (freshness.staleSources.length > 0) {
+    after(async () => {
+      try {
+        if (!(await claimIngestSlot())) return;
+        log.warn(
+          { stale: freshness.staleSources },
+          "ingest stalled — reviving from a page view",
+        );
+        await runIngest();
+      } catch (error) {
+        log.error({ err: String(error) }, "auto ingest failed");
+      }
+    });
+  }
 
   const [reports, stations, external] = await Promise.all([
     layer<MapReport>("reports", () => reportsInBBox(bbox, since, now)),

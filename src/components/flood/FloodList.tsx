@@ -1,6 +1,7 @@
 "use client";
 
 import { isDepthBand } from "@/config/depth-bands.ts";
+import { regionById } from "@/config/regions.ts";
 import {
   isExternal,
   isReport,
@@ -159,6 +160,23 @@ export function FloodList({
                 )}
 
                 <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 pt-1">
+                  {/* The district is how a responder names a place; a
+                      coordinate alone is hard to act on. */}
+                  {!isStation(p) && p.regionId && (
+                    <>
+                      <span className="text-[var(--text-xs)] text-[var(--color-ink-2)]">
+                        {locale === "th"
+                          ? `เขต${regionById(p.regionId)?.nameTh ?? ""}`
+                          : (regionById(p.regionId)?.nameEn ?? "")}
+                      </span>
+                      <span
+                        aria-hidden="true"
+                        className="text-[var(--color-rule)]"
+                      >
+                        ·
+                      </span>
+                    </>
+                  )}
                   <ProvenanceBadge
                     level={p.provenance}
                     source={isStation(p) || isExternal(p) ? p.source : null}

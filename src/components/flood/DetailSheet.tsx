@@ -3,7 +3,7 @@
 import { isDepthBand } from "@/config/depth-bands.ts";
 import { hotlinesFor } from "@/config/hotlines.ts";
 import { rainBandFor } from "@/config/rain-bands.ts";
-import { BANGKOK_REGION_ID } from "@/config/regions.ts";
+import { BANGKOK_REGION_ID, regionById } from "@/config/regions.ts";
 import { track } from "@/lib/analytics.ts";
 import {
   isExternal,
@@ -75,6 +75,11 @@ export function DetailSheet({
             <h2 className="font-bold text-[var(--color-ink)]">
               {title(p, locale, t)}
             </h2>
+            {district(p, locale) && (
+              <p className="text-[var(--text-sm)] text-[var(--color-ink-2)]">
+                {district(p, locale)}
+              </p>
+            )}
             <div className="flex flex-wrap items-center gap-x-2 gap-y-1 pt-1">
               <ProvenanceBadge
                 level={p.provenance}
@@ -199,6 +204,14 @@ function title(
   }
   if (isReport(p)) return t(`kind.${p.kind}`);
   return p.description ?? t("provenance.officialChannel");
+}
+
+/** The place as a person would say it, when we know it. */
+function district(p: AnyProps, locale: string): string | null {
+  if (isStation(p)) return null;
+  const region = p.regionId ? regionById(p.regionId) : undefined;
+  if (!region) return null;
+  return locale === "th" ? `เขต${region.nameTh}` : `${region.nameEn} District`;
 }
 
 function Reading({ p }: { p: AnyProps }) {

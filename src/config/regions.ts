@@ -132,3 +132,19 @@ export function regionByThaiDistrict(
 
 export const enabledRegions = (): readonly Region[] =>
   REGIONS.filter((r) => r.enabled);
+
+/**
+ * The districts of a region, in Thai alphabetical order.
+ *
+ * Used by the report form's district picker. Sorted with the Thai collator
+ * rather than by code point, which puts the leading vowels (เ, แ, ไ) where a
+ * Thai reader expects them instead of at the end.
+ */
+const THAI_COLLATOR = new Intl.Collator("th-TH");
+
+export const districtsOf = (parentId: string): readonly Region[] =>
+  [
+    ...REGIONS.filter(
+      (r) => r.level === "district" && r.parentId === parentId && r.enabled,
+    ),
+  ].sort((a, b) => THAI_COLLATOR.compare(a.nameTh, b.nameTh));
