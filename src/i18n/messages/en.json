@@ -141,6 +141,7 @@
     "noteStep": "Extra detail",
     "notePlaceholder": "e.g. road closed, small cars cannot pass",
     "noteHint": "Up to {max} characters. No links.",
+    "noteNoPersonal": "Public. Do not include names, phone numbers, addresses or health details — yours or anyone else's.",
     "noteNoLinks": "Links are not allowed in the note",
     "passableStep": "What can still get through",
     "submit": "Send report",

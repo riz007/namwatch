@@ -249,18 +249,46 @@ export async function pruneRateLimits(olderThan: Date): Promise<void> {
     .where(sql`${rateLimits.windowStart} < ${olderThan}`);
 }
 
-/** IP hashes are kept for 7 days, for rate limiting only. */
-export async function clearOldIpHashes(olderThan: Date): Promise<number> {
+/**
+ * Clear the identifiers on the seventh day, which is what the privacy notice
+ * promises.
+ *
+ * Both hashes, not just the IP one: the notice says "device and IP", and for a
+ * while only the IP half was true. Neither is needed after the rate-limit
+ * window, which is measured in minutes.
+ */
+export async function clearOldIdentifiers(olderThan: Date): Promise<number> {
   const rows = await db()
     .update(reports)
-    .set({ ipHash: null })
+    .set({ ipHash: null, deviceHash: null })
     .where(
       and(
-        sql`${reports.ipHash} is not null`,
+        sql`(${reports.ipHash} is not null or ${reports.deviceHash} is not null)`,
         sql`${reports.createdAt} < ${olderThan}`,
       ),
     )
     .returning({ id: reports.id });
+  return rows.length;
+}
+
+/**
+ * Votes carry a device hash of their own, and they outlive the report they
+ * belong to because a report is only ever marked expired, never deleted. Once
+ * a report has been off the map for a week its votes can decide nothing, so
+ * the hashes go with them.
+ */
+export async function pruneVotesForExpiredReports(
+  olderThan: Date,
+): Promise<number> {
+  const rows = await db()
+    .delete(reportVotes)
+    .where(
+      sql`${reportVotes.reportId} in (
+        select ${reports.id} from ${reports}
+        where ${reports.expiresAt} < ${olderThan}
+      )`,
+    )
+    .returning({ reportId: reportVotes.reportId });
   return rows.length;
 }
 

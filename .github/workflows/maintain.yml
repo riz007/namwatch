@@ -27,8 +27,22 @@ jobs:
             exit 1
           fi
           code=$(curl -sS -o response.json -w '%{http_code}' --max-time 120 \
-            -X POST "$BASE_URL/api/internal/maintain" -H "x-ingest-secret: $INGEST_SECRET")
+            --retry 2 --retry-delay 10 \
+            -X POST "$BASE_URL/api/internal/maintain" \
+            -H "x-ingest-secret: $INGEST_SECRET" || echo 000)
           echo "HTTP $code"
-          cat response.json | head -c 2000
+          # Runs under `bash -e`: a missing response file would abort the step
+          # before the status is ever checked.
+          [ -f response.json ] && head -c 2000 response.json || true
           echo
-          [ "$code" = "200" ] || exit 1
+
+          # Retention is a promise made to users in the privacy notice, so a
+          # silent failure here is not acceptable — name the cause.
+          if [ "$code" = "401" ]; then
+            echo "::error::Rejected: INGEST_SECRET does not match the deployment"
+            exit 1
+          fi
+          if [ "$code" != "200" ]; then
+            echo "::error::Maintenance did not run (HTTP $code) — retention is overdue"
+            exit 1
+          fi

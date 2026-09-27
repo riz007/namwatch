@@ -1,0 +1,1 @@
+ALTER TABLE "reports" ALTER COLUMN "device_hash" DROP NOT NULL;

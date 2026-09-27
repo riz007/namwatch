@@ -295,8 +295,17 @@ export function ReportForm({ siteKey }: { siteKey: string | null }) {
               placeholder={t("report.notePlaceholder")}
               className="w-full rounded-[var(--radius-md)] border border-[var(--color-rule)] bg-[var(--color-paper)] p-3 text-[var(--color-ink)] placeholder:text-[var(--color-muted)]"
             />
-            <span className="tabular block pt-1 text-right text-[var(--text-xs)] text-[var(--color-muted)]">
-              {note.length} / {NOTE_MAX_LENGTH}
+            {/* The note is published verbatim. Under the PDPA a name, phone
+                number or health detail typed here is personal data we never
+                asked for and cannot un-publish, so say so before it is typed
+                rather than in a notice further down. */}
+            <span className="flex items-start justify-between gap-3 pt-1">
+              <span className="text-[var(--text-xs)] leading-relaxed text-[var(--color-muted)]">
+                {t("report.noteNoPersonal")}
+              </span>
+              <span className="tabular shrink-0 text-[var(--text-xs)] text-[var(--color-muted)]">
+                {note.length} / {NOTE_MAX_LENGTH}
+              </span>
             </span>
           </label>
         </div>

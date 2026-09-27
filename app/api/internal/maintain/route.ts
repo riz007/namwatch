@@ -3,9 +3,10 @@ import { apiError } from "@/lib/api/respond.ts";
 import { isDatabaseConfigured } from "@/lib/db/index.ts";
 import { pruneOldReadings } from "@/lib/db/queries/ingest.ts";
 import {
-  clearOldIpHashes,
+  clearOldIdentifiers,
   expireOverdueReports,
   pruneRateLimits,
+  pruneVotesForExpiredReports,
 } from "@/lib/db/queries/reports.ts";
 import { NextResponse } from "next/server";
 
@@ -30,10 +31,11 @@ export async function POST(request: Request) {
   const readingsPruned = await pruneOldReadings(
     new Date(now.getTime() - 14 * DAY_MS),
   );
-  // IP hashes are kept 7 days, for rate limiting only.
-  const ipHashesCleared = await clearOldIpHashes(
-    new Date(now.getTime() - 7 * DAY_MS),
-  );
+  // Device and IP hashes are kept 7 days, for rate limiting only. This is the
+  // window the privacy notice states, so it must not drift from that copy.
+  const sevenDaysAgo = new Date(now.getTime() - 7 * DAY_MS);
+  const identifiersCleared = await clearOldIdentifiers(sevenDaysAgo);
+  const votesPruned = await pruneVotesForExpiredReports(sevenDaysAgo);
   await pruneRateLimits(new Date(now.getTime() - DAY_MS));
 
   return NextResponse.json(
@@ -42,7 +44,8 @@ export async function POST(request: Request) {
       at: now.toISOString(),
       expired,
       readingsPruned,
-      ipHashesCleared,
+      identifiersCleared,
+      votesPruned,
     },
     { headers: { "cache-control": "no-store" } },
   );

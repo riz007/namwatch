@@ -139,8 +139,14 @@ export const reports = pgTable(
     h3R9: text("h3_r9").notNull(),
     regionId: text("region_id").references(() => regions.id),
     photoKey: text("photo_key"),
-    /** sha256(deviceId + SERVER_SALT). Never the raw id. */
-    deviceHash: text("device_hash").notNull(),
+    /**
+     * sha256(deviceId + SERVER_SALT). Never the raw id.
+     *
+     * Nullable because it is cleared on the seventh day, which is what the
+     * privacy notice promises. It is only needed to rate-limit the minutes
+     * around a submission; keeping it for the life of the row served nothing.
+     */
+    deviceHash: text("device_hash"),
     ipHash: text("ip_hash"),
     stillCount: integer("still_count").notNull().default(0),
     recededCount: integer("receded_count").notNull().default(0),

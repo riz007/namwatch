@@ -16,9 +16,9 @@ export const SITE_URL =
 export const APP = {
   /** Working name. See SPEC.md header before renaming. */
   nameKey: "app.name",
-  repoUrl: "https://github.com/namwatch/namwatch",
+  repoUrl: "https://github.com/riz007/namwatch",
   /** Sent upstream by every scraper/fetcher so agencies can identify us. */
-  userAgent: "NamWatch/0.1 (+https://github.com/namwatch/namwatch)",
+  userAgent: "NamWatch/0.1 (+https://github.com/riz007/namwatch)",
   timeZone: "Asia/Bangkok",
 } as const;
 
