@@ -1,6 +1,6 @@
-import { z } from 'zod';
-import { NOTE_MAX_LENGTH } from '@/config/app.config.ts';
-import { REPORT_KINDS, VOTE_KINDS } from '@/config/reports.ts';
+import { NOTE_MAX_LENGTH } from "@/config/app.config.ts";
+import { REPORT_KINDS, VOTE_KINDS } from "@/config/reports.ts";
+import { z } from "zod";
 
 /**
  * Every request body, query string and upstream payload is
@@ -8,7 +8,7 @@ import { REPORT_KINDS, VOTE_KINDS } from '@/config/reports.ts';
  * schemas live next to their adapter.
  */
 
-export const localeSchema = z.enum(['th', 'en']);
+export const localeSchema = z.enum(["th", "en"]);
 
 /** Thailand's rough bounds — a coordinate outside them is a bug or an attack. */
 const lonSchema = z.number().min(96).max(106);
@@ -34,9 +34,12 @@ export const newReportSchema = z.object({
     .trim()
     .max(NOTE_MAX_LENGTH)
     .optional()
-    .transform((v) => (v === '' ? undefined : v)),
+    .transform((v) => (v === "" ? undefined : v)),
   locale: localeSchema,
-  passableBy: z.array(z.enum(['motorbike', 'car', 'pickup', 'none'])).max(4).optional(),
+  passableBy: z
+    .array(z.enum(["motorbike", "car", "pickup", "none"]))
+    .max(4)
+    .optional(),
   /** Thai district name, if the client resolved one. */
   districtTh: z.string().max(80).optional(),
   /** Cloudflare Turnstile token. */
@@ -59,19 +62,19 @@ export const stationQuerySchema = z.object({
  * Photos are, so a file part is accepted and ignored for now.
  */
 export async function parseReportBody(request: Request): Promise<unknown> {
-  const contentType = request.headers.get('content-type') ?? '';
+  const contentType = request.headers.get("content-type") ?? "";
 
-  if (contentType.includes('application/json')) {
+  if (contentType.includes("application/json")) {
     return request.json();
   }
 
   const form = await request.formData();
   const raw: Record<string, unknown> = {};
   for (const [key, value] of form.entries()) {
-    if (typeof value !== 'string') continue;
-    if (key === 'passableBy') {
-      (raw['passableBy'] ??= [] as string[]) as string[];
-      (raw['passableBy'] as string[]).push(value);
+    if (typeof value !== "string") continue;
+    if (key === "passableBy") {
+      (raw["passableBy"] ??= [] as string[]) as string[];
+      (raw["passableBy"] as string[]).push(value);
     } else {
       raw[key] = value;
     }

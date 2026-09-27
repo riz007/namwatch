@@ -1,10 +1,10 @@
-import 'server-only';
+import "server-only";
 
-import { sql } from 'drizzle-orm';
-import { db } from '../index.ts';
-import { externalReports, stationReadings, stations } from '../schema.ts';
-import { resolveRegionId } from '@/lib/geo/region.ts';
-import type { IngestPayload } from '@/lib/sources/types.ts';
+import { resolveRegionId } from "@/lib/geo/region.ts";
+import type { IngestPayload } from "@/lib/sources/types.ts";
+import { sql } from "drizzle-orm";
+import { db } from "../index.ts";
+import { externalReports, stationReadings, stations } from "../schema.ts";
 
 /**
  * Persisting a normalised adapter payload. SQL lives only here.
@@ -19,9 +19,10 @@ import type { IngestPayload } from '@/lib/sources/types.ts';
 
 const CHUNK = 200;
 
-const chunk = <T,>(items: readonly T[], size = CHUNK): T[][] => {
+const chunk = <T>(items: readonly T[], size = CHUNK): T[][] => {
   const out: T[][] = [];
-  for (let i = 0; i < items.length; i += size) out.push(items.slice(i, i + size));
+  for (let i = 0; i < items.length; i += size)
+    out.push(items.slice(i, i + size));
   return out;
 };
 
@@ -31,7 +32,9 @@ export type IngestCounts = {
   externalReports: number;
 };
 
-export async function persistPayload(payload: IngestPayload): Promise<IngestCounts> {
+export async function persistPayload(
+  payload: IngestPayload,
+): Promise<IngestCounts> {
   const counts: IngestCounts = { stations: 0, readings: 0, externalReports: 0 };
 
   for (const batch of chunk(payload.stations)) {
@@ -145,9 +148,17 @@ export async function pruneOldReadings(olderThan: Date): Promise<number> {
 }
 
 export async function seedRegions(
-  regions: readonly { id: string; level: string; parentId: string | null; nameTh: string; nameEn: string; slug: string; enabled: boolean }[],
+  regions: readonly {
+    id: string;
+    level: string;
+    parentId: string | null;
+    nameTh: string;
+    nameEn: string;
+    slug: string;
+    enabled: boolean;
+  }[],
 ): Promise<number> {
-  const { regions: table } = await import('../schema.ts');
+  const { regions: table } = await import("../schema.ts");
   for (const batch of chunk(regions)) {
     await db()
       .insert(table)

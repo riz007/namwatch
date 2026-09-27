@@ -1,7 +1,7 @@
-import { getTranslations } from 'next-intl/server';
-import { Link } from '@/i18n/navigation.ts';
-import { LocaleSwitch } from './LocaleSwitch.tsx';
-import { LogoMark } from './Logo.tsx';
+import { Link } from "@/i18n/navigation.ts";
+import { getTranslations } from "next-intl/server";
+import { LocaleSwitch } from "./LocaleSwitch.tsx";
+import { LogoMark } from "./Logo.tsx";
 
 /**
  * N9 · edge-aligned minimal. An app screen's chrome, not a marketing masthead —
@@ -20,7 +20,9 @@ export async function SiteHeader() {
         {/* The one place the accent appears at full strength, so it reads as
             identity rather than as data. */}
         <LogoMark className="size-6 shrink-0 rounded-[5px]" />
-        <span className="text-[var(--text-lg)] tracking-tight">{t('app.name')}</span>
+        <span className="text-[var(--text-lg)] tracking-tight">
+          {t("app.name")}
+        </span>
       </Link>
 
       <div className="ml-auto flex items-center">
@@ -29,9 +31,12 @@ export async function SiteHeader() {
           data-touch
           className="inline-flex min-h-[var(--size-touch)] items-center px-2 text-[var(--text-sm)] text-[var(--color-ink-2)] transition-colors duration-[var(--dur-fast)] hover:text-[var(--color-ink)]"
         >
-          {t('nav.help')}
+          {t("nav.help")}
         </Link>
-        <span aria-hidden="true" className="mx-1 h-4 w-px bg-[var(--color-rule)]" />
+        <span
+          aria-hidden="true"
+          className="mx-1 h-4 w-px bg-[var(--color-rule)]"
+        />
         <LocaleSwitch />
       </div>
     </header>

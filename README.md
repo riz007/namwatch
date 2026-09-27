@@ -47,12 +47,12 @@ committed fixtures and prints what each one produced — no network, no database
 pnpm typecheck && pnpm lint && pnpm test && pnpm i18n:check && pnpm check:cvd
 ```
 
-| Command | What it guards |
-|---|---|
-| `pnpm i18n:check` | Thai and English message files cannot drift apart |
-| `pnpm check:cvd` | The depth palette stays distinguishable under colour-vision deficiency |
-| `pnpm check:bundle` | Initial JS budget, and that the map chunk stays lazy |
-| `pnpm test` | Source adapters run against committed fixtures, never the network |
+| Command             | What it guards                                                         |
+| ------------------- | ---------------------------------------------------------------------- |
+| `pnpm i18n:check`   | Thai and English message files cannot drift apart                      |
+| `pnpm check:cvd`    | The depth palette stays distinguishable under colour-vision deficiency |
+| `pnpm check:bundle` | Initial JS budget, and that the map chunk stays lazy                   |
+| `pnpm test`         | Source adapters run against committed fixtures, never the network      |
 
 ## Data sources and attribution
 

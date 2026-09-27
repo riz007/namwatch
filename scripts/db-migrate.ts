@@ -12,17 +12,19 @@
  * Guardrail (): refuses a non-local target unless CONFIRM_MIGRATE names
  * that host, so a stray `pnpm db:migrate` can never touch production.
  */
-import { readdirSync, readFileSync } from 'node:fs';
-import { join } from 'node:path';
-import postgres from 'postgres';
-import './load-env.ts';
+import { readdirSync, readFileSync } from "node:fs";
+import { join } from "node:path";
+import postgres from "postgres";
+import "./load-env.ts";
 
-const DIR = 'supabase/migrations';
-const LOCAL_HOSTS = new Set(['localhost', '127.0.0.1', '::1', 'db.localhost']);
+const DIR = "supabase/migrations";
+const LOCAL_HOSTS = new Set(["localhost", "127.0.0.1", "::1", "db.localhost"]);
 
 const url = process.env.DATABASE_URL_DIRECT ?? process.env.DATABASE_URL;
 if (!url) {
-  console.error('✗ Set DATABASE_URL_DIRECT (port 5432) in .env.local before migrating.');
+  console.error(
+    "✗ Set DATABASE_URL_DIRECT (port 5432) in .env.local before migrating.",
+  );
   process.exit(1);
 }
 
@@ -50,23 +52,25 @@ try {
   `;
 
   const applied = new Set(
-    (await sql<{ name: string }[]>`select name from _migrations`).map((r) => r.name),
+    (await sql<{ name: string }[]>`select name from _migrations`).map(
+      (r) => r.name,
+    ),
   );
   const files = readdirSync(DIR)
-    .filter((f) => f.endsWith('.sql'))
+    .filter((f) => f.endsWith(".sql"))
     .sort();
 
   let count = 0;
   for (const file of files) {
     if (applied.has(file)) continue;
-    const body = readFileSync(join(DIR, file), 'utf8');
+    const body = readFileSync(join(DIR, file), "utf8");
     process.stdout.write(`  applying ${file} … `);
     // Each file is one transaction: a failure leaves nothing half-applied.
     await sql.begin(async (tx) => {
       await tx.unsafe(body);
       await tx`insert into _migrations (name) values (${file})`;
     });
-    console.log('ok');
+    console.log("ok");
     count++;
   }
 
@@ -76,7 +80,10 @@ try {
       : `✓ applied ${count} migration(s) to ${host}`,
   );
 } catch (error) {
-  console.error('✗ migration failed:', error instanceof Error ? error.message : error);
+  console.error(
+    "✗ migration failed:",
+    error instanceof Error ? error.message : error,
+  );
   process.exitCode = 1;
 } finally {
   await sql.end();

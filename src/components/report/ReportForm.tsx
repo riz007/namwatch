@@ -1,21 +1,21 @@
-'use client';
+"use client";
 
-import { useRef, useState, type FormEvent, type ReactNode } from 'react';
-import { useLocale, useTranslations } from 'next-intl';
-import { Link } from '@/i18n/navigation.ts';
-import { DEPTH_BANDS, type DepthBandValue } from '@/config/depth-bands.ts';
-import { NOTE_MAX_LENGTH } from '@/config/app.config.ts';
-import { REPORT_KINDS } from '@/config/reports.ts';
-import { DepthPictogram } from '../DepthPictogram.tsx';
-import { useGeolocation } from '../flood/useGeolocation.ts';
-import { Turnstile, type TurnstileHandle } from './Turnstile.tsx';
-import { HelpNotice } from './HelpNotice.tsx';
-import { track } from '@/lib/analytics.ts';
+import { NOTE_MAX_LENGTH } from "@/config/app.config.ts";
+import { DEPTH_BANDS, type DepthBandValue } from "@/config/depth-bands.ts";
+import { REPORT_KINDS } from "@/config/reports.ts";
+import { Link } from "@/i18n/navigation.ts";
+import { track } from "@/lib/analytics.ts";
+import { useLocale, useTranslations } from "next-intl";
+import { useRef, useState, type FormEvent, type ReactNode } from "react";
+import { DepthPictogram } from "../DepthPictogram.tsx";
+import { useGeolocation } from "../flood/useGeolocation.ts";
+import { HelpNotice } from "./HelpNotice.tsx";
+import { Turnstile, type TurnstileHandle } from "./Turnstile.tsx";
 
 type Kind = (typeof REPORT_KINDS)[number];
-type Vehicle = 'motorbike' | 'car' | 'pickup' | 'none';
+type Vehicle = "motorbike" | "car" | "pickup" | "none";
 
-const VEHICLES: readonly Vehicle[] = ['motorbike', 'car', 'pickup', 'none'];
+const VEHICLES: readonly Vehicle[] = ["motorbike", "car", "pickup", "none"];
 
 /**
  * One scrolling form, not a wizard. During a flood people abandon multi-step
@@ -23,51 +23,62 @@ const VEHICLES: readonly Vehicle[] = ['motorbike', 'car', 'pickup', 'none'];
  */
 export function ReportForm({ siteKey }: { siteKey: string | null }) {
   const t = useTranslations();
-  const locale = useLocale() as 'th' | 'en';
+  const locale = useLocale() as "th" | "en";
   const geo = useGeolocation();
 
   const [depth, setDepth] = useState<DepthBandValue | null>(null);
   const [kind, setKind] = useState<Kind | null>(null);
-  const [note, setNote] = useState('');
+  const [note, setNote] = useState("");
   const [passable, setPassable] = useState<Vehicle[]>([]);
-  const [state, setState] = useState<'editing' | 'sending' | 'sent' | 'error'>('editing');
+  const [state, setState] = useState<"editing" | "sending" | "sent" | "error">(
+    "editing",
+  );
   const [problem, setProblem] = useState<string | null>(null);
   const turnstile = useRef<TurnstileHandle | null>(null);
 
-  const position = geo.state.status === 'ready' ? geo.state : null;
-  const missing = !position ? 'location' : depth === null ? 'depth' : kind === null ? 'kind' : null;
+  const position = geo.state.status === "ready" ? geo.state : null;
+  const missing = !position
+    ? "location"
+    : depth === null
+      ? "depth"
+      : kind === null
+        ? "kind"
+        : null;
   const blocked = siteKey === null;
 
   const started = useRef(false);
   const noteStarted = (): void => {
     if (!started.current) {
       started.current = true;
-      track('report_started');
+      track("report_started");
     }
   };
 
   const toggleVehicle = (v: Vehicle): void =>
-    setPassable((prev) => (prev.includes(v) ? prev.filter((x) => x !== v) : [...prev, v]));
+    setPassable((prev) =>
+      prev.includes(v) ? prev.filter((x) => x !== v) : [...prev, v],
+    );
 
   async function submit(event: FormEvent): Promise<void> {
     event.preventDefault();
-    if (missing !== null || !position || depth === null || kind === null) return;
+    if (missing !== null || !position || depth === null || kind === null)
+      return;
     if (blocked) return;
 
-    setState('sending');
+    setState("sending");
     setProblem(null);
     try {
       // Run the challenge now, so the token is fresh when the server checks it.
       const token = await turnstile.current?.getToken();
       if (!token) {
-        setProblem(t('report.verifyFailed'));
-        setState('error');
+        setProblem(t("report.verifyFailed"));
+        setState("error");
         return;
       }
 
-      const response = await fetch('/api/v1/reports', {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
+      const response = await fetch("/api/v1/reports", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
         body: JSON.stringify({
           kind,
           depthBand: depth,
@@ -85,23 +96,27 @@ export function ReportForm({ siteKey }: { siteKey: string | null }) {
           error?: { message_th: string; message_en: string };
         } | null;
         setProblem(
-          body?.error ? (locale === 'th' ? body.error.message_th : body.error.message_en) : null,
+          body?.error
+            ? locale === "th"
+              ? body.error.message_th
+              : body.error.message_en
+            : null,
         );
-        setState('error');
-        track('report_failed');
+        setState("error");
+        track("report_failed");
         // The token is single-use, so a retry needs a fresh one.
         turnstile.current?.reset();
         return;
       }
-      setState('sent');
-      track('report_submitted', { depth_band: depth, report_kind: kind });
+      setState("sent");
+      track("report_submitted", { depth_band: depth, report_kind: kind });
     } catch {
-      setState('error');
+      setState("error");
       turnstile.current?.reset();
     }
   }
 
-  if (state === 'sent') return <Success isHelp={kind === 'help'} />;
+  if (state === "sent") return <Success isHelp={kind === "help"} />;
 
   return (
     <form onSubmit={submit} className="space-y-7 pb-4">
@@ -110,36 +125,46 @@ export function ReportForm({ siteKey }: { siteKey: string | null }) {
           role="status"
           className="rounded-[var(--radius-md)] border border-[var(--color-rule)] bg-[var(--color-paper-2)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-ink-2)]"
         >
-          {t('report.unavailable')}
+          {t("report.unavailable")}
         </p>
       )}
 
-      <Step n={1} title={t('report.locationStep')}>
+      <Step n={1} title={t("report.locationStep")}>
         <button
           type="button"
           onClick={geo.locate}
-          disabled={geo.state.status === 'locating'}
+          disabled={geo.state.status === "locating"}
           className="btn press w-full border-[var(--color-accent)] bg-[var(--color-accent-soft)] text-[var(--color-accent)] hover:bg-[color-mix(in_oklab,var(--color-accent-soft)_80%,var(--color-accent))] disabled:opacity-60"
         >
           <LocateGlyph />
-          {geo.state.status === 'locating' ? t('common.loading') : t('report.useGps')}
+          {geo.state.status === "locating"
+            ? t("common.loading")
+            : t("report.useGps")}
         </button>
 
         {position && (
           <p className="tabular pt-2 text-[var(--text-sm)] text-[var(--color-ink-2)]">
             {position.lat.toFixed(5)}, {position.lon.toFixed(5)}
-            <span className="text-[var(--color-muted)]"> · ±{Math.round(position.accuracyM)} m</span>
+            <span className="text-[var(--color-muted)]">
+              {" "}
+              · ±{Math.round(position.accuracyM)} m
+            </span>
           </p>
         )}
-        {(geo.state.status === 'denied' || geo.state.status === 'unavailable') && (
+        {(geo.state.status === "denied" ||
+          geo.state.status === "unavailable") && (
           <p className="pt-2 text-[var(--text-sm)] text-[var(--color-ink-2)]">
-            {t('report.gpsDenied')}
+            {t("report.gpsDenied")}
           </p>
         )}
       </Step>
 
-      <Step n={2} title={t('report.depthStep')}>
-        <div role="radiogroup" aria-label={t('report.depthStep')} className="grid gap-2.5">
+      <Step n={2} title={t("report.depthStep")}>
+        <div
+          role="radiogroup"
+          aria-label={t("report.depthStep")}
+          className="grid gap-2.5"
+        >
           {DEPTH_BANDS.map((b) => {
             const active = depth === b.band;
             return (
@@ -157,15 +182,18 @@ export function ReportForm({ siteKey }: { siteKey: string | null }) {
                   backgroundColor: `var(--color-${b.token})`,
                   color: `var(--color-${b.token}-on)`,
                   boxShadow: active
-                    ? '0 0 0 2.5px var(--color-ink), 0 4px 12px rgb(0 0 0 / 0.2)'
+                    ? "0 0 0 2.5px var(--color-ink), 0 4px 12px rgb(0 0 0 / 0.2)"
                     : `inset 0 0 0 1.5px var(--color-${b.token}-border)`,
                 }}
               >
                 <DepthPictogram band={b.band} className="size-7 shrink-0" />
                 <span className="min-w-0 flex-1">
-                  <span className="block font-semibold">{t(`depth.${b.band}.label`)}</span>
+                  <span className="block font-semibold">
+                    {t(`depth.${b.band}.label`)}
+                  </span>
                   <span className="block text-[var(--text-xs)] opacity-80">
-                    {t(`depth.${b.band}.range`)} · {t(`depth.${b.band}.passability`)}
+                    {t(`depth.${b.band}.range`)} ·{" "}
+                    {t(`depth.${b.band}.passability`)}
                   </span>
                 </span>
               </button>
@@ -174,8 +202,12 @@ export function ReportForm({ siteKey }: { siteKey: string | null }) {
         </div>
       </Step>
 
-      <Step n={3} title={t('report.kindStep')}>
-        <div role="radiogroup" aria-label={t('report.kindStep')} className="grid grid-cols-2 gap-2.5">
+      <Step n={3} title={t("report.kindStep")}>
+        <div
+          role="radiogroup"
+          aria-label={t("report.kindStep")}
+          className="grid grid-cols-2 gap-2.5"
+        >
           {REPORT_KINDS.map((k) => (
             <button
               key={k}
@@ -184,10 +216,10 @@ export function ReportForm({ siteKey }: { siteKey: string | null }) {
               aria-checked={kind === k}
               onClick={() => setKind(k)}
               className={
-                'btn press ' +
+                "btn press " +
                 (kind === k
-                  ? 'border-[var(--color-accent)] bg-[var(--color-accent-soft)] text-[var(--color-accent)] shadow-[0_0_0_1px_var(--color-accent)]'
-                  : 'btn-secondary')
+                  ? "border-[var(--color-accent)] bg-[var(--color-accent-soft)] text-[var(--color-accent)] shadow-[0_0_0_1px_var(--color-accent)]"
+                  : "btn-secondary")
               }
             >
               {t(`kind.${k}`)}
@@ -195,14 +227,14 @@ export function ReportForm({ siteKey }: { siteKey: string | null }) {
           ))}
         </div>
 
-        {kind === 'help' && <HelpNotice />}
+        {kind === "help" && <HelpNotice />}
       </Step>
 
-      <Step n={4} title={t('report.noteStep')} optional>
+      <Step n={4} title={t("report.noteStep")} optional>
         <div className="space-y-3">
           <div>
             <span className="block pb-1.5 text-[var(--text-sm)] text-[var(--color-ink-2)]">
-              {t('report.passableStep')}
+              {t("report.passableStep")}
             </span>
             <div className="flex flex-wrap gap-2.5">
               {VEHICLES.map((v) => (
@@ -220,12 +252,14 @@ export function ReportForm({ siteKey }: { siteKey: string | null }) {
           </div>
 
           <label className="block">
-            <span className="sr-only">{t('report.noteStep')}</span>
+            <span className="sr-only">{t("report.noteStep")}</span>
             <textarea
               value={note}
-              onChange={(e) => setNote(e.target.value.slice(0, NOTE_MAX_LENGTH))}
+              onChange={(e) =>
+                setNote(e.target.value.slice(0, NOTE_MAX_LENGTH))
+              }
               rows={3}
-              placeholder={t('report.notePlaceholder')}
+              placeholder={t("report.notePlaceholder")}
               className="w-full rounded-[var(--radius-md)] border border-[var(--color-rule)] bg-[var(--color-paper)] p-3 text-[var(--color-ink)] placeholder:text-[var(--color-muted)]"
             />
             <span className="tabular block pt-1 text-right text-[var(--text-xs)] text-[var(--color-muted)]">
@@ -235,16 +269,20 @@ export function ReportForm({ siteKey }: { siteKey: string | null }) {
         </div>
       </Step>
 
-      <p className="text-[var(--text-sm)] text-[var(--color-muted)]">{t('report.privacyNote')}</p>
+      <p className="text-[var(--text-sm)] text-[var(--color-muted)]">
+        {t("report.privacyNote")}
+      </p>
 
-      {state === 'error' && (
+      {state === "error" && (
         <p
           role="alert"
           className="rounded-[var(--radius-md)] border-2 border-[var(--color-alert)] bg-[var(--color-paper-2)] px-3 py-2"
         >
-          <strong className="block text-[var(--color-ink)]">{t('report.errorTitle')}</strong>
+          <strong className="block text-[var(--color-ink)]">
+            {t("report.errorTitle")}
+          </strong>
           <span className="text-[var(--text-sm)] text-[var(--color-ink-2)]">
-            {problem ?? t('report.errorBody')}
+            {problem ?? t("report.errorBody")}
           </span>
         </p>
       )}
@@ -252,7 +290,9 @@ export function ReportForm({ siteKey }: { siteKey: string | null }) {
       {siteKey !== null && (
         <Turnstile
           siteKey={siteKey}
-          onError={(reason) => setProblem(`${t('report.verifyFailed')} (${reason})`)}
+          onError={(reason) =>
+            setProblem(`${t("report.verifyFailed")} (${reason})`)
+          }
           handleRef={turnstile}
         />
       )}
@@ -262,23 +302,23 @@ export function ReportForm({ siteKey }: { siteKey: string | null }) {
       <div className="sticky bottom-0 -mx-4 space-y-2 border-t border-[var(--color-rule)] bg-[var(--color-paper)] px-4 pt-3 pb-4">
         <button
           type="submit"
-          disabled={missing !== null || state === 'sending' || blocked}
+          disabled={missing !== null || state === "sending" || blocked}
           className="flex min-h-[calc(var(--size-touch)+4px)] w-full items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-accent)] px-4 text-[var(--text-lg)] font-semibold text-[var(--color-accent-ink)] shadow-[0_2px_10px_rgb(0_0_0/0.18)] transition-transform duration-[var(--dur-fast)] active:translate-y-px disabled:opacity-45"
         >
-          {state === 'sending'
-            ? t('report.submitting')
-            : kind === 'help'
-              ? t('report.submitHelp')
-              : t('report.submit')}
+          {state === "sending"
+            ? t("report.submitting")
+            : kind === "help"
+              ? t("report.submitHelp")
+              : t("report.submit")}
         </button>
         {missing !== null && (
           <p className="text-center text-[var(--text-sm)] text-[var(--color-muted)]">
             {t(
-              missing === 'location'
-                ? 'report.locationRequired'
-                : missing === 'depth'
-                  ? 'report.depthRequired'
-                  : 'report.kindRequired',
+              missing === "location"
+                ? "report.locationRequired"
+                : missing === "depth"
+                  ? "report.depthRequired"
+                  : "report.kindRequired",
             )}
           </p>
         )}
@@ -311,7 +351,7 @@ function Step({
   optional?: boolean;
   children: ReactNode;
 }) {
-  const t = useTranslations('common');
+  const t = useTranslations("common");
   return (
     <section className="space-y-2.5">
       <h2 className="flex items-center gap-2 text-[var(--text-lg)] font-bold text-[var(--color-ink)]">
@@ -321,7 +361,7 @@ function Step({
         {title}
         {optional === true && (
           <span className="text-[var(--text-xs)] font-normal text-[var(--color-muted)]">
-            ({t('optional')})
+            ({t("optional")})
           </span>
         )}
       </h2>
@@ -358,17 +398,19 @@ function Success({ isHelp }: { isHelp: boolean }) {
       </div>
       <div>
         <h2 className="text-[var(--text-xl)] font-bold text-[var(--color-ink)]">
-          {isHelp ? t('report.successHelpTitle') : t('report.successTitle')}
+          {isHelp ? t("report.successHelpTitle") : t("report.successTitle")}
         </h2>
         <p className="pt-1 text-[var(--color-ink-2)]">
-          {isHelp ? t('report.successHelpBody') : t('report.successBody')}
+          {isHelp ? t("report.successHelpBody") : t("report.successBody")}
         </p>
       </div>
 
       <div className="rounded-[var(--radius-md)] border border-[var(--color-rule)] bg-[var(--color-paper-2)] p-4 text-left">
-        <h3 className="font-semibold text-[var(--color-ink)]">{t('report.traffyTitle')}</h3>
+        <h3 className="font-semibold text-[var(--color-ink)]">
+          {t("report.traffyTitle")}
+        </h3>
         <p className="pt-1 text-[var(--text-sm)] text-[var(--color-ink-2)]">
-          {t('report.traffyBody')}
+          {t("report.traffyBody")}
         </p>
         <a
           href="https://share.traffy.in.th/teamchadchart"
@@ -377,7 +419,7 @@ function Success({ isHelp }: { isHelp: boolean }) {
           data-touch
           className="mt-2 inline-flex min-h-[var(--size-touch)] items-center font-medium text-[var(--color-accent)] underline underline-offset-4"
         >
-          {t('report.traffyCta')}
+          {t("report.traffyCta")}
         </a>
       </div>
 
@@ -386,7 +428,7 @@ function Success({ isHelp }: { isHelp: boolean }) {
         data-touch
         className="inline-flex min-h-[var(--size-touch)] items-center font-semibold text-[var(--color-accent)] underline underline-offset-4"
       >
-        {t('report.backToMap')}
+        {t("report.backToMap")}
       </Link>
     </div>
   );

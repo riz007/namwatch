@@ -5,7 +5,7 @@ name: Maintain
 # 19:00 UTC is 02:00 Asia/Bangkok — the quietest hour for our users.
 on:
   schedule:
-    - cron: '0 19 * * *'
+    - cron: "0 19 * * *"
   workflow_dispatch:
 
 concurrency:

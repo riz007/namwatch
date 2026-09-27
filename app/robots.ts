@@ -1,15 +1,15 @@
-import type { MetadataRoute } from 'next';
-import { SITE_URL } from '@/config/app.config.ts';
+import { SITE_URL } from "@/config/app.config.ts";
+import type { MetadataRoute } from "next";
 
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
       {
-        userAgent: '*',
-        allow: '/',
+        userAgent: "*",
+        allow: "/",
         // Nothing under these is useful to a crawler, and the internal routes
         // should not be probed.
-        disallow: ['/api/'],
+        disallow: ["/api/"],
       },
     ],
     sitemap: `${SITE_URL}/sitemap.xml`,

@@ -3,13 +3,13 @@ import type {
   NormalizedReading,
   NormalizedStation,
   ReadingStatus,
-} from '../types.ts';
+} from "../types.ts";
 import {
   rainPayloadSchema,
   waterLevelPayloadSchema,
   type RainReading,
   type WaterLevelReading,
-} from './schema.ts';
+} from "./schema.ts";
 
 /** Water level is metres MSL, rain is millimetres. */
 
@@ -21,7 +21,7 @@ import {
 export const STALE_READING_HOURS = 3;
 
 /** Thailand has not observed DST since 1976, so the offset is a constant +07:00. */
-const BANGKOK_OFFSET = '+07:00';
+const BANGKOK_OFFSET = "+07:00";
 
 /**
  * Upstream datetimes are `"YYYY-MM-DD HH:MM"` wall-clock in Asia/Bangkok with no
@@ -29,16 +29,20 @@ const BANGKOK_OFFSET = '+07:00';
  * production is UTC — a silent seven-hour shift. The offset is always explicit.
  */
 export function parseBangkokTimestamp(value: string): Date | null {
-  const match = /^(\d{4}-\d{2}-\d{2})[ T](\d{2}:\d{2})(?::(\d{2}))?$/.exec(value.trim());
+  const match = /^(\d{4}-\d{2}-\d{2})[ T](\d{2}:\d{2})(?::(\d{2}))?$/.exec(
+    value.trim(),
+  );
   if (!match) return null;
-  const date = new Date(`${match[1]}T${match[2]}:${match[3] ?? '00'}${BANGKOK_OFFSET}`);
+  const date = new Date(
+    `${match[1]}T${match[2]}:${match[3] ?? "00"}${BANGKOK_OFFSET}`,
+  );
   return Number.isNaN(date.getTime()) ? null : date;
 }
 
 /** Upstream mixes numeric strings and numbers. */
 export function toNumber(value: unknown): number | null {
-  if (value === null || value === undefined || value === '') return null;
-  const n = typeof value === 'number' ? value : Number(value);
+  if (value === null || value === undefined || value === "") return null;
+  const n = typeof value === "number" ? value : Number(value);
   return Number.isFinite(n) ? n : null;
 }
 
@@ -51,9 +55,13 @@ const text = (v: string | null | undefined): string | null => {
  * Some stations publish `min_bank == 0` alongside `ground_level == 0`, which
  * yields nonsense downstream — one reports 279 m "over bank". Treat as unknown.
  */
-export function hasUsableBank(minBank: number | null, groundLevel: number | null): boolean {
+export function hasUsableBank(
+  minBank: number | null,
+  groundLevel: number | null,
+): boolean {
   if (minBank === null) return false;
-  if (minBank === 0 && (groundLevel === null || groundLevel === 0)) return false;
+  if (minBank === 0 && (groundLevel === null || groundLevel === 0))
+    return false;
   if (groundLevel !== null && minBank === groundLevel) return false;
   return true;
 }
@@ -73,18 +81,18 @@ export function deriveStatus(
   observedAt: Date | null,
   now: Date,
 ): ReadingStatus {
-  if (levelMsl === null || observedAt === null) return 'unknown';
+  if (levelMsl === null || observedAt === null) return "unknown";
 
   const ageHours = (now.getTime() - observedAt.getTime()) / 3_600_000;
-  if (ageHours > STALE_READING_HOURS) return 'unknown';
+  if (ageHours > STALE_READING_HOURS) return "unknown";
 
-  if (!hasUsableBank(minBank, groundLevel)) return 'unknown';
+  if (!hasUsableBank(minBank, groundLevel)) return "unknown";
 
   const freeboard = levelMsl - (minBank as number);
-  if (freeboard >= 0) return 'critical';
-  if (freeboard >= -0.3) return 'warning';
-  if (freeboard >= -1.0) return 'watch';
-  return 'normal';
+  if (freeboard >= 0) return "critical";
+  if (freeboard >= -0.3) return "warning";
+  if (freeboard >= -1.0) return "watch";
+  return "normal";
 }
 
 /**
@@ -93,12 +101,14 @@ export function deriveStatus(
  * in different units. makes `(source, external_id)` unique, so the
  * feed is folded into the id to keep them distinct rows.
  */
-const externalIdFor = (stationId: number, kind: NormalizedStation['kind']): string =>
-  `${kind === 'rain' ? 'rain' : 'wl'}:${stationId}`;
+const externalIdFor = (
+  stationId: number,
+  kind: NormalizedStation["kind"],
+): string => `${kind === "rain" ? "rain" : "wl"}:${stationId}`;
 
 function stationFrom(
   reading: WaterLevelReading | RainReading,
-  kind: NormalizedStation['kind'],
+  kind: NormalizedStation["kind"],
 ): NormalizedStation | null {
   const s = reading.station;
   const lon = toNumber(s.tele_station_long);
@@ -111,7 +121,7 @@ function stationFrom(
   const usableBank = hasUsableBank(minBank, groundLevel);
 
   return {
-    source: 'thaiwater',
+    source: "thaiwater",
     externalId: externalIdFor(s.id, kind),
     kind,
     nameTh: text(s.tele_station_name?.th),
@@ -127,13 +137,17 @@ function stationFrom(
       provinceTh: reading.geocode?.province_name?.th ?? null,
       provinceEn: reading.geocode?.province_name?.en ?? null,
       // Kept raw and unused for severity — see docs §4.
-      situationLevel: 'situation_level' in reading ? (reading.situation_level ?? null) : null,
+      situationLevel:
+        "situation_level" in reading ? (reading.situation_level ?? null) : null,
       bankGeometryUsable: usableBank,
     },
   };
 }
 
-export function normalizeWaterLevel(raw: unknown, now: Date = new Date()): IngestPayload {
+export function normalizeWaterLevel(
+  raw: unknown,
+  now: Date = new Date(),
+): IngestPayload {
   const parsed = waterLevelPayloadSchema.parse(raw);
   const stations: NormalizedStation[] = [];
   const readings: NormalizedReading[] = [];
@@ -142,7 +156,7 @@ export function normalizeWaterLevel(raw: unknown, now: Date = new Date()): Inges
     // Canals and rivers are not distinguished by the feed; `river_name` exists
     // on some items but is unreliable, so everything is a canal/river level and
     // the distinction is left to the UI, which shows the station name anyway.
-    const station = stationFrom(item, 'canal_level');
+    const station = stationFrom(item, "canal_level");
     if (!station) continue;
 
     const observedAt = parseBangkokTimestamp(item.waterlevel_datetime);
@@ -152,7 +166,7 @@ export function normalizeWaterLevel(raw: unknown, now: Date = new Date()): Inges
 
     if (observedAt !== null && levelMsl !== null) {
       readings.push({
-        source: 'thaiwater',
+        source: "thaiwater",
         externalId: station.externalId,
         observedAt,
         // Metres MSL.
@@ -177,7 +191,7 @@ export function normalizeRain(raw: unknown): IngestPayload {
   const readings: NormalizedReading[] = [];
 
   for (const item of parsed.data) {
-    const station = stationFrom(item, 'rain');
+    const station = stationFrom(item, "rain");
     if (!station) continue;
 
     const observedAt = parseBangkokTimestamp(item.rainfall_datetime);
@@ -187,7 +201,7 @@ export function normalizeRain(raw: unknown): IngestPayload {
 
     if (observedAt !== null && mm !== null) {
       readings.push({
-        source: 'thaiwater',
+        source: "thaiwater",
         externalId: station.externalId,
         observedAt,
         // Millimetres.
@@ -195,7 +209,7 @@ export function normalizeRain(raw: unknown): IngestPayload {
         // Rainfall is graded on its own scale, not the water-depth one. The
         // status column stays 'unknown' because it describes flood severity;
         // the intensity band is derived from the value at read time.
-        status: 'unknown',
+        status: "unknown",
       });
     }
   }
@@ -204,7 +218,9 @@ export function normalizeRain(raw: unknown): IngestPayload {
 }
 
 /** Merges the two feeds, de-duplicating stations that appear in both. */
-export function mergePayloads(...payloads: readonly IngestPayload[]): IngestPayload {
+export function mergePayloads(
+  ...payloads: readonly IngestPayload[]
+): IngestPayload {
   const stations = new Map<string, NormalizedStation>();
   const readings = new Map<string, NormalizedReading>();
 
@@ -213,7 +229,10 @@ export function mergePayloads(...payloads: readonly IngestPayload[]): IngestPayl
     // Dedupe on (station, observed_at) — the upstream row id is per-reading and
     // changes whenever telemetry lands, so it is not a stable key (docs §5).
     for (const r of p.readings) {
-      readings.set(`${r.source}:${r.externalId}:${r.observedAt.toISOString()}`, r);
+      readings.set(
+        `${r.source}:${r.externalId}:${r.observedAt.toISOString()}`,
+        r,
+      );
     }
   }
 

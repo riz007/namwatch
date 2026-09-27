@@ -14,7 +14,13 @@
  * sharing a colour would assert they are the same.
  */
 
-export const RAIN_BANDS = ['none', 'light', 'moderate', 'heavy', 'extreme'] as const;
+export const RAIN_BANDS = [
+  "none",
+  "light",
+  "moderate",
+  "heavy",
+  "extreme",
+] as const;
 export type RainBand = (typeof RAIN_BANDS)[number];
 
 export type RainBandDef = {
@@ -26,16 +32,26 @@ export type RainBandDef = {
 };
 
 export const RAIN_BAND_DEFS: readonly RainBandDef[] = [
-  { band: 'none', token: 'rain-none', labelKey: 'rain.none', minMm: 0 },
-  { band: 'light', token: 'rain-light', labelKey: 'rain.light', minMm: 0.1 },
-  { band: 'moderate', token: 'rain-moderate', labelKey: 'rain.moderate', minMm: 10.1 },
-  { band: 'heavy', token: 'rain-heavy', labelKey: 'rain.heavy', minMm: 35.1 },
-  { band: 'extreme', token: 'rain-extreme', labelKey: 'rain.extreme', minMm: 90.1 },
+  { band: "none", token: "rain-none", labelKey: "rain.none", minMm: 0 },
+  { band: "light", token: "rain-light", labelKey: "rain.light", minMm: 0.1 },
+  {
+    band: "moderate",
+    token: "rain-moderate",
+    labelKey: "rain.moderate",
+    minMm: 10.1,
+  },
+  { band: "heavy", token: "rain-heavy", labelKey: "rain.heavy", minMm: 35.1 },
+  {
+    band: "extreme",
+    token: "rain-extreme",
+    labelKey: "rain.extreme",
+    minMm: 90.1,
+  },
 ] as const;
 
 export function rainBandFor(mm: number | null | undefined): RainBand | null {
   if (mm === null || mm === undefined || !Number.isFinite(mm)) return null;
-  let match: RainBand = 'none';
+  let match: RainBand = "none";
   for (const def of RAIN_BAND_DEFS) {
     if (mm >= def.minMm) match = def.band;
   }

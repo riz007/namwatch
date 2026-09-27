@@ -5,18 +5,20 @@
  * for a first run or for checking a source by hand. `ingest:local` stays
  * fixtures-only so tests and CI never reach the network.
  */
-import './load-env.ts';
-import { ADAPTERS, runAll } from '../src/lib/sources/registry.ts';
-import { REGIONS } from '../src/config/regions.ts';
+import { REGIONS } from "../src/config/regions.ts";
+import { ADAPTERS, runAll } from "../src/lib/sources/registry.ts";
+import "./load-env.ts";
 
 if (!process.env.DATABASE_URL) {
-  console.error('✗ DATABASE_URL is not set.');
+  console.error("✗ DATABASE_URL is not set.");
   process.exit(1);
 }
 
-const { persistPayload, seedRegions } = await import('../src/lib/db/queries/ingest.ts');
-const { recordSourceFailure, recordSourceSuccess } = await import('../src/lib/db/queries/health.ts');
-const { sqlClient } = await import('../src/lib/db/index.ts');
+const { persistPayload, seedRegions } =
+  await import("../src/lib/db/queries/ingest.ts");
+const { recordSourceFailure, recordSourceSuccess } =
+  await import("../src/lib/db/queries/health.ts");
+const { sqlClient } = await import("../src/lib/db/index.ts");
 
 console.log(`Fetching ${ADAPTERS.length} sources from upstream…\n`);
 
@@ -29,7 +31,9 @@ for (const r of results) {
   if (!r.ok) {
     failed++;
     console.log(`  ✗ ${r.id.padEnd(10)} ${r.error}`);
-    await recordSourceFailure(r.id, r.error ?? 'unknown', new Date()).catch(() => {});
+    await recordSourceFailure(r.id, r.error ?? "unknown", new Date()).catch(
+      () => {},
+    );
     continue;
   }
 
@@ -46,10 +50,17 @@ for (const r of results) {
       `${counts.externalReports} external  (${r.durationMs}ms)`,
   );
   if (statuses.size > 0) {
-    console.log(`               ${[...statuses].sort().map(([k, v]) => `${k}=${v}`).join('  ')}`);
+    console.log(
+      `               ${[...statuses]
+        .sort()
+        .map(([k, v]) => `${k}=${v}`)
+        .join("  ")}`,
+    );
   }
 }
 
 await sqlClient().end();
-console.log(failed === 0 ? '\n✓ all sources ingested' : `\n✗ ${failed} source(s) failed`);
+console.log(
+  failed === 0 ? "\n✓ all sources ingested" : `\n✗ ${failed} source(s) failed`,
+);
 process.exit(failed === 0 ? 0 : 1);

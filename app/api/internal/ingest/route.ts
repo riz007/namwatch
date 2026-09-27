@@ -1,12 +1,15 @@
-import { NextResponse } from 'next/server';
-import { isAuthorisedInternal } from '@/lib/api/internal-auth.ts';
-import { apiError } from '@/lib/api/respond.ts';
-import { ADAPTERS, adapterById, runAdapter } from '@/lib/sources/registry.ts';
-import { persistPayload } from '@/lib/db/queries/ingest.ts';
-import { recordSourceFailure, recordSourceSuccess } from '@/lib/db/queries/health.ts';
-import { isDatabaseConfigured } from '@/lib/db/index.ts';
-import { log } from '@/lib/log.ts';
-import type { SourceId } from '@/lib/sources/types.ts';
+import { isAuthorisedInternal } from "@/lib/api/internal-auth.ts";
+import { apiError } from "@/lib/api/respond.ts";
+import { isDatabaseConfigured } from "@/lib/db/index.ts";
+import {
+  recordSourceFailure,
+  recordSourceSuccess,
+} from "@/lib/db/queries/health.ts";
+import { persistPayload } from "@/lib/db/queries/ingest.ts";
+import { log } from "@/lib/log.ts";
+import { ADAPTERS, adapterById, runAdapter } from "@/lib/sources/registry.ts";
+import type { SourceId } from "@/lib/sources/types.ts";
+import { NextResponse } from "next/server";
 
 /**
  * `POST /api/internal/ingest`. Header `x-ingest-secret`, runs all due
@@ -17,20 +20,25 @@ import type { SourceId } from '@/lib/sources/types.ts';
  *
  * `?source=thaiwater` runs a single adapter, for debugging a specific feed.
  */
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
 export async function POST(request: Request) {
-  if (!isAuthorisedInternal(request)) return apiError('unauthorised');
-  if (!isDatabaseConfigured()) return apiError('unavailable', { detail: 'DATABASE_URL is not set' });
+  if (!isAuthorisedInternal(request)) return apiError("unauthorised");
+  if (!isDatabaseConfigured())
+    return apiError("unavailable", { detail: "DATABASE_URL is not set" });
 
-  const requested = new URL(request.url).searchParams.get('source') as SourceId | null;
+  const requested = new URL(request.url).searchParams.get(
+    "source",
+  ) as SourceId | null;
   const adapters = requested
     ? [adapterById(requested)].filter((a) => a !== undefined)
     : [...ADAPTERS];
 
   if (adapters.length === 0) {
-    return apiError('invalid_request', { detail: `unknown source: ${requested}` });
+    return apiError("invalid_request", {
+      detail: `unknown source: ${requested}`,
+    });
   }
 
   const startedAt = new Date();
@@ -40,10 +48,22 @@ export async function POST(request: Request) {
       const at = new Date();
 
       if (!result.ok) {
-        await recordSourceFailure(adapter.id, result.error ?? 'unknown error', at).catch((e) =>
-          log.error({ source: adapter.id, err: String(e) }, 'could not record source failure'),
+        await recordSourceFailure(
+          adapter.id,
+          result.error ?? "unknown error",
+          at,
+        ).catch((e) =>
+          log.error(
+            { source: adapter.id, err: String(e) },
+            "could not record source failure",
+          ),
         );
-        return { source: adapter.id, ok: false, error: result.error, counts: null };
+        return {
+          source: adapter.id,
+          ok: false,
+          error: result.error,
+          counts: null,
+        };
       }
 
       try {
@@ -53,7 +73,7 @@ export async function POST(request: Request) {
       } catch (error) {
         const message = error instanceof Error ? error.message : String(error);
         await recordSourceFailure(adapter.id, message, at).catch(() => {});
-        log.error({ source: adapter.id, err: message }, 'persist failed');
+        log.error({ source: adapter.id, err: message }, "persist failed");
         return { source: adapter.id, ok: false, error: message, counts: null };
       }
     }),
@@ -69,6 +89,6 @@ export async function POST(request: Request) {
     },
     // A partial failure is still a successful run of the endpoint; the body says
     // which layer degraded. 207 makes that visible to the cron without alarming.
-    { status: ok ? 200 : 207, headers: { 'cache-control': 'no-store' } },
+    { status: ok ? 200 : 207, headers: { "cache-control": "no-store" } },
   );
 }

@@ -8,7 +8,7 @@ on:
 # CI never touches upstream sources: adapter tests run against
 # committed fixtures only.
 env:
-  CI: 'true'
+  CI: "true"
 
 jobs:
   verify:

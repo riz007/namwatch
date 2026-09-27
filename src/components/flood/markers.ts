@@ -1,7 +1,13 @@
-import Supercluster from 'supercluster';
-import { DEPTH_BANDS } from '@/config/depth-bands.ts';
-import { rainBandDef, type RainBand } from '@/config/rain-bands.ts';
-import { isExternal, isReport, isStation, type AnyProps, type MapFeature } from '@/lib/api/map-types.ts';
+import { DEPTH_BANDS } from "@/config/depth-bands.ts";
+import { rainBandDef, type RainBand } from "@/config/rain-bands.ts";
+import {
+  isExternal,
+  isReport,
+  isStation,
+  type AnyProps,
+  type MapFeature,
+} from "@/lib/api/map-types.ts";
+import Supercluster from "supercluster";
 
 /**
  * How each datum is drawn.
@@ -11,15 +17,15 @@ import { isExternal, isReport, isStation, type AnyProps, type MapFeature } from 
  * bubbles that hide the only markers that matter: a station reading over its
  * bank disappears into a count alongside two hundred complaints.
  */
-export type Layer = 'alarm' | 'crowd' | 'channel' | 'gauge';
+export type Layer = "alarm" | "crowd" | "channel" | "gauge";
 
 export const LAYER_OF = (p: AnyProps): Layer => {
   if (isStation(p)) {
-    if (p.status === 'critical' || p.status === 'warning') return 'alarm';
-    return 'gauge';
+    if (p.status === "critical" || p.status === "warning") return "alarm";
+    return "gauge";
   }
-  if (isReport(p)) return 'crowd';
-  return 'channel';
+  if (isReport(p)) return "crowd";
+  return "channel";
 };
 
 /**
@@ -46,15 +52,19 @@ export type ClusterSummary = {
   hasAlarm: boolean;
 };
 
-export function buildIndex(features: readonly MapFeature[]): Supercluster<AnyProps, ClusterSummary> {
+export function buildIndex(
+  features: readonly MapFeature[],
+): Supercluster<AnyProps, ClusterSummary> {
   const index = new Supercluster<AnyProps, ClusterSummary>({
     radius: 58,
     maxZoom: 16,
     minPoints: 4,
     map: (props): ClusterSummary => ({
       count: 1,
-      maxDepth: isReport(props as AnyProps) ? (props as { depthBand: number }).depthBand : -1,
-      hasAlarm: LAYER_OF(props as AnyProps) === 'alarm',
+      maxDepth: isReport(props as AnyProps)
+        ? (props as { depthBand: number }).depthBand
+        : -1,
+      hasAlarm: LAYER_OF(props as AnyProps) === "alarm",
     }),
     reduce: (acc, cur): void => {
       acc.count += cur.count;
@@ -65,7 +75,7 @@ export function buildIndex(features: readonly MapFeature[]): Supercluster<AnyPro
 
   index.load(
     features.map((f) => ({
-      type: 'Feature' as const,
+      type: "Feature" as const,
       geometry: f.geometry,
       properties: f.properties,
     })),
@@ -87,13 +97,18 @@ export function buildIndex(features: readonly MapFeature[]): Supercluster<AnyPro
 export function severityBandOf(p: AnyProps): number | null {
   if (isReport(p)) return p.depthBand;
   if (isStation(p)) {
-    if (p.kind === 'rain') return null;
+    if (p.kind === "rain") return null;
     switch (p.status) {
-      case 'critical': return 5;
-      case 'warning': return 3;
-      case 'watch': return 2;
-      case 'normal': return 0;
-      default: return null;
+      case "critical":
+        return 5;
+      case "warning":
+        return 3;
+      case "watch":
+        return 2;
+      case "normal":
+        return 0;
+      default:
+        return null;
     }
   }
   // A filed complaint reports flooding but not how deep, so treat it as the
@@ -115,22 +130,22 @@ export type MarkerStyle = {
 export function styleFor(p: AnyProps, locale: string): MarkerStyle {
   const layer = LAYER_OF(p);
 
-  if (layer === 'alarm' && isStation(p)) {
+  if (layer === "alarm" && isStation(p)) {
     // Map the station's status onto the shared depth ramp, so an overbank canal
     // and a deep road report read at the same severity.
-    const token = p.status === 'critical' ? 'depth-5' : 'depth-3';
+    const token = p.status === "critical" ? "depth-5" : "depth-3";
     return {
-      className: `nw-shape nw-alarm${p.status === 'critical' ? ' nw-alarm-critical' : ''}`,
+      className: `nw-shape nw-alarm${p.status === "critical" ? " nw-alarm-critical" : ""}`,
       background: `var(--color-${token})`,
-      borderColor: 'var(--color-paper)',
-      title: `${(locale === 'th' ? p.nameTh : p.nameEn) ?? p.id} · ${p.value ?? '?'} m`,
+      borderColor: "var(--color-paper)",
+      title: `${(locale === "th" ? p.nameTh : p.nameEn) ?? p.id} · ${p.value ?? "?"} m`,
     };
   }
 
   if (isReport(p)) {
     const band = DEPTH_BANDS[p.depthBand] ?? DEPTH_BANDS[0]!;
     return {
-      className: 'nw-shape nw-crowd',
+      className: "nw-shape nw-crowd",
       background: `var(--color-${band.token})`,
       borderColor: `var(--color-${band.token}-border)`,
       opacity: Math.max(0.45, p.opacity),
@@ -138,27 +153,27 @@ export function styleFor(p: AnyProps, locale: string): MarkerStyle {
     };
   }
 
-  if (isStation(p) && p.kind === 'rain' && p.rainBand) {
+  if (isStation(p) && p.kind === "rain" && p.rainBand) {
     return {
-      className: 'nw-shape nw-rain',
+      className: "nw-shape nw-rain",
       background: `var(--color-${rainBandDef(p.rainBand as RainBand).token})`,
-      title: `${(locale === 'th' ? p.nameTh : p.nameEn) ?? p.id} · ${p.value ?? '?'} mm`,
+      title: `${(locale === "th" ? p.nameTh : p.nameEn) ?? p.id} · ${p.value ?? "?"} mm`,
     };
   }
 
   if (isStation(p)) {
     return {
-      className: 'nw-shape nw-sensor',
-      background: 'var(--color-paper-2)',
-      borderColor: 'var(--color-ink-2)',
+      className: "nw-shape nw-sensor",
+      background: "var(--color-paper-2)",
+      borderColor: "var(--color-ink-2)",
       opacity: 0.85,
-      title: (locale === 'th' ? p.nameTh : p.nameEn) ?? p.id,
+      title: (locale === "th" ? p.nameTh : p.nameEn) ?? p.id,
     };
   }
 
   return {
-    className: 'nw-shape nw-channel',
-    title: isExternal(p) ? (p.description ?? p.source) : 'report',
+    className: "nw-shape nw-channel",
+    title: isExternal(p) ? (p.description ?? p.source) : "report",
   };
 }
 
@@ -168,16 +183,22 @@ export function styleFor(p: AnyProps, locale: string): MarkerStyle {
  * A cluster is coloured by the worst thing inside it. A neutral bubble is a
  * lie of omission: it says "four things" when one of them is knee-deep water.
  */
-export function clusterStyle(layer: Layer, summary: ClusterSummary): MarkerStyle {
+export function clusterStyle(
+  layer: Layer,
+  summary: ClusterSummary,
+): MarkerStyle {
   const size = Math.min(46, 24 + Math.log2(Math.max(summary.count, 2)) * 4.5);
   // Complaint clusters grow more slowly: they are numerous and non-urgent, and
   // at full scale a count of 358 dwarfs a station that is over its bank.
-  const quietSize = Math.min(34, 20 + Math.log2(Math.max(summary.count, 2)) * 2.4);
+  const quietSize = Math.min(
+    34,
+    20 + Math.log2(Math.max(summary.count, 2)) * 2.4,
+  );
 
-  if (layer === 'crowd' && summary.maxDepth >= 0) {
+  if (layer === "crowd" && summary.maxDepth >= 0) {
     const band = DEPTH_BANDS[summary.maxDepth] ?? DEPTH_BANDS[0]!;
     return {
-      className: 'nw-cluster nw-cluster-crowd',
+      className: "nw-cluster nw-cluster-crowd",
       background: `var(--color-${band.token})`,
       borderColor: `var(--color-${band.token}-border)`,
       color: `var(--color-${band.token}-on)`,
@@ -187,9 +208,9 @@ export function clusterStyle(layer: Layer, summary: ClusterSummary): MarkerStyle
     };
   }
 
-  if (layer === 'channel') {
+  if (layer === "channel") {
     return {
-      className: 'nw-cluster nw-cluster-channel',
+      className: "nw-cluster nw-cluster-channel",
       label: String(summary.count),
       title: `${summary.count}`,
       opacity: quietSize,
@@ -197,7 +218,7 @@ export function clusterStyle(layer: Layer, summary: ClusterSummary): MarkerStyle
   }
 
   return {
-    className: 'nw-cluster nw-cluster-gauge',
+    className: "nw-cluster nw-cluster-gauge",
     label: String(summary.count),
     title: `${summary.count}`,
     opacity: size,

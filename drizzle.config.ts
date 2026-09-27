@@ -1,4 +1,4 @@
-import { defineConfig } from 'drizzle-kit';
+import { defineConfig } from "drizzle-kit";
 
 /**
  * Migrations are generated into `supabase/migrations/` and applied with
@@ -6,14 +6,14 @@ import { defineConfig } from 'drizzle-kit';
  * cannot run DDL reliably. Never hand-edit a migration once it has been applied.
  */
 export default defineConfig({
-  dialect: 'postgresql',
-  schema: './src/lib/db/schema.ts',
-  out: './supabase/migrations',
-  casing: 'snake_case',
+  dialect: "postgresql",
+  schema: "./src/lib/db/schema.ts",
+  out: "./supabase/migrations",
+  casing: "snake_case",
   dbCredentials: {
-    url: process.env.DATABASE_URL_DIRECT ?? process.env.DATABASE_URL ?? '',
+    url: process.env.DATABASE_URL_DIRECT ?? process.env.DATABASE_URL ?? "",
   },
-  migrations: { prefix: 'timestamp' },
+  migrations: { prefix: "timestamp" },
   verbose: true,
   strict: true,
 });

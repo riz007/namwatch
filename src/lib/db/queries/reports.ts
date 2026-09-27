@@ -1,14 +1,18 @@
-import 'server-only';
+import "server-only";
 
-import { and, eq, gte, sql } from 'drizzle-orm';
-import { db } from '../index.ts';
-import { rateLimits, reportVotes, reports } from '../schema.ts';
-import { extendedExpiry, initialExpiry, type ReportKind } from '@/lib/reports/decay.ts';
-import { shouldAutoHide, shouldExpireFromVotes } from '@/lib/reports/trust.ts';
-import { publicLocation } from '@/lib/geo/h3.ts';
-import { resolveRegionId } from '@/lib/geo/region.ts';
-import { windowStart } from '@/lib/reports/rate-limit.ts';
-import type { LonLat } from '@/lib/sources/types.ts';
+import { publicLocation } from "@/lib/geo/h3.ts";
+import { resolveRegionId } from "@/lib/geo/region.ts";
+import {
+  extendedExpiry,
+  initialExpiry,
+  type ReportKind,
+} from "@/lib/reports/decay.ts";
+import { windowStart } from "@/lib/reports/rate-limit.ts";
+import { shouldAutoHide, shouldExpireFromVotes } from "@/lib/reports/trust.ts";
+import type { LonLat } from "@/lib/sources/types.ts";
+import { and, eq, gte, sql } from "drizzle-orm";
+import { db } from "../index.ts";
+import { rateLimits, reportVotes, reports } from "../schema.ts";
 
 /**
  * Report writes and public reads. SQL lives only here.
@@ -17,21 +21,25 @@ import type { LonLat } from '@/lib/sources/types.ts';
  * written once at insert and thereafter only used by server-side distance maths.
  */
 
-const asGeography = (p: LonLat) => sql`ST_MakePoint(${p.lon}, ${p.lat})::geography`;
+const asGeography = (p: LonLat) =>
+  sql`ST_MakePoint(${p.lon}, ${p.lat})::geography`;
 
 export type NewReport = {
   readonly kind: ReportKind;
   readonly depthBand: number;
   readonly passableBy: readonly string[] | null;
   readonly note: string | null;
-  readonly locale: 'th' | 'en';
+  readonly locale: "th" | "en";
   readonly point: LonLat;
   readonly districtTh: string | null;
   readonly deviceHash: string;
   readonly ipHash: string | null;
 };
 
-export async function insertReport(input: NewReport, now: Date = new Date()): Promise<string> {
+export async function insertReport(
+  input: NewReport,
+  now: Date = new Date(),
+): Promise<string> {
   const { exact, publicPoint, h3R9 } = publicLocation(input.point, input.kind);
 
   const [row] = await db()
@@ -49,11 +57,11 @@ export async function insertReport(input: NewReport, now: Date = new Date()): Pr
       deviceHash: input.deviceHash,
       ipHash: input.ipHash,
       createdAt: now,
-      expiresAt: initialExpiry(input.kind, now),
+      expiresAt: initialExpiry(input.kind, now, input.depthBand),
     })
     .returning({ id: reports.id });
 
-  if (!row) throw new Error('insert returned no row');
+  if (!row) throw new Error("insert returned no row");
   return row.id;
 }
 
@@ -74,7 +82,9 @@ export type PublicReport = {
 };
 
 /** `GET /api/v1/reports/:id` — public fields only. */
-export async function findPublicReport(id: string): Promise<PublicReport | null> {
+export async function findPublicReport(
+  id: string,
+): Promise<PublicReport | null> {
   const [row] = await db()
     .select({
       id: reports.id,
@@ -92,15 +102,15 @@ export async function findPublicReport(id: string): Promise<PublicReport | null>
       regionId: reports.regionId,
     })
     .from(reports)
-    .where(and(eq(reports.id, id), eq(reports.status, 'active')))
+    .where(and(eq(reports.id, id), eq(reports.status, "active")))
     .limit(1);
 
   return row ?? null;
 }
 
-export type VoteKind = 'still' | 'receded' | 'flag';
+export type VoteKind = "still" | "receded" | "flag";
 
-export type VoteOutcome = 'recorded' | 'already_voted' | 'not_found';
+export type VoteOutcome = "recorded" | "already_voted" | "not_found";
 
 /**
  * Records one vote and applies its consequence..
@@ -117,12 +127,16 @@ export async function castVote(
 ): Promise<VoteOutcome> {
   return db().transaction(async (tx) => {
     const [target] = await tx
-      .select({ kind: reports.kind, status: reports.status })
+      .select({
+        kind: reports.kind,
+        status: reports.status,
+        depthBand: reports.depthBand,
+      })
       .from(reports)
       .where(eq(reports.id, reportId))
       .limit(1);
 
-    if (!target || target.status !== 'active') return 'not_found';
+    if (!target || target.status !== "active") return "not_found";
 
     const inserted = await tx
       .insert(reportVotes)
@@ -130,10 +144,14 @@ export async function castVote(
       .onConflictDoNothing()
       .returning({ reportId: reportVotes.reportId });
 
-    if (inserted.length === 0) return 'already_voted';
+    if (inserted.length === 0) return "already_voted";
 
     const column =
-      vote === 'still' ? reports.stillCount : vote === 'receded' ? reports.recededCount : reports.flagCount;
+      vote === "still"
+        ? reports.stillCount
+        : vote === "receded"
+          ? reports.recededCount
+          : reports.flagCount;
 
     const [updated] = await tx
       .update(reports)
@@ -145,36 +163,58 @@ export async function castVote(
         flags: reports.flagCount,
       });
 
-    if (!updated) return 'not_found';
+    if (!updated) return "not_found";
 
-    const counts = { still: updated.still, receded: updated.receded, flags: updated.flags };
+    const counts = {
+      still: updated.still,
+      receded: updated.receded,
+      flags: updated.flags,
+    };
 
     if (shouldAutoHide(counts)) {
-      await tx.update(reports).set({ status: 'hidden' }).where(eq(reports.id, reportId));
+      await tx
+        .update(reports)
+        .set({ status: "hidden" })
+        .where(eq(reports.id, reportId));
     } else if (shouldExpireFromVotes(counts)) {
       await tx
         .update(reports)
-        .set({ status: 'expired', expiresAt: now })
+        .set({ status: "expired", expiresAt: now })
         .where(eq(reports.id, reportId));
-    } else if (vote === 'still') {
+    } else if (vote === "still") {
       await tx
         .update(reports)
-        .set({ expiresAt: extendedExpiry(target.kind as ReportKind, now) })
+        .set({
+          expiresAt: extendedExpiry(
+            target.kind as ReportKind,
+            now,
+            target.depthBand,
+          ),
+        })
         .where(eq(reports.id, reportId));
     }
 
-    return 'recorded';
+    return "recorded";
   });
 }
 
-const columnName = (vote: VoteKind): 'stillCount' | 'recededCount' | 'flagCount' =>
-  vote === 'still' ? 'stillCount' : vote === 'receded' ? 'recededCount' : 'flagCount';
+const columnName = (
+  vote: VoteKind,
+): "stillCount" | "recededCount" | "flagCount" =>
+  vote === "still"
+    ? "stillCount"
+    : vote === "receded"
+      ? "recededCount"
+      : "flagCount";
 
 /**
  * Increments and reads a rate-limit counter atomically..
  * Returns the count *including* this attempt.
  */
-export async function bumpRateLimit(key: string, now: Date = new Date()): Promise<number> {
+export async function bumpRateLimit(
+  key: string,
+  now: Date = new Date(),
+): Promise<number> {
   const start = windowStart(now);
   const [row] = await db()
     .insert(rateLimits)
@@ -189,18 +229,24 @@ export async function bumpRateLimit(key: string, now: Date = new Date()): Promis
 }
 
 /** retention: expire what is past its time. Called by /api/internal/maintain. */
-export async function expireOverdueReports(now: Date = new Date()): Promise<number> {
+export async function expireOverdueReports(
+  now: Date = new Date(),
+): Promise<number> {
   const rows = await db()
     .update(reports)
-    .set({ status: 'expired' })
-    .where(and(eq(reports.status, 'active'), sql`${reports.expiresAt} <= ${now}`))
+    .set({ status: "expired" })
+    .where(
+      and(eq(reports.status, "active"), sql`${reports.expiresAt} <= ${now}`),
+    )
     .returning({ id: reports.id });
   return rows.length;
 }
 
 /** Rate-limit rows are only useful inside their window; drop the rest. */
 export async function pruneRateLimits(olderThan: Date): Promise<void> {
-  await db().delete(rateLimits).where(sql`${rateLimits.windowStart} < ${olderThan}`);
+  await db()
+    .delete(rateLimits)
+    .where(sql`${rateLimits.windowStart} < ${olderThan}`);
 }
 
 /** IP hashes are kept for 7 days, for rate limiting only. */
@@ -208,15 +254,25 @@ export async function clearOldIpHashes(olderThan: Date): Promise<number> {
   const rows = await db()
     .update(reports)
     .set({ ipHash: null })
-    .where(and(sql`${reports.ipHash} is not null`, sql`${reports.createdAt} < ${olderThan}`))
+    .where(
+      and(
+        sql`${reports.ipHash} is not null`,
+        sql`${reports.createdAt} < ${olderThan}`,
+      ),
+    )
     .returning({ id: reports.id });
   return rows.length;
 }
 
-export async function countRecentByDevice(deviceHash: string, since: Date): Promise<number> {
+export async function countRecentByDevice(
+  deviceHash: string,
+  since: Date,
+): Promise<number> {
   const [row] = await db()
     .select({ n: sql<number>`count(*)::int` })
     .from(reports)
-    .where(and(eq(reports.deviceHash, deviceHash), gte(reports.createdAt, since)));
+    .where(
+      and(eq(reports.deviceHash, deviceHash), gte(reports.createdAt, since)),
+    );
   return row?.n ?? 0;
 }

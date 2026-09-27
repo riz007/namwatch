@@ -13,7 +13,11 @@ import {
 } from "@/lib/db/queries/map.ts";
 import { InvalidBBoxError, parseBBox } from "@/lib/geo/bbox.ts";
 import { log } from "@/lib/log.ts";
-import { decayOpacity, type ReportKind } from "@/lib/reports/decay.ts";
+import {
+  confidenceOf,
+  decayOpacity,
+  type ReportKind,
+} from "@/lib/reports/decay.ts";
 import { NextResponse } from "next/server";
 
 /**
@@ -101,67 +105,72 @@ export async function GET(request: Request) {
   ]);
 
   const features: Feature[] = [
-    ...reports.map(
-      (r): Feature => ({
-        type: "Feature",
-        geometry: { type: "Point", coordinates: [r.lon, r.lat] },
-        properties: {
-          layer: "reports",
-          provenance: "crowd",
-          id: r.id,
-          kind: r.kind,
-          depthBand: r.depthBand,
-          note: r.note,
-          createdAt: r.createdAt.toISOString(),
-          expiresAt: r.expiresAt.toISOString(),
-          opacity: decayOpacity(r.createdAt, r.kind as ReportKind, now),
-          stillCount: r.stillCount,
-          recededCount: r.recededCount,
-          regionId: r.regionId,
-        },
-      }),
-    ),
-    ...stations.map(
-      (s): Feature => ({
-        type: "Feature",
-        geometry: { type: "Point", coordinates: [s.lon, s.lat] },
-        properties: {
-          layer: "stations",
-          provenance: "official_sensor",
-          id: s.id,
-          source: s.source,
-          kind: s.kind,
-          nameTh: s.nameTh,
-          nameEn: s.nameEn,
-          value: s.value === null ? null : Number(s.value),
-          bankLevelM: s.bankLevelM === null ? null : Number(s.bankLevelM),
-          status: s.status ?? "unknown",
-          rainBand:
-            s.kind === "rain"
-              ? rainBandFor(s.value === null ? null : Number(s.value))
-              : null,
-          observedAt: s.observedAt?.toISOString() ?? null,
-        },
-      }),
-    ),
-    ...external.map(
-      (e): Feature => ({
-        type: "Feature",
-        geometry: { type: "Point", coordinates: [e.lon, e.lat] },
-        properties: {
-          layer: "external",
-          provenance: e.provenance,
-          id: e.id,
-          source: e.source,
-          kind: e.kind,
-          state: e.state,
-          description: e.description,
-          url: e.url,
-          observedAt: e.observedAt.toISOString(),
-          regionId: e.regionId,
-        },
-      }),
-    ),
+    ...reports.map((r): Feature => ({
+      type: "Feature",
+      geometry: { type: "Point", coordinates: [r.lon, r.lat] },
+      properties: {
+        layer: "reports",
+        provenance: "crowd",
+        id: r.id,
+        kind: r.kind,
+        depthBand: r.depthBand,
+        note: r.note,
+        createdAt: r.createdAt.toISOString(),
+        expiresAt: r.expiresAt.toISOString(),
+        opacity: decayOpacity(
+          r.createdAt,
+          r.kind as ReportKind,
+          now,
+          r.depthBand,
+        ),
+        confidence: confidenceOf(
+          r.createdAt,
+          r.kind as ReportKind,
+          r.depthBand,
+          now,
+        ),
+        stillCount: r.stillCount,
+        recededCount: r.recededCount,
+        regionId: r.regionId,
+      },
+    })),
+    ...stations.map((s): Feature => ({
+      type: "Feature",
+      geometry: { type: "Point", coordinates: [s.lon, s.lat] },
+      properties: {
+        layer: "stations",
+        provenance: "official_sensor",
+        id: s.id,
+        source: s.source,
+        kind: s.kind,
+        nameTh: s.nameTh,
+        nameEn: s.nameEn,
+        value: s.value === null ? null : Number(s.value),
+        bankLevelM: s.bankLevelM === null ? null : Number(s.bankLevelM),
+        status: s.status ?? "unknown",
+        rainBand:
+          s.kind === "rain"
+            ? rainBandFor(s.value === null ? null : Number(s.value))
+            : null,
+        observedAt: s.observedAt?.toISOString() ?? null,
+      },
+    })),
+    ...external.map((e): Feature => ({
+      type: "Feature",
+      geometry: { type: "Point", coordinates: [e.lon, e.lat] },
+      properties: {
+        layer: "external",
+        provenance: e.provenance,
+        id: e.id,
+        source: e.source,
+        kind: e.kind,
+        state: e.state,
+        description: e.description,
+        url: e.url,
+        observedAt: e.observedAt.toISOString(),
+        regionId: e.regionId,
+      },
+    })),
   ];
 
   return NextResponse.json(

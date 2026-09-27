@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import useSWR from 'swr';
-import { POLL_MS } from '@/config/app.config.ts';
-import type { MapResponse } from '@/lib/api/map-types.ts';
+import { POLL_MS } from "@/config/app.config.ts";
+import type { MapResponse } from "@/lib/api/map-types.ts";
+import useSWR from "swr";
 
 /**
  * The client's only data source. the browser talks to
@@ -19,10 +19,14 @@ async function fetcher(url: string): Promise<MapResponse> {
 }
 
 export function useFloodData(bbox: readonly number[], sinceHours: number) {
-  return useSWR<MapResponse>(`/api/v1/map?bbox=${bbox.join(',')}&since=${sinceHours}`, fetcher, {
-    refreshInterval: POLL_MS.map,
-    keepPreviousData: true,
-    revalidateOnFocus: true,
-    errorRetryInterval: 15_000,
-  });
+  return useSWR<MapResponse>(
+    `/api/v1/map?bbox=${bbox.join(",")}&since=${sinceHours}`,
+    fetcher,
+    {
+      refreshInterval: POLL_MS.map,
+      keepPreviousData: true,
+      revalidateOnFocus: true,
+      errorRetryInterval: 15_000,
+    },
+  );
 }

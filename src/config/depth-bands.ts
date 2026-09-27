@@ -20,7 +20,7 @@ export const DEPTH_BANDS_COUNT = 6;
 export type DepthBandValue = 0 | 1 | 2 | 3 | 4 | 5;
 
 /** "passable by" chips. */
-export type Vehicle = 'motorbike' | 'car' | 'pickup' | 'none';
+export type Vehicle = "motorbike" | "car" | "pickup" | "none";
 
 export type DepthBand = {
   readonly band: DepthBandValue;
@@ -51,75 +51,75 @@ export type DepthBand = {
 export const DEPTH_BANDS: readonly DepthBand[] = [
   {
     band: 0,
-    token: 'depth-0',
-    labelKey: 'depth.0.label',
-    passabilityKey: 'depth.0.passability',
-    pictogram: 'dry',
+    token: "depth-0",
+    labelKey: "depth.0.label",
+    passabilityKey: "depth.0.passability",
+    pictogram: "dry",
     approxCm: [0, 0],
-    passableBy: ['motorbike', 'car', 'pickup'],
-    color: { light: '#356C6D', dark: '#5FBCBE' },
-    on: { light: '#FFFFFF', dark: '#1A1206' },
-    border: { light: '#356C6D', dark: '#5FBCBE' },
+    passableBy: ["motorbike", "car", "pickup"],
+    color: { light: "#356C6D", dark: "#5FBCBE" },
+    on: { light: "#FFFFFF", dark: "#1A1206" },
+    border: { light: "#356C6D", dark: "#5FBCBE" },
   },
   {
     band: 1,
-    token: 'depth-1',
-    labelKey: 'depth.1.label',
-    passabilityKey: 'depth.1.passability',
-    pictogram: 'ankle',
+    token: "depth-1",
+    labelKey: "depth.1.label",
+    passabilityKey: "depth.1.passability",
+    pictogram: "ankle",
     approxCm: [0, 10],
-    passableBy: ['motorbike', 'car', 'pickup'],
-    color: { light: '#FCE3A6', dark: '#FAF0DA' },
-    on: { light: '#1A1206', dark: '#1A1206' },
-    border: { light: '#A69158', dark: '#FAF0DA' },
+    passableBy: ["motorbike", "car", "pickup"],
+    color: { light: "#FCE3A6", dark: "#FAF0DA" },
+    on: { light: "#1A1206", dark: "#1A1206" },
+    border: { light: "#A69158", dark: "#FAF0DA" },
   },
   {
     band: 2,
-    token: 'depth-2',
-    labelKey: 'depth.2.label',
-    passabilityKey: 'depth.2.passability',
-    pictogram: 'shin',
+    token: "depth-2",
+    labelKey: "depth.2.label",
+    passabilityKey: "depth.2.passability",
+    pictogram: "shin",
     approxCm: [10, 30],
-    passableBy: ['car', 'pickup'],
-    color: { light: '#DEAE34', dark: '#F0C48E' },
-    on: { light: '#1A1206', dark: '#1A1206' },
-    border: { light: '#BA8E08', dark: '#F0C48E' },
+    passableBy: ["car", "pickup"],
+    color: { light: "#DEAE34", dark: "#F0C48E" },
+    on: { light: "#1A1206", dark: "#1A1206" },
+    border: { light: "#BA8E08", dark: "#F0C48E" },
   },
   {
     band: 3,
-    token: 'depth-3',
-    labelKey: 'depth.3.label',
-    passabilityKey: 'depth.3.passability',
-    pictogram: 'knee',
+    token: "depth-3",
+    labelKey: "depth.3.label",
+    passabilityKey: "depth.3.passability",
+    pictogram: "knee",
     approxCm: [30, 50],
-    passableBy: ['pickup'],
-    color: { light: '#B47B24', dark: '#E79351' },
-    on: { light: '#1A1206', dark: '#1A1206' },
-    border: { light: '#B47B24', dark: '#E79351' },
+    passableBy: ["pickup"],
+    color: { light: "#B47B24", dark: "#E79351" },
+    on: { light: "#1A1206", dark: "#1A1206" },
+    border: { light: "#B47B24", dark: "#E79351" },
   },
   {
     band: 4,
-    token: 'depth-4',
-    labelKey: 'depth.4.label',
-    passabilityKey: 'depth.4.passability',
-    pictogram: 'waist',
+    token: "depth-4",
+    labelKey: "depth.4.label",
+    passabilityKey: "depth.4.passability",
+    pictogram: "waist",
     approxCm: [50, 100],
-    passableBy: ['none'],
-    color: { light: '#8E4714', dark: '#C86B3C' },
-    on: { light: '#FFFFFF', dark: '#1A1206' },
-    border: { light: '#8E4714', dark: '#C86B3C' },
+    passableBy: ["none"],
+    color: { light: "#8E4714", dark: "#C86B3C" },
+    on: { light: "#FFFFFF", dark: "#1A1206" },
+    border: { light: "#8E4714", dark: "#C86B3C" },
   },
   {
     band: 5,
-    token: 'depth-5',
-    labelKey: 'depth.5.label',
-    passabilityKey: 'depth.5.passability',
-    pictogram: 'chest',
+    token: "depth-5",
+    labelKey: "depth.5.label",
+    passabilityKey: "depth.5.passability",
+    pictogram: "chest",
     approxCm: [100, null],
-    passableBy: ['none'],
-    color: { light: '#66110E', dark: '#A2482A' },
-    on: { light: '#FFFFFF', dark: '#FFFFFF' },
-    border: { light: '#66110E', dark: '#A2482A' },
+    passableBy: ["none"],
+    color: { light: "#66110E", dark: "#A2482A" },
+    on: { light: "#FFFFFF", dark: "#FFFFFF" },
+    border: { light: "#66110E", dark: "#A2482A" },
   },
 ] as const;
 
@@ -130,5 +130,10 @@ export function depthBand(band: number): DepthBand {
 }
 
 export function isDepthBand(value: unknown): value is DepthBandValue {
-  return typeof value === 'number' && Number.isInteger(value) && value >= 0 && value <= 5;
+  return (
+    typeof value === "number" &&
+    Number.isInteger(value) &&
+    value >= 0 &&
+    value <= 5
+  );
 }

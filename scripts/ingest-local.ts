@@ -7,13 +7,15 @@
  * Pnpm ingest:local
  * DATABASE_URL=postgresql://... pnpm ingest:local
  */
-import './load-env.ts';
-import { ADAPTERS, runAll } from '../src/lib/sources/registry.ts';
-import { REGIONS } from '../src/config/regions.ts';
+import { REGIONS } from "../src/config/regions.ts";
+import { ADAPTERS, runAll } from "../src/lib/sources/registry.ts";
+import "./load-env.ts";
 
 const persist = Boolean(process.env.DATABASE_URL);
 
-console.log(`Running ${ADAPTERS.length} adapters against fixtures${persist ? ' and persisting' : ''}…\n`);
+console.log(
+  `Running ${ADAPTERS.length} adapters against fixtures${persist ? " and persisting" : ""}…\n`,
+);
 
 const results = await runAll(ADAPTERS, { useFixture: true });
 
@@ -32,16 +34,21 @@ for (const r of results) {
   );
 
   const statuses = new Map<string, number>();
-  for (const reading of readings) statuses.set(reading.status, (statuses.get(reading.status) ?? 0) + 1);
+  for (const reading of readings)
+    statuses.set(reading.status, (statuses.get(reading.status) ?? 0) + 1);
   if (statuses.size > 0) {
-    const summary = [...statuses].sort().map(([k, v]) => `${k}=${v}`).join(' ');
+    const summary = [...statuses]
+      .sort()
+      .map(([k, v]) => `${k}=${v}`)
+      .join(" ");
     console.log(`               status: ${summary}`);
   }
 }
 
 if (persist) {
-  const { persistPayload, seedRegions } = await import('../src/lib/db/queries/ingest.ts');
-  const { sqlClient } = await import('../src/lib/db/index.ts');
+  const { persistPayload, seedRegions } =
+    await import("../src/lib/db/queries/ingest.ts");
+  const { sqlClient } = await import("../src/lib/db/index.ts");
 
   console.log(`\nSeeding ${REGIONS.length} regions…`);
   await seedRegions(REGIONS);
@@ -56,5 +63,7 @@ if (persist) {
   await sqlClient().end();
 }
 
-console.log(failures === 0 ? '\n✓ all adapters ok' : `\n✗ ${failures} adapter(s) failed`);
+console.log(
+  failures === 0 ? "\n✓ all adapters ok" : `\n✗ ${failures} adapter(s) failed`,
+);
 process.exit(failures === 0 ? 0 : 1);

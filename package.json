@@ -25,7 +25,9 @@
     "postinstall": "pnpm sync:map-worker",
     "check:bundle": "tsx scripts/check-bundle.ts",
     "check:secrets": "tsx scripts/check-secrets.ts",
-    "ingest:live": "tsx --conditions=react-server scripts/ingest-live.ts"
+    "ingest:live": "tsx --conditions=react-server scripts/ingest-live.ts",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "dependencies": {
     "drizzle-orm": "0.45.3",
@@ -52,6 +54,8 @@
     "drizzle-kit": "0.31.11",
     "eslint": "9.39.1",
     "eslint-config-next": "16.3.6",
+    "prettier": "^3.9.9",
+    "prettier-plugin-organize-imports": "^4.3.0",
     "tailwindcss": "4.3.3",
     "tsx": "4.23.15",
     "typescript": "5.9.3",

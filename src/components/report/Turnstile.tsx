@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from "react";
 
 /**
  * Cloudflare Turnstile, run on submit rather than on page load.
@@ -16,12 +16,12 @@ import { useEffect, useRef } from 'react';
 type RenderOptions = {
   sitekey: string;
   callback: (token: string) => void;
-  'error-callback'?: (code?: string) => void;
-  'expired-callback'?: () => void;
-  'timeout-callback'?: () => void;
-  appearance?: 'always' | 'execute' | 'interaction-only';
-  execution?: 'render' | 'execute';
-  theme?: 'auto' | 'light' | 'dark';
+  "error-callback"?: (code?: string) => void;
+  "expired-callback"?: () => void;
+  "timeout-callback"?: () => void;
+  appearance?: "always" | "execute" | "interaction-only";
+  execution?: "render" | "execute";
+  theme?: "auto" | "light" | "dark";
   action?: string;
 };
 
@@ -39,9 +39,9 @@ declare global {
   }
 }
 
-const SCRIPT_ID = 'cf-turnstile-script';
+const SCRIPT_ID = "cf-turnstile-script";
 const SCRIPT_SRC =
-  'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=onTurnstileLoad';
+  "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=onTurnstileLoad";
 
 /** How long to wait for a challenge before giving up and telling the person. */
 const EXECUTE_TIMEOUT_MS = 20_000;
@@ -56,16 +56,16 @@ function loadScript(): Promise<TurnstileApi> {
     window.onTurnstileLoad = () => {
       previous?.();
       if (window.turnstile) resolve(window.turnstile);
-      else reject(new Error('turnstile loaded without an api'));
+      else reject(new Error("turnstile loaded without an api"));
     };
     if (document.getElementById(SCRIPT_ID)) return;
 
-    const script = document.createElement('script');
+    const script = document.createElement("script");
     script.id = SCRIPT_ID;
     script.src = SCRIPT_SRC;
     script.async = true;
     script.defer = true;
-    script.onerror = () => reject(new Error('script failed to load'));
+    script.onerror = () => reject(new Error("script failed to load"));
     document.head.appendChild(script);
   });
 }
@@ -101,21 +101,22 @@ export function Turnstile({
 
     void loadScript()
       .then((turnstile) => {
-        if (cancelled || !container.current || widgetId.current !== null) return;
+        if (cancelled || !container.current || widgetId.current !== null)
+          return;
         api.current = turnstile;
         widgetId.current = turnstile.render(container.current, {
           sitekey: siteKey,
-          action: 'report',
-          appearance: 'interaction-only',
-          execution: 'execute',
-          theme: 'auto',
+          action: "report",
+          appearance: "interaction-only",
+          execution: "execute",
+          theme: "auto",
           callback: (token) => settle(token),
-          'error-callback': (code) => {
-            onError(code ?? 'error');
+          "error-callback": (code) => {
+            onError(code ?? "error");
             settle(null);
           },
-          'expired-callback': () => settle(null),
-          'timeout-callback': () => settle(null),
+          "expired-callback": () => settle(null),
+          "timeout-callback": () => settle(null),
         });
 
         handleRef.current = {
@@ -141,12 +142,13 @@ export function Turnstile({
               api.current.execute(widgetId.current);
             }),
           reset: () => {
-            if (api.current && widgetId.current !== null) api.current.reset(widgetId.current);
+            if (api.current && widgetId.current !== null)
+              api.current.reset(widgetId.current);
           },
         };
       })
       .catch((e: unknown) => {
-        if (!cancelled) onError(e instanceof Error ? e.message : 'load-failed');
+        if (!cancelled) onError(e instanceof Error ? e.message : "load-failed");
       });
 
     return () => {

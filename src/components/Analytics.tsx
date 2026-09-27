@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import Script from 'next/script';
-import { useCallback, useEffect, useRef, useSyncExternalStore } from 'react';
-import { useTranslations } from 'next-intl';
-import { Link } from '@/i18n/navigation.ts';
-import { consentStore, setConsent } from '@/lib/analytics.ts';
+import { Link } from "@/i18n/navigation.ts";
+import { consentStore, setConsent } from "@/lib/analytics.ts";
+import { useTranslations } from "next-intl";
+import Script from "next/script";
+import { useCallback, useEffect, useRef, useSyncExternalStore } from "react";
 
 /**
  * Consent gate and analytics loader.
@@ -17,20 +17,20 @@ import { consentStore, setConsent } from '@/lib/analytics.ts';
  * loaded by another route it starts denied rather than granted.
  */
 export function Analytics({ gaId }: { gaId: string | null }) {
-  const t = useTranslations('consent');
+  const t = useTranslations("consent");
   const consent = useSyncExternalStore(
     consentStore.subscribe,
     consentStore.getSnapshot,
     consentStore.getServerSnapshot,
   );
 
-  const choose = useCallback((value: 'granted' | 'denied') => {
+  const choose = useCallback((value: "granted" | "denied") => {
     setConsent(value);
-    window.gtag?.('consent', 'update', {
+    window.gtag?.("consent", "update", {
       analytics_storage: value,
-      ad_storage: 'denied',
-      ad_user_data: 'denied',
-      ad_personalization: 'denied',
+      ad_storage: "denied",
+      ad_user_data: "denied",
+      ad_personalization: "denied",
     });
   }, []);
 
@@ -45,7 +45,7 @@ export function Analytics({ gaId }: { gaId: string | null }) {
   useEffect(() => {
     const el = banner.current;
     if (!showBanner || !el) {
-      document.body.style.removeProperty('padding-bottom');
+      document.body.style.removeProperty("padding-bottom");
       return;
     }
     const apply = (): void => {
@@ -56,13 +56,13 @@ export function Analytics({ gaId }: { gaId: string | null }) {
     ro.observe(el);
     return () => {
       ro.disconnect();
-      document.body.style.removeProperty('padding-bottom');
+      document.body.style.removeProperty("padding-bottom");
     };
   }, [showBanner]);
 
   return (
     <>
-      {gaId !== null && consent === 'granted' && (
+      {gaId !== null && consent === "granted" && (
         <>
           <Script
             id="ga-consent-defaults"
@@ -98,34 +98,38 @@ gtag('config', '${gaId}', { anonymize_ip: true, allow_google_signals: false, all
         <div
           ref={banner}
           role="dialog"
-          aria-label={t('title')}
+          aria-label={t("title")}
           className="fixed inset-x-0 bottom-0 z-50 border-t border-[var(--color-rule)] bg-[var(--color-paper)] p-4 shadow-[0_-4px_20px_rgb(0_0_0/0.14)]"
         >
           <div className="mx-auto flex max-w-[42rem] flex-col gap-3">
             <div>
-              <h2 className="font-bold text-[var(--color-ink)]">{t('title')}</h2>
-              <p className="pt-1 text-[var(--text-sm)] text-[var(--color-ink-2)]">{t('body')}</p>
+              <h2 className="font-bold text-[var(--color-ink)]">
+                {t("title")}
+              </h2>
+              <p className="pt-1 text-[var(--text-sm)] text-[var(--color-ink-2)]">
+                {t("body")}
+              </p>
               <Link
                 href="/about"
                 className="inline-block pt-1 text-[var(--text-sm)] text-[var(--color-accent)] underline underline-offset-4"
               >
-                {t('learnMore')}
+                {t("learnMore")}
               </Link>
             </div>
             <div className="flex gap-2">
               <button
                 type="button"
-                onClick={() => choose('denied')}
+                onClick={() => choose("denied")}
                 className="btn btn-secondary press flex-1"
               >
-                {t('decline')}
+                {t("decline")}
               </button>
               <button
                 type="button"
-                onClick={() => choose('granted')}
+                onClick={() => choose("granted")}
                 className="btn btn-primary press flex-1"
               >
-                {t('accept')}
+                {t("accept")}
               </button>
             </div>
           </div>

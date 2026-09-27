@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useLocale } from 'next-intl';
-import { usePathname } from 'next/navigation';
-import { routing, type Locale } from '@/i18n/routing.ts';
+import { routing, type Locale } from "@/i18n/routing.ts";
+import { useLocale } from "next-intl";
+import { usePathname } from "next/navigation";
 
 /**
  * Always visible, shows "ไทย | EN", never flags.
@@ -10,13 +10,13 @@ import { routing, type Locale } from '@/i18n/routing.ts';
  * Plain anchors rather than a router push, so switching language still works
  * when the JS bundle has not arrived on a weak connection.
  */
-const LABELS: Record<Locale, string> = { th: 'ไทย', en: 'EN' };
-const NAV_LABEL: Record<Locale, string> = { th: 'ภาษา', en: 'Language' };
+const LABELS: Record<Locale, string> = { th: "ไทย", en: "EN" };
+const NAV_LABEL: Record<Locale, string> = { th: "ภาษา", en: "Language" };
 
 export function LocaleSwitch() {
   const active = useLocale() as Locale;
   const pathname = usePathname();
-  const rest = pathname.replace(/^\/(th|en)(?=\/|$)/, '') || '';
+  const rest = pathname.replace(/^\/(th|en)(?=\/|$)/, "") || "";
 
   return (
     <nav aria-label={NAV_LABEL[active]} className="flex items-center">
@@ -32,12 +32,12 @@ export function LocaleSwitch() {
             hrefLang={locale}
             lang={locale}
             data-touch
-            aria-current={locale === active ? 'true' : undefined}
+            aria-current={locale === active ? "true" : undefined}
             className={
-              'inline-flex min-h-[var(--size-touch)] items-center px-2 text-[var(--text-sm)] transition-colors duration-[var(--dur-fast)] ' +
+              "inline-flex min-h-[var(--size-touch)] items-center px-2 text-[var(--text-sm)] transition-colors duration-[var(--dur-fast)] " +
               (locale === active
-                ? 'font-bold text-[var(--color-ink)]'
-                : 'text-[var(--color-muted)] hover:text-[var(--color-ink)]')
+                ? "font-bold text-[var(--color-ink)]"
+                : "text-[var(--color-muted)] hover:text-[var(--color-ink)]")
             }
           >
             {LABELS[locale]}

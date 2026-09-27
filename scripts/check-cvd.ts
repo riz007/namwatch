@@ -13,10 +13,10 @@
  * Colour-vision simulation uses the Viénot–Brettel–Mollon (1999) LMS projection.
  * Run with `pnpm check:cvd`. CI runs it, so a hex edit that breaks the scale fails.
  */
-import { DEPTH_BANDS } from '../src/config/depth-bands.ts';
+import { DEPTH_BANDS } from "../src/config/depth-bands.ts";
 
 type RGB = [number, number, number];
-type Theme = 'light' | 'dark';
+type Theme = "light" | "dark";
 
 /**
  * Thresholds. Lightness does the ordering work — it is the one channel every
@@ -37,10 +37,10 @@ const MIN_CONTRAST = 4.5;
  * conveying information, so it needs 3:1 against the surface behind it.
  */
 const MIN_SURFACE_CONTRAST = 3;
-const SURFACE = { light: '#FFFFFF', dark: '#121417' } as const;
+const SURFACE = { light: "#FFFFFF", dark: "#121417" } as const;
 
 function hexToRgb(hex: string): RGB {
-  const h = hex.replace('#', '');
+  const h = hex.replace("#", "");
   return [
     parseInt(h.slice(0, 2), 16) / 255,
     parseInt(h.slice(2, 4), 16) / 255,
@@ -48,7 +48,8 @@ function hexToRgb(hex: string): RGB {
   ];
 }
 
-const toLinear = (c: number): number => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
+const toLinear = (c: number): number =>
+  c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
 const toSrgb = (c: number): number =>
   c <= 0.0031308 ? 12.92 * c : 1.055 * Math.max(c, 0) ** (1 / 2.4) - 0.055;
 
@@ -76,7 +77,8 @@ function rgbToXyz([r, g, b]: RGB): RGB {
 /** CIE XYZ (D65) → CIELAB. */
 function xyzToLab([x, y, z]: RGB): RGB {
   const [xn, yn, zn] = [0.95047, 1.0, 1.08883];
-  const f = (t: number): number => (t > 216 / 24389 ? Math.cbrt(t) : (841 / 108) * t + 4 / 29);
+  const f = (t: number): number =>
+    t > 216 / 24389 ? Math.cbrt(t) : (841 / 108) * t + 4 / 29;
   const [fx, fy, fz] = [f(x / xn), f(y / yn), f(z / zn)];
   return [116 * fy - 16, 500 * (fx - fy), 200 * (fy - fz)];
 }
@@ -132,20 +134,23 @@ function ciede2000(lab1: RGB, lab2: RGB): number {
   const Sh = 1 + 0.015 * Cbp * T;
   const Rt = -Math.sin(2 * dTheta * rad) * Rc;
   return Math.sqrt(
-    (dLp / Sl) ** 2 + (dCp / Sc) ** 2 + (dHp / Sh) ** 2 + Rt * (dCp / Sc) * (dHp / Sh),
+    (dLp / Sl) ** 2 +
+      (dCp / Sc) ** 2 +
+      (dHp / Sh) ** 2 +
+      Rt * (dCp / Sc) * (dHp / Sh),
   );
 }
 
 /** Viénot, Brettel & Mollon (1999) dichromat simulation in LMS space. */
-function simulate(rgb: RGB, kind: 'protan' | 'deutan' | 'tritan'): RGB {
+function simulate(rgb: RGB, kind: "protan" | "deutan" | "tritan"): RGB {
   const [r, g, b] = [toLinear(rgb[0]), toLinear(rgb[1]), toLinear(rgb[2])];
   // Hunt-Pointer-Estevez (D65-normalised) RGB → LMS
   const L = 0.31399022 * r + 0.63951294 * g + 0.04649755 * b;
   const M = 0.15537241 * r + 0.75789446 * g + 0.08670142 * b;
   const S = 0.01775239 * r + 0.10944209 * g + 0.87256922 * b;
   let [L2, M2, S2] = [L, M, S];
-  if (kind === 'protan') L2 = 1.05118294 * M - 0.05116099 * S;
-  else if (kind === 'deutan') M2 = 0.9513092 * L + 0.04866992 * S;
+  if (kind === "protan") L2 = 1.05118294 * M - 0.05116099 * S;
+  else if (kind === "deutan") M2 = 0.9513092 * L + 0.04866992 * S;
   else S2 = -0.86744736 * L + 1.86727089 * M;
   const r2 = 5.47221206 * L2 - 4.6419601 * M2 + 0.16963708 * S2;
   const g2 = -1.1252419 * L2 + 2.29317094 * M2 - 0.1678952 * S2;
@@ -154,12 +159,15 @@ function simulate(rgb: RGB, kind: 'protan' | 'deutan' | 'tritan'): RGB {
   return [clamp(r2), clamp(g2), clamp(b2)];
 }
 
-const VISIONS = ['normal', 'protan', 'deutan', 'tritan'] as const;
+const VISIONS = ["normal", "protan", "deutan", "tritan"] as const;
 const failures: string[] = [];
 const rows: string[] = [];
 
-for (const theme of ['light', 'dark'] as Theme[]) {
-  const bands = DEPTH_BANDS.map((b) => ({ band: b.band, rgb: hexToRgb(b.color[theme]) }));
+for (const theme of ["light", "dark"] as Theme[]) {
+  const bands = DEPTH_BANDS.map((b) => ({
+    band: b.band,
+    rgb: hexToRgb(b.color[theme]),
+  }));
 
   // 1. Lightness decreases strictly across the severity ramp (bands 1..5).
   const severity = bands.filter((b) => b.band >= 1);
@@ -168,7 +176,9 @@ for (const theme of ['light', 'dark'] as Theme[]) {
     const z = severity[i + 1]!;
     const [la, lz] = [labOf(a.rgb)[0], labOf(z.rgb)[0]];
     const step = la - lz;
-    rows.push(`${theme} L* depth-${a.band}=${la.toFixed(1)} → depth-${z.band}=${lz.toFixed(1)}`);
+    rows.push(
+      `${theme} L* depth-${a.band}=${la.toFixed(1)} → depth-${z.band}=${lz.toFixed(1)}`,
+    );
     if (step < MIN_L_STEP) {
       failures.push(
         `${theme}: lightness step depth-${a.band}→depth-${z.band} is ${step.toFixed(1)}, need >= ${MIN_L_STEP}`,
@@ -179,7 +189,7 @@ for (const theme of ['light', 'dark'] as Theme[]) {
   for (const vision of VISIONS) {
     const seen = bands.map((b) => ({
       band: b.band,
-      lab: labOf(vision === 'normal' ? b.rgb : simulate(b.rgb, vision)),
+      lab: labOf(vision === "normal" ? b.rgb : simulate(b.rgb, vision)),
     }));
 
     // 2. Adjacent severity bands stay separated.
@@ -209,7 +219,10 @@ for (const theme of ['light', 'dark'] as Theme[]) {
   // 3b. Every band swatch must stand out from the surface it sits on. A pale fill
   // cannot do this alone, so the border is what has to clear the bar.
   for (const b of DEPTH_BANDS) {
-    const ratio = contrastRatio(hexToRgb(b.border[theme]), hexToRgb(SURFACE[theme]));
+    const ratio = contrastRatio(
+      hexToRgb(b.border[theme]),
+      hexToRgb(SURFACE[theme]),
+    );
     if (ratio < MIN_SURFACE_CONTRAST) {
       failures.push(
         `${theme}: depth-${b.band} border vs surface ${SURFACE[theme]} is ${ratio.toFixed(2)}:1, need >= ${MIN_SURFACE_CONTRAST}:1`,
@@ -219,7 +232,10 @@ for (const theme of ['light', 'dark'] as Theme[]) {
 
   // 4. Text on each band meets WCAG AA.
   for (const b of DEPTH_BANDS) {
-    const ratio = contrastRatio(hexToRgb(b.color[theme]), hexToRgb(b.on[theme]));
+    const ratio = contrastRatio(
+      hexToRgb(b.color[theme]),
+      hexToRgb(b.on[theme]),
+    );
     if (ratio < MIN_CONTRAST) {
       failures.push(
         `${theme}: depth-${b.band} text contrast ${ratio.toFixed(2)}:1, need >= ${MIN_CONTRAST}:1`,
@@ -228,10 +244,12 @@ for (const theme of ['light', 'dark'] as Theme[]) {
   }
 }
 
-console.log(rows.join('\n'));
+console.log(rows.join("\n"));
 if (failures.length > 0) {
   console.error(`\n✗ depth-band ramp failed ${failures.length} check(s):`);
   for (const f of failures) console.error(`  - ${f}`);
   process.exit(1);
 }
-console.log('\n✓ depth-band ramp passes lightness, CVD separation and contrast checks');
+console.log(
+  "\n✓ depth-band ramp passes lightness, CVD separation and contrast checks",
+);

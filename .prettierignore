@@ -1,0 +1,16 @@
+pnpm-lock.yaml
+.next/
+node_modules/
+coverage/
+docs/internal/
+
+# Generated from src/config/depth-bands.ts. A test asserts the committed file
+# matches the generator byte for byte, so reformatting it would break the build.
+src/styles/depth-tokens.css
+
+# Generated SQL, and fixtures captured verbatim from upstream.
+supabase/migrations/
+src/lib/sources/**/fixtures/
+
+# Vendored MapLibre worker chunks.
+public/*.mjs

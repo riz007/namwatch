@@ -1,8 +1,8 @@
-import 'server-only';
+import "server-only";
 
-import { drizzle } from 'drizzle-orm/postgres-js';
-import postgres from 'postgres';
-import * as schema from './schema.ts';
+import { drizzle } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
+import * as schema from "./schema.ts";
 
 /**
  * The single place a database client is constructed.
@@ -21,7 +21,7 @@ let database: ReturnType<typeof drizzle<typeof schema>> | undefined;
 export class DatabaseUnavailableError extends Error {
   constructor(message: string) {
     super(message);
-    this.name = 'DatabaseUnavailableError';
+    this.name = "DatabaseUnavailableError";
   }
 }
 
@@ -29,7 +29,7 @@ function connectionString(): string {
   const url = process.env.DATABASE_URL;
   if (!url) {
     throw new DatabaseUnavailableError(
-      'DATABASE_URL is not set. Set it in .env.local (Supabase transaction pooler, port 6543).',
+      "DATABASE_URL is not set. Set it in .env.local (Supabase transaction pooler, port 6543).",
     );
   }
   return url;
@@ -49,11 +49,12 @@ export function sqlClient(): postgres.Sql {
 }
 
 export function db() {
-  database ??= drizzle(sqlClient(), { schema, casing: 'snake_case' });
+  database ??= drizzle(sqlClient(), { schema, casing: "snake_case" });
   return database;
 }
 
 /** True when the app is configured to reach a database at all. */
-export const isDatabaseConfigured = (): boolean => Boolean(process.env.DATABASE_URL);
+export const isDatabaseConfigured = (): boolean =>
+  Boolean(process.env.DATABASE_URL);
 
 export { schema };

@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextResponse } from "next/server";
 
 /**
  * Response helpers for the v1 API..
@@ -8,30 +8,33 @@ import { NextResponse } from 'next/server';
  * is useless to most of our users.
  */
 export type ApiErrorCode =
-  | 'invalid_request'
-  | 'not_found'
-  | 'rate_limited'
-  | 'turnstile_failed'
-  | 'unauthorised'
-  | 'server_error'
-  | 'unavailable';
+  | "invalid_request"
+  | "not_found"
+  | "rate_limited"
+  | "turnstile_failed"
+  | "unauthorised"
+  | "server_error"
+  | "unavailable";
 
 type Messages = { th: string; en: string };
 
 const MESSAGES: Record<ApiErrorCode, Messages> = {
-  invalid_request: { th: 'ข้อมูลไม่ถูกต้อง', en: 'Invalid request' },
-  not_found: { th: 'ไม่พบข้อมูล', en: 'Not found' },
+  invalid_request: { th: "ข้อมูลไม่ถูกต้อง", en: "Invalid request" },
+  not_found: { th: "ไม่พบข้อมูล", en: "Not found" },
   rate_limited: {
-    th: 'ส่งรายงานถี่เกินไป รอสักครู่แล้วลองใหม่',
-    en: 'Too many reports too quickly. Wait a moment and try again.',
+    th: "ส่งรายงานถี่เกินไป รอสักครู่แล้วลองใหม่",
+    en: "Too many reports too quickly. Wait a moment and try again.",
   },
   turnstile_failed: {
-    th: 'ยืนยันตัวตนไม่สำเร็จ ลองใหม่อีกครั้ง',
-    en: 'Verification failed. Please try again.',
+    th: "ยืนยันตัวตนไม่สำเร็จ ลองใหม่อีกครั้ง",
+    en: "Verification failed. Please try again.",
   },
-  unauthorised: { th: 'ไม่ได้รับอนุญาต', en: 'Unauthorised' },
-  server_error: { th: 'เกิดข้อผิดพลาดของระบบ', en: 'Something went wrong' },
-  unavailable: { th: 'ระบบไม่พร้อมใช้งานชั่วคราว', en: 'Temporarily unavailable' },
+  unauthorised: { th: "ไม่ได้รับอนุญาต", en: "Unauthorised" },
+  server_error: { th: "เกิดข้อผิดพลาดของระบบ", en: "Something went wrong" },
+  unavailable: {
+    th: "ระบบไม่พร้อมใช้งานชั่วคราว",
+    en: "Temporarily unavailable",
+  },
 };
 
 const STATUS: Record<ApiErrorCode, number> = {
@@ -60,22 +63,22 @@ export function apiError(
     },
     {
       status: init?.status ?? STATUS[code],
-      headers: { 'cache-control': 'no-store', ...(init?.headers ?? {}) },
+      headers: { "cache-control": "no-store", ...(init?.headers ?? {}) },
     },
   );
 }
 
 /** cache policies, named so a route cannot invent its own. */
 export const CACHE = {
-  map: 'public, s-maxage=30, stale-while-revalidate=300',
-  report: 'public, s-maxage=15, stale-while-revalidate=60',
-  station: 'public, s-maxage=120, stale-while-revalidate=600',
-  summary: 'public, s-maxage=60, stale-while-revalidate=300',
-  photo: 'public, s-maxage=86400, immutable',
+  map: "public, s-maxage=30, stale-while-revalidate=300",
+  report: "public, s-maxage=15, stale-while-revalidate=60",
+  station: "public, s-maxage=120, stale-while-revalidate=600",
+  summary: "public, s-maxage=60, stale-while-revalidate=300",
+  photo: "public, s-maxage=86400, immutable",
   /** mutations are never cached. */
-  none: 'no-store',
+  none: "no-store",
 } as const;
 
 export function apiOk(body: unknown, cache: string = CACHE.none): NextResponse {
-  return NextResponse.json(body, { headers: { 'cache-control': cache } });
+  return NextResponse.json(body, { headers: { "cache-control": cache } });
 }

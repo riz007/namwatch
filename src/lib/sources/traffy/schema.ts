@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 /**
  * Upstream payload schema for `traffy`. Contract: the source documentation.
@@ -16,7 +16,12 @@ export const aiSchema = z
   .object({
     summary: nullableString,
     categories: z
-      .array(z.object({ category: z.string(), confidence: z.number().nullable().optional() }))
+      .array(
+        z.object({
+          category: z.string(),
+          confidence: z.number().nullable().optional(),
+        }),
+      )
       .nullable()
       .optional(),
   })
@@ -42,10 +47,10 @@ export const traffyPropertiesSchema = z.object({
 });
 
 export const traffyFeatureSchema = z.object({
-  type: z.literal('Feature').optional(),
+  type: z.literal("Feature").optional(),
   geometry: z
     .object({
-      type: z.literal('Point').optional(),
+      type: z.literal("Point").optional(),
       /** GeoJSON order: [lon, lat]. Verified against Bangkok bounds. */
       coordinates: z.tuple([z.number(), z.number()]),
     })

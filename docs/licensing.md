@@ -8,14 +8,14 @@ rather than treated as permission.
 
 ## Summary
 
-| Source | Status | Risk |
-|---|---|---|
-| OpenFreeMap / OpenMapTiles / OpenStreetMap | Explicitly permitted | Low |
-| Software dependencies | All permissive licences | Low |
-| IBM Plex fonts | SIL Open Font License 1.1 | Low |
-| Vercel Hobby | Non-commercial only | Low, with conditions |
-| ThaiWater / HII | **No published terms** | **Unresolved** |
-| Traffy Fondue / NECTEC | **No published terms** | **Unresolved** |
+| Source                                     | Status                    | Risk                 |
+| ------------------------------------------ | ------------------------- | -------------------- |
+| OpenFreeMap / OpenMapTiles / OpenStreetMap | Explicitly permitted      | Low                  |
+| Software dependencies                      | All permissive licences   | Low                  |
+| IBM Plex fonts                             | SIL Open Font License 1.1 | Low                  |
+| Vercel Hobby                               | Non-commercial only       | Low, with conditions |
+| ThaiWater / HII                            | **No published terms**    | **Unresolved**       |
+| Traffy Fondue / NECTEC                     | **No published terms**    | **Unresolved**       |
 
 Two of the three data sources publish no terms of use at all. This project
 therefore operates on a good-faith basis: attribute clearly, poll politely,
@@ -53,7 +53,7 @@ every 30 minutes; attribution to สสน. / HII is displayed wherever the data
 
 - Endpoint used: `publicapi.traffy.in.th/teamchadchart-stat-api/geojson/v1`.
   Public, no key, no authentication. Serves no robots.txt (404).
-- NECTEC publishes an *Exchange API* for agencies sending data **into** the
+- NECTEC publishes an _Exchange API_ for agencies sending data **into** the
   platform. That is a different API from the public read endpoint used here, and
   its documentation does not cover redistribution of published complaints.
 - Some Traffy Fondue source repositories are MIT licensed. That covers their
@@ -97,15 +97,15 @@ OpenStreetMap data is ODbL 1.0. The OpenFreeMap project itself is MIT.
 Every direct dependency is under a permissive licence — verified from the
 installed packages, not from memory:
 
-| Licence | Packages |
-|---|---|
-| MIT | next, react, react-dom, next-intl, drizzle-kit, swr, zod, pino, tailwindcss, vitest, tsx, eslint, server-only |
-| Apache-2.0 | drizzle-orm, h3-js, typescript |
-| BSD-3-Clause | maplibre-gl |
-| BSD-2-Clause | dotenv |
-| ISC | supercluster |
-| Unlicense | postgres |
-| SIL OFL 1.1 | IBM Plex Sans, IBM Plex Sans Thai, IBM Plex Mono |
+| Licence      | Packages                                                                                                      |
+| ------------ | ------------------------------------------------------------------------------------------------------------- |
+| MIT          | next, react, react-dom, next-intl, drizzle-kit, swr, zod, pino, tailwindcss, vitest, tsx, eslint, server-only |
+| Apache-2.0   | drizzle-orm, h3-js, typescript                                                                                |
+| BSD-3-Clause | maplibre-gl                                                                                                   |
+| BSD-2-Clause | dotenv                                                                                                        |
+| ISC          | supercluster                                                                                                  |
+| Unlicense    | postgres                                                                                                      |
+| SIL OFL 1.1  | IBM Plex Sans, IBM Plex Sans Thai, IBM Plex Mono                                                              |
 
 Nothing copyleft, nothing with a field-of-use restriction.
 

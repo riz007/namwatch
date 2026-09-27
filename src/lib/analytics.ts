@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 /**
  * Analytics, behind consent.
@@ -7,23 +7,25 @@
  * coarse: never a coordinate, a note, a photo key or a device identifier. A
  * district name is acceptable; anything that could locate a person is not.
  */
-export const CONSENT_KEY = 'nw_consent';
+export const CONSENT_KEY = "nw_consent";
 
-export type Consent = 'granted' | 'denied' | null;
+export type Consent = "granted" | "denied" | null;
 
 /** Events worth counting. Keeping the list closed stops ad-hoc payloads. */
 export type AnalyticsEvent =
-  | 'report_started'
-  | 'report_submitted'
-  | 'report_failed'
-  | 'vote_cast'
-  | 'share_line'
-  | 'hotline_tap'
-  | 'locale_switch'
-  | 'layer_toggle'
-  | 'view_toggle'
-  | 'locate_me'
-  | 'legend_open';
+  | "report_started"
+  | "report_submitted"
+  | "report_failed"
+  | "vote_cast"
+  | "share_line"
+  | "hotline_tap"
+  | "locale_switch"
+  | "layer_toggle"
+  | "view_toggle"
+  | "locate_me"
+  | "legend_open"
+  | "detail_open"
+  | "coords_copied";
 
 /** Only these keys may accompany an event, and none of them identifies anyone. */
 type SafeParams = {
@@ -35,6 +37,7 @@ type SafeParams = {
   hours?: number;
   locale?: string;
   hotline?: string;
+  layer?: string;
 };
 
 declare global {
@@ -45,10 +48,10 @@ declare global {
 }
 
 export function readConsent(): Consent {
-  if (typeof window === 'undefined') return null;
+  if (typeof window === "undefined") return null;
   try {
     const v = window.localStorage.getItem(CONSENT_KEY);
-    return v === 'granted' || v === 'denied' ? v : null;
+    return v === "granted" || v === "denied" ? v : null;
   } catch {
     // Private mode, or storage blocked. Treat as undecided and ask again.
     return null;
@@ -65,9 +68,9 @@ export function writeConsent(value: Exclude<Consent, null>): void {
 }
 
 export function track(event: AnalyticsEvent, params: SafeParams = {}): void {
-  if (typeof window === 'undefined') return;
-  if (readConsent() !== 'granted') return;
-  window.gtag?.('event', event, params);
+  if (typeof window === "undefined") return;
+  if (readConsent() !== "granted") return;
+  window.gtag?.("event", event, params);
 }
 
 /**
@@ -79,18 +82,18 @@ export function track(event: AnalyticsEvent, params: SafeParams = {}): void {
  * snapshot from storage, and a subscription for later changes.
  */
 const listeners = new Set<() => void>();
-const CHANGED = 'nw:consent';
+const CHANGED = "nw:consent";
 
 function subscribe(onChange: () => void): () => void {
   listeners.add(onChange);
   const onStorage = (e: StorageEvent): void => {
     if (e.key === CONSENT_KEY) onChange();
   };
-  window.addEventListener('storage', onStorage);
+  window.addEventListener("storage", onStorage);
   window.addEventListener(CHANGED, onChange);
   return () => {
     listeners.delete(onChange);
-    window.removeEventListener('storage', onStorage);
+    window.removeEventListener("storage", onStorage);
     window.removeEventListener(CHANGED, onChange);
   };
 }

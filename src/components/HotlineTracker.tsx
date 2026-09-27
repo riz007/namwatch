@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useEffect } from 'react';
-import { track } from '@/lib/analytics.ts';
+import { track } from "@/lib/analytics.ts";
+import { useEffect } from "react";
 
 /**
  * Counts hotline taps without making the emergency bar a client component.
@@ -12,11 +12,14 @@ import { track } from '@/lib/analytics.ts';
 export function HotlineTracker() {
   useEffect(() => {
     const onClick = (e: MouseEvent): void => {
-      const el = (e.target as HTMLElement | null)?.closest?.('[data-hotline]');
-      if (el) track('hotline_tap', { hotline: el.getAttribute('data-hotline') ?? undefined });
+      const el = (e.target as HTMLElement | null)?.closest?.("[data-hotline]");
+      if (el)
+        track("hotline_tap", {
+          hotline: el.getAttribute("data-hotline") ?? undefined,
+        });
     };
-    document.addEventListener('click', onClick);
-    return () => document.removeEventListener('click', onClick);
+    document.addEventListener("click", onClick);
+    return () => document.removeEventListener("click", onClick);
   }, []);
 
   return null;

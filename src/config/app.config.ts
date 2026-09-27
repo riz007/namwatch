@@ -11,15 +11,15 @@ export const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ??
   (process.env.VERCEL_PROJECT_PRODUCTION_URL
     ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-    : 'https://namwatch.vercel.app');
+    : "https://namwatch.vercel.app");
 
 export const APP = {
   /** Working name. See SPEC.md header before renaming. */
-  nameKey: 'app.name',
-  repoUrl: 'https://github.com/namwatch/namwatch',
+  nameKey: "app.name",
+  repoUrl: "https://github.com/namwatch/namwatch",
   /** Sent upstream by every scraper/fetcher so agencies can identify us. */
-  userAgent: 'NamWatch/0.1 (+https://github.com/namwatch/namwatch)',
-  timeZone: 'Asia/Bangkok',
+  userAgent: "NamWatch/0.1 (+https://github.com/namwatch/namwatch)",
+  timeZone: "Asia/Bangkok",
 } as const;
 
 /** default view is the Bangkok bbox. [west, south, east, north] */

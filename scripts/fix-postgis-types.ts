@@ -6,21 +6,28 @@
  * This runs automatically after `pnpm db:generate` so the fix is reproducible
  * rather than a manual edit someone has to remember.
  */
-import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
 
-const DIR = 'supabase/migrations';
+const DIR = "supabase/migrations";
 const QUOTED_POSTGIS = /"(geography|geometry)\(([^"]*)\)"/g;
 
 let changed = 0;
-for (const file of readdirSync(DIR).filter((f) => f.endsWith('.sql'))) {
+for (const file of readdirSync(DIR).filter((f) => f.endsWith(".sql"))) {
   const path = join(DIR, file);
-  const before = readFileSync(path, 'utf8');
-  const after = before.replace(QUOTED_POSTGIS, (_m, type: string, args: string) => `${type}(${args})`);
+  const before = readFileSync(path, "utf8");
+  const after = before.replace(
+    QUOTED_POSTGIS,
+    (_m, type: string, args: string) => `${type}(${args})`,
+  );
   if (after !== before) {
     writeFileSync(path, after);
     changed++;
     console.log(`  unquoted PostGIS types in ${file}`);
   }
 }
-console.log(changed > 0 ? `✓ fixed ${changed} migration(s)` : '✓ no PostGIS type quoting to fix');
+console.log(
+  changed > 0
+    ? `✓ fixed ${changed} migration(s)`
+    : "✓ no PostGIS type quoting to fix",
+);

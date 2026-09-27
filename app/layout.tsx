@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { ReactNode } from "react";
 
 /**
  * Root layout. The real <html>/<body> live in app/[locale]/layout.tsx so the

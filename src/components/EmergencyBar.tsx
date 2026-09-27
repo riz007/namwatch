@@ -1,6 +1,6 @@
-import { getLocale, getTranslations } from 'next-intl/server';
-import { hotlinesFor } from '@/config/hotlines.ts';
-import { BANGKOK_REGION_ID } from '@/config/regions.ts';
+import { hotlinesFor } from "@/config/hotlines.ts";
+import { BANGKOK_REGION_ID } from "@/config/regions.ts";
+import { getLocale, getTranslations } from "next-intl/server";
 
 /**
  * Persistent emergency hotline bar..
@@ -17,19 +17,27 @@ import { BANGKOK_REGION_ID } from '@/config/regions.ts';
  * would both compete with the severity scale and contradict 's
  * "calm, not alarmist". This reads as an official notice strip.
  */
-export async function EmergencyBar({ regionId = BANGKOK_REGION_ID }: { regionId?: string }) {
-  const t = await getTranslations('emergency');
+export async function EmergencyBar({
+  regionId = BANGKOK_REGION_ID,
+}: {
+  regionId?: string;
+}) {
+  const t = await getTranslations("emergency");
   const locale = await getLocale();
   const hotlines = hotlinesFor(regionId);
 
   return (
     <details className="group border-b border-[var(--color-alert-rule)] bg-[var(--color-alert)] text-[var(--color-alert-ink)]">
       <summary className="flex min-h-[var(--size-touch)] cursor-pointer list-none items-center gap-2 px-4 [&::-webkit-details-marker]:hidden">
-        <svg viewBox="0 0 24 24" className="size-4 shrink-0 fill-current" aria-hidden="true">
+        <svg
+          viewBox="0 0 24 24"
+          className="size-4 shrink-0 fill-current"
+          aria-hidden="true"
+        >
           <path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.2.4 2.4.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.4 0 .8-.2 1l-2.3 2.2Z" />
         </svg>
         <span className="shrink-0 whitespace-nowrap text-[var(--text-sm)] font-semibold">
-          {t('title')}
+          {t("title")}
         </span>
 
         {/* The four numbers are readable without expanding — on a phone in the
@@ -40,7 +48,7 @@ export async function EmergencyBar({ regionId = BANGKOK_REGION_ID }: { regionId?
           ))}
         </span>
         <span className="ml-auto hidden text-[var(--text-xs)] opacity-80 group-open:inline">
-          {t('collapse')}
+          {t("collapse")}
         </span>
         <svg
           viewBox="0 0 12 12"
@@ -53,7 +61,9 @@ export async function EmergencyBar({ regionId = BANGKOK_REGION_ID }: { regionId?
 
       <div className="px-4 pb-3">
         {/* Hard rule 3. */}
-        <p className="pb-2 text-[var(--text-xs)] leading-relaxed opacity-85">{t('notice')}</p>
+        <p className="pb-2 text-[var(--text-xs)] leading-relaxed opacity-85">
+          {t("notice")}
+        </p>
         <ul className="grid gap-1.5 sm:grid-cols-2">
           {hotlines.map((h) => (
             <li key={h.number}>
@@ -63,11 +73,17 @@ export async function EmergencyBar({ regionId = BANGKOK_REGION_ID }: { regionId?
                 data-hotline={h.number}
                 className="flex min-h-[var(--size-touch)] items-center gap-3 rounded-[var(--radius-md)] border border-[var(--color-alert-rule)] px-3 transition-colors duration-[var(--dur-fast)] hover:bg-white/10"
               >
-                <span className="tabular text-[var(--text-xl)] font-semibold">{h.number}</span>
-                <span className="text-[var(--text-sm)] opacity-90">
-                  {locale === 'th' ? h.labelTh : h.labelEn}
+                <span className="tabular text-[var(--text-xl)] font-semibold">
+                  {h.number}
                 </span>
-                <svg viewBox="0 0 24 24" className="ml-auto size-4 shrink-0 fill-current opacity-60" aria-hidden="true">
+                <span className="text-[var(--text-sm)] opacity-90">
+                  {locale === "th" ? h.labelTh : h.labelEn}
+                </span>
+                <svg
+                  viewBox="0 0 24 24"
+                  className="ml-auto size-4 shrink-0 fill-current opacity-60"
+                  aria-hidden="true"
+                >
                   <path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.2.4 2.4.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.4 0 .8-.2 1l-2.3 2.2Z" />
                 </svg>
               </a>

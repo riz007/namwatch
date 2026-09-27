@@ -1,8 +1,8 @@
-import { NextResponse } from 'next/server';
-import { pingDatabase, readSourceHealth } from '@/lib/db/queries/health.ts';
-import { ADAPTERS, isStale } from '@/lib/sources/registry.ts';
-import { isDatabaseConfigured } from '@/lib/db/index.ts';
-import { CACHE } from '@/lib/api/respond.ts';
+import { CACHE } from "@/lib/api/respond.ts";
+import { isDatabaseConfigured } from "@/lib/db/index.ts";
+import { pingDatabase, readSourceHealth } from "@/lib/db/queries/health.ts";
+import { ADAPTERS, isStale } from "@/lib/sources/registry.ts";
+import { NextResponse } from "next/server";
 
 /**
  * `GET /api/v1/health` — source health plus a DB ping. `no-store`.
@@ -11,12 +11,18 @@ import { CACHE } from '@/lib/api/respond.ts';
  * failing: a health endpoint that 500s tells a monitor less than one that
  * explains which layer is down.
  */
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export async function GET() {
   const database = await pingDatabase();
 
-  let sources: { id: string; ok: boolean; lastSuccessAt: string | null; stale: boolean; lastError: string | null }[];
+  let sources: {
+    id: string;
+    ok: boolean;
+    lastSuccessAt: string | null;
+    stale: boolean;
+    lastError: string | null;
+  }[];
 
   if (database.ok) {
     const rows = await readSourceHealth();
@@ -39,7 +45,7 @@ export async function GET() {
       ok: false,
       lastSuccessAt: null,
       stale: true,
-      lastError: 'source health unavailable while the database is unreachable',
+      lastError: "source health unavailable while the database is unreachable",
     }));
   }
 
@@ -50,6 +56,6 @@ export async function GET() {
       sources,
       checkedAt: new Date().toISOString(),
     },
-    { headers: { 'cache-control': CACHE.none } },
+    { headers: { "cache-control": CACHE.none } },
   );
 }

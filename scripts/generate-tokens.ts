@@ -6,10 +6,11 @@
  * we generate them. `src/config/depth-bands.test.ts` asserts the committed file
  * still matches the config, so CI fails if someone edits one without the other.
  */
-import { DEPTH_BANDS } from '../src/config/depth-bands.ts';
+import { DEPTH_BANDS } from "../src/config/depth-bands.ts";
 
 export function renderDepthTokens(): string {
-  const line = (name: string, value: string): string => `  --color-${name}: ${value};`;
+  const line = (name: string, value: string): string =>
+    `  --color-${name}: ${value};`;
   const light = DEPTH_BANDS.flatMap((b) => [
     line(b.token, b.color.light),
     line(`${b.token}-on`, b.on.light),
@@ -28,24 +29,26 @@ export function renderDepthTokens(): string {
  * The ramp is validated by \`pnpm check:cvd\`.
  */
 @theme static {
-${light.join('\n')}
+${light.join("\n")}
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
-${dark.map((l) => '  ' + l).join('\n')}
+${dark.map((l) => "  " + l).join("\n")}
   }
 }
 
 :root[data-theme='dark'] {
-${dark.join('\n')}
+${dark.join("\n")}
 }
 `;
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
-  const { writeFileSync } = await import('node:fs');
-  const target = new URL('../src/styles/depth-tokens.css', import.meta.url);
+  const { writeFileSync } = await import("node:fs");
+  const target = new URL("../src/styles/depth-tokens.css", import.meta.url);
   writeFileSync(target, renderDepthTokens());
-  console.log(`✓ wrote src/styles/depth-tokens.css (${DEPTH_BANDS.length} bands)`);
+  console.log(
+    `✓ wrote src/styles/depth-tokens.css (${DEPTH_BANDS.length} bands)`,
+  );
 }

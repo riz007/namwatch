@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 /**
  * Upstream payload schemas for `thaiwater`. validate every upstream

@@ -1,5 +1,5 @@
-import type { IngestPayload, NormalizedExternalReport } from '../types.ts';
-import { traffyPayloadSchema, type TraffyFeature } from './schema.ts';
+import type { IngestPayload, NormalizedExternalReport } from "../types.ts";
+import { traffyPayloadSchema, type TraffyFeature } from "./schema.ts";
 
 /**
  * Provenance is `official_channel`: citizen-reported but tracked in the official
@@ -11,22 +11,29 @@ import { traffyPayloadSchema, type TraffyFeature } from './schema.ts';
  * is included for safety. Deliberately an exact match: substring-matching on
  * `น้ำ` ("water") would also catch `ประปา` (tap water), which is not flooding.
  */
-const FLOOD_TAGS = new Set(['น้ำท่วม', 'อุทกภัย']);
+const FLOOD_TAGS = new Set(["น้ำท่วม", "อุทกภัย"]);
 
-export const isFloodTagged = (tags: readonly string[] | null | undefined): boolean =>
-  Array.isArray(tags) && tags.some((t) => FLOOD_TAGS.has(t.trim()));
+export const isFloodTagged = (
+  tags: readonly string[] | null | undefined,
+): boolean => Array.isArray(tags) && tags.some((t) => FLOOD_TAGS.has(t.trim()));
 
 /**
  * Traffy timestamps are `"YYYY-MM-DD HH:MM:SS"` wall-clock in Asia/Bangkok with
  * no zone marker — the same trap as ThaiWater. Always attach the offset.
  */
-const BANGKOK_OFFSET = '+07:00';
+const BANGKOK_OFFSET = "+07:00";
 
-export function parseTraffyTimestamp(value: string | null | undefined): Date | null {
+export function parseTraffyTimestamp(
+  value: string | null | undefined,
+): Date | null {
   if (!value) return null;
-  const match = /^(\d{4}-\d{2}-\d{2})[ T](\d{2}:\d{2})(?::(\d{2}))?/.exec(value.trim());
+  const match = /^(\d{4}-\d{2}-\d{2})[ T](\d{2}:\d{2})(?::(\d{2}))?/.exec(
+    value.trim(),
+  );
   if (!match) return null;
-  const date = new Date(`${match[1]}T${match[2]}:${match[3] ?? '00'}${BANGKOK_OFFSET}`);
+  const date = new Date(
+    `${match[1]}T${match[2]}:${match[3] ?? "00"}${BANGKOK_OFFSET}`,
+  );
   return Number.isNaN(date.getTime()) ? null : date;
 }
 
@@ -39,14 +46,14 @@ export function scrubPii(text: string): string {
   return (
     text
       // Thai mobile/landline runs, with or without separators.
-      .replace(/\b0\d[\d\s-]{7,12}\d\b/g, '[เบอร์โทร]')
+      .replace(/\b0\d[\d\s-]{7,12}\d\b/g, "[เบอร์โทร]")
       // No \b before "+": it is a non-word character, so the boundary can never match.
-      .replace(/\+ ?66[\d\s-]{7,13}\d/g, '[เบอร์โทร]')
+      .replace(/\+ ?66[\d\s-]{7,13}\d/g, "[เบอร์โทร]")
       // The structured intake block's house-number line.
-      .replace(/บ้านเลขที่\s*:?\s*[\d/\-–]+/g, 'บ้านเลขที่ [ตัดออก]')
+      .replace(/บ้านเลขที่\s*:?\s*[\d/\-–]+/g, "บ้านเลขที่ [ตัดออก]")
       // Explicit contact markers followed by digits.
-      .replace(/(โทร|เบอร์|ติดต่อ)\s*:?\s*[\d\s()+-]{6,}/g, '$1 [ตัดออก]')
-      .replace(/[ \t]{2,}/g, ' ')
+      .replace(/(โทร|เบอร์|ติดต่อ)\s*:?\s*[\d\s()+-]{6,}/g, "$1 [ตัดออก]")
+      .replace(/[ \t]{2,}/g, " ")
       .trim()
   );
 }
@@ -64,7 +71,7 @@ export function displayText(feature: TraffyFeature): string | null {
   if (!description) return null;
 
   const scrubbed = scrubPii(description);
-  return scrubbed === '' ? null : scrubbed;
+  return scrubbed === "" ? null : scrubbed;
 }
 
 /** Bangkok-ish bounds; a coordinate outside them is upstream noise. */
@@ -89,10 +96,10 @@ export function normalizeTraffy(raw: unknown): IngestPayload {
     if (!observedAt) continue;
 
     externalReports.push({
-      source: 'traffy',
+      source: "traffy",
       externalId: p.ticket_id,
-      provenance: 'official_channel',
-      kind: 'flood',
+      provenance: "official_channel",
+      kind: "flood",
       point: { lon, lat },
       districtTh: p.district?.trim() || null,
       // Kept verbatim: reinterpreting an agency's workflow state would be
@@ -108,7 +115,8 @@ export function normalizeTraffy(raw: unknown): IngestPayload {
         subdistrictTh: p.subdistrict ?? null,
         provinceTh: p.province ?? null,
         tags: p.problem_type_fondue ?? [],
-        lastActivity: parseTraffyTimestamp(p.last_activity)?.toISOString() ?? null,
+        lastActivity:
+          parseTraffyTimestamp(p.last_activity)?.toISOString() ?? null,
       },
     });
   }

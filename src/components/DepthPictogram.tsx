@@ -1,4 +1,4 @@
-import type { DepthBandValue } from '@/config/depth-bands.ts';
+import type { DepthBandValue } from "@/config/depth-bands.ts";
 
 /**
  * Depth pictogram: a standing figure with the waterline drawn at the band's
@@ -36,13 +36,18 @@ export function DepthPictogram({
     <svg
       viewBox="0 0 24 24"
       className={className}
-      role={title ? 'img' : 'presentation'}
+      role={title ? "img" : "presentation"}
       aria-label={title}
       aria-hidden={title ? undefined : true}
       fill="none"
     >
       {/* Ground line — present in every band so the figure is anchored. */}
-      <path d="M2 22.6h20" stroke="currentColor" strokeWidth="1" opacity="0.35" />
+      <path
+        d="M2 22.6h20"
+        stroke="currentColor"
+        strokeWidth="1"
+        opacity="0.35"
+      />
 
       {/* Standing figure. */}
       <circle cx="12" cy="4" r="2.35" fill="currentColor" />
@@ -56,7 +61,14 @@ export function DepthPictogram({
       {water !== null && (
         <>
           {/* Water body — semi-opaque so the figure stays readable through it. */}
-          <rect x="0" y={water} width="24" height={24 - water} fill="currentColor" opacity="0.28" />
+          <rect
+            x="0"
+            y={water}
+            width="24"
+            height={24 - water}
+            fill="currentColor"
+            opacity="0.28"
+          />
           {/* Waterline, drawn as a wave so it reads as water and not as a rule. */}
           <path
             d={`M0 ${water}q3 -1.4 6 0t6 0t6 0t6 0`}

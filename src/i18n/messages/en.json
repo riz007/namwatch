@@ -162,7 +162,8 @@
     "helpStillSend": "You can still send the report after calling, so neighbours and volunteers can see this spot on the map.",
     "submitHelp": "Send report (after calling)",
     "successHelpTitle": "Report sent — do not wait for us",
-    "successHelpBody": "Your report is on the map for people nearby. It does not reach rescue services. If you have not called yet, call now."
+    "successHelpBody": "Your report is on the map for people nearby. It does not reach rescue services. If you have not called yet, call now.",
+    "unconfirmed": "Unconfirmed"
   },
   "vote": {
     "still": "Still flooded",
@@ -243,7 +244,8 @@
   "summary": {
     "overbank": "over bank",
     "rising": "rising",
-    "quiet": "No alerts in this area right now"
+    "quiet": "No alerts in this area right now",
+    "unknown": "Situation unknown — data is incomplete or not updating"
   },
   "legend": {
     "title": "What the marks mean",
@@ -259,5 +261,19 @@
     "clear": "Clear filter",
     "depthHint": "Filter by water depth",
     "noneInWindow": "Nothing in the last {hours} h — try a wider time range"
+  },
+  "detail": {
+    "title": "Location detail",
+    "coordinates": "Coordinates (lat, long)",
+    "copy": "Copy",
+    "copied": "Copied",
+    "openInMaps": "Open in Google Maps",
+    "approximate": "Approximate position. Home and help reports are published at the centre of a roughly 170 m area to protect the reporter's address — not the exact spot.",
+    "exact": "Position as reported.",
+    "confirmPrompt": "Were you there? Confirming keeps this on the map for others.",
+    "openTicket": "View the original case",
+    "forResponders": "For responders",
+    "respondersNote": "We do not dispatch anyone. To act on this, use the hotlines or the agency's own channel.",
+    "copyManual": "Copy did not work in this browser. The coordinates are selected — press and hold to copy."
   }
 }

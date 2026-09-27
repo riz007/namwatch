@@ -1,7 +1,7 @@
-import 'server-only';
+import "server-only";
 
-import { createHash, randomUUID } from 'node:crypto';
-import { cookies } from 'next/headers';
+import { cookies } from "next/headers";
+import { createHash, randomUUID } from "node:crypto";
 
 /**
  * Device identity for rate limiting and one-vote-per-device..
@@ -11,13 +11,16 @@ import { cookies } from 'next/headers';
  * database and is never logged.
  */
 
-const COOKIE = 'nw_did';
+const COOKIE = "nw_did";
 const ONE_YEAR_S = 31_536_000;
 
 function salted(value: string): string {
   const salt = process.env.SERVER_SALT;
-  if (!salt) throw new Error('SERVER_SALT is not set — refusing to store an unsalted hash');
-  return createHash('sha256').update(`${value}${salt}`).digest('hex');
+  if (!salt)
+    throw new Error(
+      "SERVER_SALT is not set — refusing to store an unsalted hash",
+    );
+  return createHash("sha256").update(`${value}${salt}`).digest("hex");
 }
 
 /** Reads the device cookie, minting one if this is a first visit. */
@@ -29,9 +32,9 @@ export async function deviceHash(): Promise<string> {
     id = randomUUID();
     jar.set(COOKIE, id, {
       httpOnly: true,
-      sameSite: 'lax',
-      secure: process.env.NODE_ENV === 'production',
-      path: '/',
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      path: "/",
       maxAge: ONE_YEAR_S,
     });
   }
@@ -44,8 +47,9 @@ export async function deviceHash(): Promise<string> {
  * hashed, kept 7 days, used for rate limiting only.
  */
 export function ipHash(request: Request): string | null {
-  const forwarded = request.headers.get('x-forwarded-for');
-  const ip = forwarded?.split(',')[0]?.trim() || request.headers.get('x-real-ip');
+  const forwarded = request.headers.get("x-forwarded-for");
+  const ip =
+    forwarded?.split(",")[0]?.trim() || request.headers.get("x-real-ip");
   if (!ip) return null;
   return salted(ip);
 }

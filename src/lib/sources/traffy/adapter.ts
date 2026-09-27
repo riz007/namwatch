@@ -1,7 +1,7 @@
-import { readFileSync } from 'node:fs';
-import { APP } from '@/config/app.config.ts';
-import type { IngestPayload, SourceAdapter } from '../types.ts';
-import { normalizeTraffy } from './normalize.ts';
+import { APP } from "@/config/app.config.ts";
+import { readFileSync } from "node:fs";
+import type { IngestPayload, SourceAdapter } from "../types.ts";
+import { normalizeTraffy } from "./normalize.ts";
 
 /**
  * Traffy Fondue (BMA × NECTEC) adapter. Contract: the source documentation.
@@ -11,7 +11,8 @@ import { normalizeTraffy } from './normalize.ts';
  * must render it as its own third category.
  */
 
-const ENDPOINT = 'https://publicapi.traffy.in.th/teamchadchart-stat-api/geojson/v1';
+const ENDPOINT =
+  "https://publicapi.traffy.in.th/teamchadchart-stat-api/geojson/v1";
 
 /**
  * The default response caps at 300 features ordered by creation time descending.
@@ -25,34 +26,37 @@ const ENDPOINT = 'https://publicapi.traffy.in.th/teamchadchart-stat-api/geojson/
 const LIMIT = 1000;
 
 export const traffyAdapter: SourceAdapter = {
-  id: 'traffy',
-  provenance: 'official_channel',
+  id: "traffy",
+  provenance: "official_channel",
   cadenceMinutes: 10,
   attribution: {
-    nameTh: 'ทราฟฟี่ ฟองดูว์ — กรุงเทพมหานคร ร่วมกับ เนคเทค สวทช.',
-    nameEn: 'Traffy Fondue — Bangkok Metropolitan Administration with NECTEC, NSTDA',
-    url: 'https://share.traffy.in.th/teamchadchart',
+    nameTh: "ทราฟฟี่ ฟองดูว์ — กรุงเทพมหานคร ร่วมกับ เนคเทค สวทช.",
+    nameEn:
+      "Traffy Fondue — Bangkok Metropolitan Administration with NECTEC, NSTDA",
+    url: "https://share.traffy.in.th/teamchadchart",
     terms:
-      'No published licence or API terms as of 26 Sep 2026. Public endpoint used with ' +
-      'attribution and polite polling pending written confirmation from NECTEC/BMA.',
+      "No published licence or API terms as of 26 Sep 2026. Public endpoint used with " +
+      "attribution and polite polling pending written confirmation from NECTEC/BMA.",
   },
 
   async fetchRaw(signal) {
     const url = new URL(ENDPOINT);
-    url.searchParams.set('limit', String(LIMIT));
+    url.searchParams.set("limit", String(LIMIT));
 
     const response = await fetch(url, {
       signal,
       headers: {
         // Identify ourselves.
-        'user-agent': APP.userAgent,
-        accept: 'application/json',
+        "user-agent": APP.userAgent,
+        accept: "application/json",
       },
-      cache: 'no-store',
+      cache: "no-store",
     });
 
     if (!response.ok) {
-      throw new Error(`${ENDPOINT} responded ${response.status} ${response.statusText}`);
+      throw new Error(
+        `${ENDPOINT} responded ${response.status} ${response.statusText}`,
+      );
     }
     return response.json();
   },
@@ -63,7 +67,10 @@ export const traffyAdapter: SourceAdapter = {
 
   loadFixture() {
     return JSON.parse(
-      readFileSync(new URL('./fixtures/flood-bangkok.json', import.meta.url), 'utf8'),
+      readFileSync(
+        new URL("./fixtures/flood-bangkok.json", import.meta.url),
+        "utf8",
+      ),
     );
   },
 };

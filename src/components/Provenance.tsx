@@ -1,4 +1,4 @@
-import { useTranslations } from 'next-intl';
+import { useTranslations } from "next-intl";
 
 /**
  * / official data and crowd data must always look
@@ -12,31 +12,38 @@ import { useTranslations } from 'next-intl';
  * official_channel ◇ diamond  — a filed case moving through a queue
  * crowd            ○ circle   — a person, standing somewhere
  */
-export type ProvenanceLevel = 'official_sensor' | 'official_channel' | 'crowd';
+export type ProvenanceLevel = "official_sensor" | "official_channel" | "crowd";
 
 const LABEL_KEY: Record<ProvenanceLevel, string> = {
-  official_sensor: 'officialSensor',
-  official_channel: 'officialChannel',
-  crowd: 'crowd',
+  official_sensor: "officialSensor",
+  official_channel: "officialChannel",
+  crowd: "crowd",
 };
 
 export function ProvenanceMark({
   level,
-  className = 'size-3',
+  className = "size-3",
 }: {
   level: ProvenanceLevel;
   className?: string;
 }) {
   return (
     <svg viewBox="0 0 12 12" className={className} aria-hidden="true">
-      {level === 'official_sensor' && (
+      {level === "official_sensor" && (
         <rect x="1.5" y="1.5" width="9" height="9" fill="currentColor" />
       )}
-      {level === 'official_channel' && (
+      {level === "official_channel" && (
         <path d="M6 0.8 11.2 6 6 11.2 0.8 6Z" fill="currentColor" />
       )}
-      {level === 'crowd' && (
-        <circle cx="6" cy="6" r="4.4" fill="none" stroke="currentColor" strokeWidth="2.2" />
+      {level === "crowd" && (
+        <circle
+          cx="6"
+          cy="6"
+          r="4.4"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.2"
+        />
       )}
     </svg>
   );
@@ -49,7 +56,7 @@ export function ProvenanceBadge({
   level: ProvenanceLevel;
   source?: string | null;
 }) {
-  const t = useTranslations('provenance');
+  const t = useTranslations("provenance");
 
   return (
     <span className="inline-flex items-center gap-1.5 text-[var(--text-xs)] text-[var(--color-ink-2)]">

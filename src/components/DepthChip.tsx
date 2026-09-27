@@ -1,6 +1,6 @@
-import { useTranslations } from 'next-intl';
-import { depthBand, type DepthBandValue } from '@/config/depth-bands.ts';
-import { DepthPictogram } from './DepthPictogram.tsx';
+import { depthBand, type DepthBandValue } from "@/config/depth-bands.ts";
+import { useTranslations } from "next-intl";
+import { DepthPictogram } from "./DepthPictogram.tsx";
 
 /**
  * The canonical depth indicator. / colour + pictogram +
@@ -11,18 +11,19 @@ import { DepthPictogram } from './DepthPictogram.tsx';
  */
 export function DepthChip({
   band,
-  size = 'md',
+  size = "md",
   showRange = false,
 }: {
   band: DepthBandValue;
-  size?: 'sm' | 'md';
+  size?: "sm" | "md";
   showRange?: boolean;
 }) {
-  const t = useTranslations('depth');
+  const t = useTranslations("depth");
   const def = depthBand(band);
 
-  const glyph = size === 'sm' ? 'size-4' : 'size-5';
-  const text = size === 'sm' ? 'text-[var(--text-xs)]' : 'text-[var(--text-sm)]';
+  const glyph = size === "sm" ? "size-4" : "size-5";
+  const text =
+    size === "sm" ? "text-[var(--text-xs)]" : "text-[var(--text-sm)]";
 
   return (
     <span

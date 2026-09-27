@@ -4,12 +4,13 @@ import { BANGKOK_BBOX, type TimeWindowH } from "@/config/app.config.ts";
 import type { DepthBandValue } from "@/config/depth-bands.ts";
 import { Link } from "@/i18n/navigation.ts";
 import { track } from "@/lib/analytics.ts";
-import type { MapFeature } from "@/lib/api/map-types.ts";
+import type { AnyProps, MapFeature } from "@/lib/api/map-types.ts";
 import { useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { Freshness } from "../Freshness.tsx";
 import { DepthFilter, TimeFilter, ViewToggle, type View } from "./Controls.tsx";
+import { DetailSheet } from "./DetailSheet.tsx";
 import { FloodList } from "./FloodList.tsx";
 import { LegendControl } from "./LegendControl.tsx";
 import { severityBandOf } from "./markers.ts";
@@ -42,8 +43,38 @@ export function FloodScreen() {
   const [minDepth, setMinDepth] = useState<DepthBandValue>(0);
   const [hours, setHours] = useState<TimeWindowH>(12);
 
-  const { data, error, isLoading } = useFloodData(BANGKOK_BBOX, hours);
+  const [selected, setSelected] = useState<{
+    props: AnyProps;
+    lon: number;
+    lat: number;
+  } | null>(null);
+
+  const { data, error, isLoading, mutate } = useFloodData(BANGKOK_BBOX, hours);
   const geo = useGeolocation();
+
+  const select = useCallback(
+    (next: { props: AnyProps; lon: number; lat: number }) => {
+      track("detail_open", { layer: next.props.layer });
+      setSelected(next);
+    },
+    [],
+  );
+
+  // The device id lives in an httpOnly cookie the server mints, so a
+  // same-origin POST is all the identity this needs.
+  const vote = useCallback(
+    async (id: string, choice: "still" | "receded") => {
+      await fetch(`/api/v1/reports/${id}/vote`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ vote: choice }),
+      });
+      track("vote_cast", { vote: choice });
+      setSelected(null);
+      void mutate();
+    },
+    [mutate],
+  );
 
   const features = useMemo<MapFeature[]>(() => {
     if (!data) return [];
@@ -100,7 +131,13 @@ export function FloodScreen() {
         </div>
       )}
 
-      {data && <SummaryBar features={data.features} />}
+      {data && (
+        <SummaryBar
+          features={data.features}
+          stale={data.meta.staleSources.length > 0}
+          degraded={data.meta.degraded.length > 0}
+        />
+      )}
 
       <div className="space-y-1.5 px-4 pb-2">
         {/* `overflow-x: auto` clips the other axis too, which cut the top off the
@@ -161,6 +198,7 @@ export function FloodScreen() {
             <MapCanvas
               features={features}
               focus={geo.state.status === "ready" ? geo.state : null}
+              onSelect={select}
             />
           )
         ) : (
@@ -169,7 +207,7 @@ export function FloodScreen() {
             {isLoading && !data ? (
               <ListSkeleton />
             ) : (
-              <FloodList features={features} />
+              <FloodList features={features} onSelect={select} />
             )}
           </div>
         )}
@@ -238,6 +276,12 @@ export function FloodScreen() {
           {t("map.reportCta")}
         </Link>
       </div>
+
+      <DetailSheet
+        selected={selected}
+        onClose={() => setSelected(null)}
+        onVote={vote}
+      />
 
       <SourceStrip
         counts={data?.meta.counts}

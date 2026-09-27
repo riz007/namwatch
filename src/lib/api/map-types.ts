@@ -20,6 +20,8 @@ export type ReportProps = MapFeatureBase & {
   createdAt: string;
   expiresAt: string;
   opacity: number;
+  /** `unconfirmed` means nobody has confirmed it recently — not that it is wrong. */
+  confidence: "confident" | "unconfirmed" | "gone";
   stillCount: number;
   recededCount: number;
   regionId: string | null;

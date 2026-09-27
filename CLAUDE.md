@@ -21,7 +21,7 @@ working here with Claude Code.
    approval when the change is schema-level or alters user-visible copy.
 2. **Source adapters:** investigate the upstream before writing code — fetch a
    real sample, infer the schema, note units and terms. Record the contract in
-   `docs/internal/sources/<id>.md` with fixtures, *then* write the adapter and
+   `docs/internal/sources/<id>.md` with fixtures, _then_ write the adapter and
    its tests. Never guess what a field means.
 3. **UI work:** build at 360 px first. Check both `/th` and `/en`. Test with
    long Thai strings, and with no data, stale data and error states.

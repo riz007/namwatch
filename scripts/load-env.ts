@@ -1,5 +1,5 @@
-import { existsSync } from 'node:fs';
-import { config } from 'dotenv';
+import { config } from "dotenv";
+import { existsSync } from "node:fs";
 
 /**
  * Loads environment files the way Next.js does.
@@ -10,6 +10,6 @@ import { config } from 'dotenv';
  *
  * First file to define a variable wins, matching Next's precedence.
  */
-for (const file of ['.env.local', '.env']) {
+for (const file of [".env.local", ".env"]) {
   if (existsSync(file)) config({ path: file, override: false, quiet: true });
 }

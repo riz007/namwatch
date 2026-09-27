@@ -1,7 +1,11 @@
-import { readFileSync } from 'node:fs';
-import { APP } from '@/config/app.config.ts';
-import type { IngestPayload, SourceAdapter } from '../types.ts';
-import { mergePayloads, normalizeRain, normalizeWaterLevel } from './normalize.ts';
+import { APP } from "@/config/app.config.ts";
+import { readFileSync } from "node:fs";
+import type { IngestPayload, SourceAdapter } from "../types.ts";
+import {
+  mergePayloads,
+  normalizeRain,
+  normalizeWaterLevel,
+} from "./normalize.ts";
 
 /**
  * ThaiWater (HII / สสน.) adapter. Contract: the source documentation.
@@ -12,7 +16,7 @@ import { mergePayloads, normalizeRain, normalizeWaterLevel } from './normalize.t
  * and asks us not to be wasteful on the free tier.
  */
 
-const BASE = 'https://api-v3.thaiwater.net/api/v1/thaiwater30/public';
+const BASE = "https://api-v3.thaiwater.net/api/v1/thaiwater30/public";
 const WATER_LEVEL_URL = `${BASE}/waterlevel_load`;
 const RAIN_URL = `${BASE}/rain_24h`;
 
@@ -28,29 +32,31 @@ async function getJson(url: string, signal?: AbortSignal): Promise<unknown> {
     signal,
     headers: {
       // Identify ourselves to the agency.
-      'user-agent': APP.userAgent,
-      accept: 'application/json',
+      "user-agent": APP.userAgent,
+      accept: "application/json",
     },
-    cache: 'no-store',
+    cache: "no-store",
   });
   if (!response.ok) {
-    throw new Error(`${url} responded ${response.status} ${response.statusText}`);
+    throw new Error(
+      `${url} responded ${response.status} ${response.statusText}`,
+    );
   }
   return response.json();
 }
 
 export const thaiwaterAdapter: SourceAdapter = {
-  id: 'thaiwater',
-  provenance: 'official_sensor',
+  id: "thaiwater",
+  provenance: "official_sensor",
   /** Fastest cohort publishes every 10 minutes (docs §7). */
   cadenceMinutes: 10,
   attribution: {
-    nameTh: 'สถาบันสารสนเทศทรัพยากรน้ำ (องค์การมหาชน)',
-    nameEn: 'Hydro-Informatics Institute (Public Organization), HII',
-    url: 'https://www.thaiwater.net/',
+    nameTh: "สถาบันสารสนเทศทรัพยากรน้ำ (องค์การมหาชน)",
+    nameEn: "Hydro-Informatics Institute (Public Organization), HII",
+    url: "https://www.thaiwater.net/",
     terms:
-      'No published licence or acceptable-use policy for api-v3.thaiwater.net as of 26 Sep 2026. ' +
-      'Used with attribution and polite polling pending written confirmation from HII.',
+      "No published licence or acceptable-use policy for api-v3.thaiwater.net as of 26 Sep 2026. " +
+      "Used with attribution and polite polling pending written confirmation from HII.",
   },
 
   async fetchRaw(signal) {
@@ -80,10 +86,12 @@ export const thaiwaterAdapter: SourceAdapter = {
 
   loadFixture() {
     const read = (name: string): unknown =>
-      JSON.parse(readFileSync(new URL(`./fixtures/${name}`, import.meta.url), 'utf8'));
+      JSON.parse(
+        readFileSync(new URL(`./fixtures/${name}`, import.meta.url), "utf8"),
+      );
     return {
-      waterLevel: read('waterlevel-bangkok.json'),
-      rain: read('rain24h-bangkok.json'),
+      waterLevel: read("waterlevel-bangkok.json"),
+      rain: read("rain24h-bangkok.json"),
     } satisfies RawBundle;
   },
 };

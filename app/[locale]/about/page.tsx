@@ -1,7 +1,7 @@
-import type { Metadata } from 'next';
-import { getLocale, getTranslations, setRequestLocale } from 'next-intl/server';
-import { ADAPTERS } from '@/lib/sources/registry.ts';
-import { List, Page, Section } from '@/components/Prose.tsx';
+import { List, Page, Section } from "@/components/Prose.tsx";
+import { ADAPTERS } from "@/lib/sources/registry.ts";
+import type { Metadata } from "next";
+import { getLocale, getTranslations, setRequestLocale } from "next-intl/server";
 
 export async function generateMetadata({
   params,
@@ -9,27 +9,31 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: 'about' });
-  return { title: t('title') };
+  const t = await getTranslations({ locale, namespace: "about" });
+  return { title: t("title") };
 }
 
-export default async function AboutPage({ params }: { params: Promise<{ locale: string }> }) {
+export default async function AboutPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations();
-  const isThai = (await getLocale()) === 'th';
+  const isThai = (await getLocale()) === "th";
 
   return (
-    <Page title={t('about.title')} lede={t('app.description')}>
-      <Section title={t('about.whatTitle')}>
-        <p>{t('about.whatBody')}</p>
+    <Page title={t("about.title")} lede={t("app.description")}>
+      <Section title={t("about.whatTitle")}>
+        <p>{t("about.whatBody")}</p>
       </Section>
 
-      <Section title={t('about.notOfficialTitle')}>
-        <p>{t('about.notOfficialBody')}</p>
+      <Section title={t("about.notOfficialTitle")}>
+        <p>{t("about.notOfficialBody")}</p>
       </Section>
 
-      <Section title={t('about.sourcesTitle')}>
+      <Section title={t("about.sourcesTitle")}>
         <ul className="space-y-3">
           {ADAPTERS.map((a) => (
             <li
@@ -46,23 +50,23 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
               </a>
               <p className="pt-1 text-[var(--text-sm)] text-[var(--color-muted)]">
                 {t(
-                  a.provenance === 'official_sensor'
-                    ? 'provenance.officialSensor'
-                    : 'provenance.officialChannel',
+                  a.provenance === "official_sensor"
+                    ? "provenance.officialSensor"
+                    : "provenance.officialChannel",
                 )}
               </p>
             </li>
           ))}
         </ul>
-        <p className="text-[var(--text-sm)]">{t('map.attribution')}</p>
+        <p className="text-[var(--text-sm)]">{t("map.attribution")}</p>
       </Section>
 
-      <Section title={t('about.privacyTitle')}>
-        <p>{t('about.privacyBody')}</p>
-        <List items={[t('about.privacyRetention'), t('about.pdpa')]} />
+      <Section title={t("about.privacyTitle")}>
+        <p>{t("about.privacyBody")}</p>
+        <List items={[t("about.privacyRetention"), t("about.pdpa")]} />
       </Section>
 
-      <Section title={t('about.contactTitle')}>
+      <Section title={t("about.contactTitle")}>
         <a
           href="https://github.com/riz007/namwatch"
           target="_blank"

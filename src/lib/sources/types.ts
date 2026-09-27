@@ -11,12 +11,14 @@
  * Units are normalised here, not in the UI — water level in metres
  * MSL, road flood in cm, rain in mm — and documented in the source documentation.
  */
-import type { Provenance } from '@/config/reports.ts';
+import type { Provenance } from "@/config/reports.ts";
 
-export type SourceId = 'thaiwater' | 'bma-dds' | 'traffy' | 'rainviewer' | 'gistda' | 'openmeteo';
+export type SourceId =
+  "thaiwater" | "bma-dds" | "traffy" | "rainviewer" | "gistda" | "openmeteo";
 
-export type StationKind = 'canal_level' | 'river_level' | 'road_flood' | 'rain';
-export type ReadingStatus = 'normal' | 'watch' | 'warning' | 'critical' | 'unknown';
+export type StationKind = "canal_level" | "river_level" | "road_flood" | "rain";
+export type ReadingStatus =
+  "normal" | "watch" | "warning" | "critical" | "unknown";
 
 export type LonLat = { readonly lon: number; readonly lat: number };
 
