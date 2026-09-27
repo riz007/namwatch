@@ -73,7 +73,9 @@
     "observed": "Measured {time}",
     "delayed": "Source delayed",
     "delayedHint": "This source has not updated on its usual schedule",
-    "unknown": "Time unknown"
+    "unknown": "Time unknown",
+    "stalledTitle": "Live data has stopped updating",
+    "stalledBody": "This map may not match what is happening now. Newest data"
   },
   "provenance": {
     "officialSensor": "Government sensor station",
@@ -255,6 +257,7 @@
     "showingAll": "Showing all {count} points",
     "showingAtLeast": "Showing {count} at {label} or deeper · {hidden} hidden",
     "clear": "Clear filter",
-    "depthHint": "Filter by water depth"
+    "depthHint": "Filter by water depth",
+    "noneInWindow": "Nothing in the last {hours} h — try a wider time range"
   }
 }

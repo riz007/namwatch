@@ -1,7 +1,8 @@
-import { NextResponse } from 'next/server';
-import { apiError, CACHE } from '@/lib/api/respond.ts';
-import { mapQuerySchema } from '@/lib/api/schemas.ts';
-import { InvalidBBoxError, parseBBox } from '@/lib/geo/bbox.ts';
+import { rainBandFor } from "@/config/rain-bands.ts";
+import { apiError, CACHE } from "@/lib/api/respond.ts";
+import { mapQuerySchema } from "@/lib/api/schemas.ts";
+import { isDatabaseConfigured } from "@/lib/db/index.ts";
+import { readFreshness } from "@/lib/db/queries/health.ts";
 import {
   externalReportsInBBox,
   reportsInBBox,
@@ -9,11 +10,11 @@ import {
   type MapExternalReport,
   type MapReport,
   type MapStation,
-} from '@/lib/db/queries/map.ts';
-import { isDatabaseConfigured } from '@/lib/db/index.ts';
-import { decayOpacity, type ReportKind } from '@/lib/reports/decay.ts';
-import { rainBandFor } from '@/config/rain-bands.ts';
-import { log } from '@/lib/log.ts';
+} from "@/lib/db/queries/map.ts";
+import { InvalidBBoxError, parseBBox } from "@/lib/geo/bbox.ts";
+import { log } from "@/lib/log.ts";
+import { decayOpacity, type ReportKind } from "@/lib/reports/decay.ts";
+import { NextResponse } from "next/server";
 
 /**
  * `GET /api/v1/map?bbox=&layers=&since=` — combined GeoJSON for the
@@ -25,22 +26,24 @@ import { log } from '@/lib/log.ts';
  *
  * Report geometry comes from `geom_public`, never `geom_exact`.
  */
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 type Feature = {
-  type: 'Feature';
-  geometry: { type: 'Point'; coordinates: [number, number] };
+  type: "Feature";
+  geometry: { type: "Point"; coordinates: [number, number] };
   properties: Record<string, unknown>;
 };
 
-const ALL_LAYERS = ['reports', 'stations', 'external'] as const;
+const ALL_LAYERS = ["reports", "stations", "external"] as const;
 type Layer = (typeof ALL_LAYERS)[number];
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const parsed = mapQuerySchema.safeParse(Object.fromEntries(url.searchParams));
   if (!parsed.success) {
-    return apiError('invalid_request', { detail: parsed.error.issues[0]?.message });
+    return apiError("invalid_request", {
+      detail: parsed.error.issues[0]?.message,
+    });
   }
 
   let bbox;
@@ -48,51 +51,63 @@ export async function GET(request: Request) {
     bbox = parseBBox(parsed.data.bbox);
   } catch (error) {
     if (error instanceof InvalidBBoxError) {
-      return apiError('invalid_request', { detail: error.message });
+      return apiError("invalid_request", { detail: error.message });
     }
     throw error;
   }
 
   if (!isDatabaseConfigured()) {
-    return apiError('unavailable', { detail: 'DATABASE_URL is not set' });
+    return apiError("unavailable", { detail: "DATABASE_URL is not set" });
   }
 
   const requested: readonly Layer[] = parsed.data.layers
-    ? (parsed.data.layers.split(',').filter((l): l is Layer =>
-        (ALL_LAYERS as readonly string[]).includes(l),
-      ) as Layer[])
+    ? (parsed.data.layers
+        .split(",")
+        .filter((l): l is Layer =>
+          (ALL_LAYERS as readonly string[]).includes(l),
+        ) as Layer[])
     : ALL_LAYERS;
 
   const now = new Date();
   const since = new Date(now.getTime() - parsed.data.since * 3_600_000);
   const degraded: string[] = [];
 
-  const layer = async <T,>(name: Layer, run: () => Promise<readonly T[]>): Promise<readonly T[]> => {
+  const layer = async <T>(
+    name: Layer,
+    run: () => Promise<readonly T[]>,
+  ): Promise<readonly T[]> => {
     if (!requested.includes(name)) return [];
     try {
       return await run();
     } catch (error) {
       // Degrade this layer only.
       degraded.push(name);
-      log.warn({ layer: name, err: String(error) }, 'map layer failed');
+      log.warn({ layer: name, err: String(error) }, "map layer failed");
       return [];
     }
   };
 
+  const freshness = await readFreshness().catch(() => ({
+    newestAt: null,
+    staleSources: [],
+  }));
+
   const [reports, stations, external] = await Promise.all([
-    layer<MapReport>('reports', () => reportsInBBox(bbox, since, now)),
-    layer<MapStation>('stations', () => stationsInBBox(bbox)),
-    layer<MapExternalReport>('external', () => externalReportsInBBox(bbox, since)),
+    layer<MapReport>("reports", () => reportsInBBox(bbox, since, now)),
+    layer<MapStation>("stations", () => stationsInBBox(bbox)),
+    layer<MapExternalReport>("external", () =>
+      externalReportsInBBox(bbox, since),
+    ),
   ]);
 
   const features: Feature[] = [
     ...reports.map(
       (r): Feature => ({
-        type: 'Feature',
-        geometry: { type: 'Point', coordinates: [r.lon, r.lat] },
+        type: "Feature",
+        geometry: { type: "Point", coordinates: [r.lon, r.lat] },
         properties: {
-          layer: 'reports',
-          provenance: 'crowd',
+          layer: "reports",
+          provenance: "crowd",
           id: r.id,
           kind: r.kind,
           depthBand: r.depthBand,
@@ -108,11 +123,11 @@ export async function GET(request: Request) {
     ),
     ...stations.map(
       (s): Feature => ({
-        type: 'Feature',
-        geometry: { type: 'Point', coordinates: [s.lon, s.lat] },
+        type: "Feature",
+        geometry: { type: "Point", coordinates: [s.lon, s.lat] },
         properties: {
-          layer: 'stations',
-          provenance: 'official_sensor',
+          layer: "stations",
+          provenance: "official_sensor",
           id: s.id,
           source: s.source,
           kind: s.kind,
@@ -120,18 +135,21 @@ export async function GET(request: Request) {
           nameEn: s.nameEn,
           value: s.value === null ? null : Number(s.value),
           bankLevelM: s.bankLevelM === null ? null : Number(s.bankLevelM),
-          status: s.status ?? 'unknown',
-          rainBand: s.kind === 'rain' ? rainBandFor(s.value === null ? null : Number(s.value)) : null,
+          status: s.status ?? "unknown",
+          rainBand:
+            s.kind === "rain"
+              ? rainBandFor(s.value === null ? null : Number(s.value))
+              : null,
           observedAt: s.observedAt?.toISOString() ?? null,
         },
       }),
     ),
     ...external.map(
       (e): Feature => ({
-        type: 'Feature',
-        geometry: { type: 'Point', coordinates: [e.lon, e.lat] },
+        type: "Feature",
+        geometry: { type: "Point", coordinates: [e.lon, e.lat] },
         properties: {
-          layer: 'external',
+          layer: "external",
           provenance: e.provenance,
           id: e.id,
           source: e.source,
@@ -148,7 +166,7 @@ export async function GET(request: Request) {
 
   return NextResponse.json(
     {
-      type: 'FeatureCollection',
+      type: "FeatureCollection",
       features,
       meta: {
         bbox,
@@ -159,9 +177,11 @@ export async function GET(request: Request) {
           stations: stations.length,
           external: external.length,
         },
+        newestAt: freshness.newestAt?.toISOString() ?? null,
+        staleSources: freshness.staleSources,
         degraded,
       },
     },
-    { headers: { 'cache-control': CACHE.map } },
+    { headers: { "cache-control": CACHE.map } },
   );
 }

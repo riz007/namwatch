@@ -3,18 +3,18 @@
  * the two cannot drift. The client never talks to the database;
  * this is the only shape it knows.
  */
-import type { RainBand } from '@/config/rain-bands.ts';
-import type { ProvenanceLevel } from '@/components/Provenance.tsx';
+import type { ProvenanceLevel } from "@/components/Provenance.tsx";
+import type { RainBand } from "@/config/rain-bands.ts";
 
 export type MapFeatureBase = {
-  layer: 'reports' | 'stations' | 'external';
+  layer: "reports" | "stations" | "external";
   provenance: ProvenanceLevel;
   id: string;
 };
 
 export type ReportProps = MapFeatureBase & {
-  layer: 'reports';
-  kind: 'road' | 'home' | 'canal' | 'help';
+  layer: "reports";
+  kind: "road" | "home" | "canal" | "help";
   depthBand: number;
   note: string | null;
   createdAt: string;
@@ -26,7 +26,7 @@ export type ReportProps = MapFeatureBase & {
 };
 
 export type StationProps = MapFeatureBase & {
-  layer: 'stations';
+  layer: "stations";
   source: string;
   kind: string;
   /** Intensity band for rain gauges, from the 24-hour accumulation. */
@@ -35,12 +35,12 @@ export type StationProps = MapFeatureBase & {
   nameEn: string | null;
   value: number | null;
   bankLevelM: number | null;
-  status: 'normal' | 'watch' | 'warning' | 'critical' | 'unknown';
+  status: "normal" | "watch" | "warning" | "critical" | "unknown";
   observedAt: string | null;
 };
 
 export type ExternalProps = MapFeatureBase & {
-  layer: 'external';
+  layer: "external";
   source: string;
   kind: string;
   state: string | null;
@@ -53,24 +53,30 @@ export type ExternalProps = MapFeatureBase & {
 export type AnyProps = ReportProps | StationProps | ExternalProps;
 
 export type MapFeature = {
-  type: 'Feature';
-  geometry: { type: 'Point'; coordinates: [number, number] };
+  type: "Feature";
+  geometry: { type: "Point"; coordinates: [number, number] };
   properties: AnyProps;
 };
 
 export type MapResponse = {
-  type: 'FeatureCollection';
+  type: "FeatureCollection";
   features: MapFeature[];
   meta: {
     bbox: [number, number, number, number];
     sinceHours: number;
     generatedAt: string;
     counts: { reports: number; stations: number; external: number };
+    /** When any source last produced data, ignoring the time-window filter. */
+    newestAt: string | null;
+    staleSources: string[];
     /** Layers that failed. the UI names what is missing. */
     degraded: string[];
   };
 };
 
-export const isReport = (p: AnyProps): p is ReportProps => p.layer === 'reports';
-export const isStation = (p: AnyProps): p is StationProps => p.layer === 'stations';
-export const isExternal = (p: AnyProps): p is ExternalProps => p.layer === 'external';
+export const isReport = (p: AnyProps): p is ReportProps =>
+  p.layer === "reports";
+export const isStation = (p: AnyProps): p is StationProps =>
+  p.layer === "stations";
+export const isExternal = (p: AnyProps): p is ExternalProps =>
+  p.layer === "external";
