@@ -157,6 +157,7 @@
     "traffyCta": "Send to Traffy Fondue",
     "reportAnother": "Report another spot",
     "backToMap": "Back to the map",
+    "seeOnMap": "See it on the map",
     "errorTitle": "Could not send the report",
     "errorBody": "Check your connection and try again.",
     "locationRequired": "Pick a location before sending",

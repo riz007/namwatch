@@ -48,11 +48,14 @@ function prefersDark(): boolean {
 export function MapCanvas({
   features,
   focus,
+  highlight,
   onSelect,
 }: {
   features: readonly MapFeature[];
   /** When set, the map centres here and marks the spot. */
   focus?: { lon: number; lat: number; accuracyM: number } | null;
+  /** Centre here without marking it — used to reveal a specific feature. */
+  highlight?: { lon: number; lat: number } | null;
   /** Opens the detail view for a single marker. */
   onSelect?: (selected: { props: AnyProps; lon: number; lat: number }) => void;
 }) {
@@ -302,6 +305,14 @@ export function MapCanvas({
       detach?.();
     };
   }, [features, locale, scheme]);
+
+  // Reveal one feature: zoom past the clustering threshold so it is drawn as
+  // itself rather than folded into a count.
+  useEffect(() => {
+    const instance = map.current;
+    if (!instance || !highlight) return;
+    instance.easeTo({ center: [highlight.lon, highlight.lat], zoom: 16 });
+  }, [highlight]);
 
   // Centre on the viewer when they ask to be located, and mark where they are.
   useEffect(() => {

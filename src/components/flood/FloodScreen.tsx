@@ -7,6 +7,7 @@ import { track } from "@/lib/analytics.ts";
 import type { AnyProps, MapFeature } from "@/lib/api/map-types.ts";
 import { useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
+import { useSearchParams } from "next/navigation.js";
 import { useCallback, useMemo, useState } from "react";
 import { Freshness } from "../Freshness.tsx";
 import {
@@ -58,6 +59,9 @@ export function FloodScreen() {
     lat: number;
   } | null>(null);
 
+  const params = useSearchParams();
+  const requestedReport = params.get("report");
+
   const { data, error, isLoading, mutate } = useFloodData(BANGKOK_BBOX, hours);
   const geo = useGeolocation();
 
@@ -101,6 +105,49 @@ export function FloodScreen() {
   }, [data, minDepth, source]);
 
   const hiddenCount = (data?.features.length ?? 0) - features.length;
+
+  // Arriving from "See it on the map" after submitting: centre on that report
+  // and open it. Without this a fresh report is a 12 px dot somewhere among a
+  // thousand, and the only question the reporter has is whether it worked.
+  //
+  // Derived rather than pushed into state from an effect: setState in an
+  // effect cascades a second render, and the rule that forbids it here is the
+  // same one that shaped the consent store.
+  const [dismissed, setDismissed] = useState<string | null>(null);
+  const requested =
+    requestedReport && dismissed !== requestedReport
+      ? data?.features.find((f) => f.properties.id === requestedReport)
+      : undefined;
+
+  // Keyed on the id so the object identity is stable while the id is, which
+  // is what stops the map re-easing on every poll.
+  const requestedId = requested?.properties.id ?? null;
+  const highlight = useMemo(
+    () =>
+      requested
+        ? {
+            lon: requested.geometry.coordinates[0],
+            lat: requested.geometry.coordinates[1],
+          }
+        : null,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [requestedId],
+  );
+
+  const shown =
+    selected ??
+    (requested
+      ? {
+          props: requested.properties,
+          lon: requested.geometry.coordinates[0],
+          lat: requested.geometry.coordinates[1],
+        }
+      : null);
+
+  const closeSheet = useCallback(() => {
+    setSelected(null);
+    if (requestedReport) setDismissed(requestedReport);
+  }, [requestedReport]);
 
   return (
     <div className="flex min-h-[calc(100dvh-96px)] flex-col">
@@ -230,6 +277,7 @@ export function FloodScreen() {
             <MapCanvas
               features={features}
               focus={geo.state.status === "ready" ? geo.state : null}
+              highlight={highlight}
               onSelect={select}
             />
           )
@@ -311,11 +359,7 @@ export function FloodScreen() {
         </Link>
       </div>
 
-      <DetailSheet
-        selected={selected}
-        onClose={() => setSelected(null)}
-        onVote={vote}
-      />
+      <DetailSheet selected={shown} onClose={closeSheet} onVote={vote} />
 
       <SourceStrip
         counts={data?.meta.counts}

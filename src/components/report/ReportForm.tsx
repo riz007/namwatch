@@ -37,6 +37,7 @@ export function ReportForm({ siteKey }: { siteKey: string | null }) {
     "editing",
   );
   const [problem, setProblem] = useState<string | null>(null);
+  const [newId, setNewId] = useState<string | null>(null);
   const turnstile = useRef<TurnstileHandle | null>(null);
 
   const position = geo.state.status === "ready" ? geo.state : null;
@@ -113,6 +114,10 @@ export function ReportForm({ siteKey }: { siteKey: string | null }) {
         turnstile.current?.reset();
         return;
       }
+      const body = (await response.json().catch(() => null)) as {
+        id?: string;
+      } | null;
+      setNewId(body?.id ?? null);
       setState("sent");
       track("report_submitted", { depth_band: depth, report_kind: kind });
     } catch {
@@ -121,7 +126,8 @@ export function ReportForm({ siteKey }: { siteKey: string | null }) {
     }
   }
 
-  if (state === "sent") return <Success isHelp={kind === "help"} />;
+  if (state === "sent")
+    return <Success isHelp={kind === "help"} reportId={newId} />;
 
   return (
     <form onSubmit={submit} className="space-y-7 pb-4">
@@ -439,7 +445,13 @@ function Step({
   );
 }
 
-function Success({ isHelp }: { isHelp: boolean }) {
+function Success({
+  isHelp,
+  reportId,
+}: {
+  isHelp: boolean;
+  reportId: string | null;
+}) {
   const t = useTranslations();
   return (
     <div className="space-y-5 text-center">
@@ -492,12 +504,16 @@ function Success({ isHelp }: { isHelp: boolean }) {
         </a>
       </div>
 
+      {/* A 12 px dot among a thousand points is not findable by scanning, and
+          "did it work?" is the first thing anyone asks after submitting. The
+          id goes in the query, never the coordinates — those stay off the URL
+          (hard rule: no personal data in query strings). */}
       <Link
-        href="/"
+        href={reportId ? { pathname: "/", query: { report: reportId } } : "/"}
         data-touch
-        className="inline-flex min-h-[var(--size-touch)] items-center font-semibold text-[var(--color-accent)] underline underline-offset-4"
+        className="btn btn-primary press w-full"
       >
-        {t("report.backToMap")}
+        {reportId ? t("report.seeOnMap") : t("report.backToMap")}
       </Link>
     </div>
   );

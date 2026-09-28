@@ -75,9 +75,9 @@ export function DetailSheet({
             <h2 className="font-bold text-[var(--color-ink)]">
               {title(p, locale, t)}
             </h2>
-            {district(p, locale) && (
+            {subtitle(p, locale, t) && (
               <p className="text-[var(--text-sm)] text-[var(--color-ink-2)]">
-                {district(p, locale)}
+                {subtitle(p, locale, t)}
               </p>
             )}
             <div className="flex flex-wrap items-center gap-x-2 gap-y-1 pt-1">
@@ -202,7 +202,9 @@ function title(
       (locale === "th" ? p.nameTh : p.nameEn) ?? p.nameTh ?? p.nameEn ?? p.id
     );
   }
-  if (isReport(p)) return t(`kind.${p.kind}`);
+  // The road the reporter named leads, when they named one — it is the thing
+  // a responder searches for. The kind moves to the line beneath.
+  if (isReport(p)) return p.roadName?.trim() || t(`kind.${p.kind}`);
   return p.description ?? t("provenance.officialChannel");
 }
 
@@ -212,6 +214,22 @@ function district(p: AnyProps, locale: string): string | null {
   const region = p.regionId ? regionById(p.regionId) : undefined;
   if (!region) return null;
   return locale === "th" ? `เขต${region.nameTh}` : `${region.nameEn} District`;
+}
+
+/**
+ * The line under the title. When the road name took the title, the kind has to
+ * reappear here or "Ramkhamhaeng 12" alone never says what was reported.
+ */
+function subtitle(
+  p: AnyProps,
+  locale: string,
+  t: ReturnType<typeof useTranslations>,
+): string | null {
+  const parts: string[] = [];
+  if (isReport(p) && p.roadName?.trim()) parts.push(t(`kind.${p.kind}`));
+  const area = district(p, locale);
+  if (area) parts.push(area);
+  return parts.length > 0 ? parts.join(" · ") : null;
 }
 
 function Reading({ p }: { p: AnyProps }) {

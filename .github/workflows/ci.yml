@@ -51,3 +51,10 @@ jobs:
           pnpm tokens:generate
           git diff --exit-code src/styles/depth-tokens.css \
             || (echo "::error::depth-tokens.css is stale — run 'pnpm tokens:generate' and commit"; exit 1)
+
+      # typecheck, lint and tests all pass on a tree that cannot be built:
+      # prerender errors (a client hook that opts out of static rendering, for
+      # one) only surface here. Needs no secrets — nothing touches the database
+      # at build time, and every API route is force-dynamic.
+      - name: Production build
+        run: pnpm build

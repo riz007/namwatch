@@ -1,6 +1,7 @@
 import { FloodScreen } from "@/components/flood/FloodScreen.tsx";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { Suspense } from "react";
 
 /** Screen 1 — Map + List.. */
 export async function generateMetadata({
@@ -20,5 +21,12 @@ export default async function HomePage({
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  return <FloodScreen />;
+  // The screen reads `?report=` to reveal a just-submitted report, and
+  // `useSearchParams` opts the tree out of prerendering unless it sits behind
+  // a boundary. Without this the production build fails outright.
+  return (
+    <Suspense>
+      <FloodScreen />
+    </Suspense>
+  );
 }
