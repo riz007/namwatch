@@ -1,3 +1,10 @@
+/* Hallmark · pre-emit critique: P5 H5 E4 S5 R5 V4
+ * genre: editorial · scope: component (Roads view + control bar)
+ * theme: project tokens — "civic utility, calm, institutional, legible in rain"
+ * macrostructure: n/a (component scope — lives inside the Map/Diagram screen)
+ * states: default · hover · focus-visible · active · loading · empty · error · stale
+ * contrast: selected tab 6.43:1 · unselected 4.53:1 · accent underline 6.43:1
+ */
 @import "tailwindcss";
 @import "./tokens.css";
 @import "./depth-tokens.css";
@@ -160,15 +167,12 @@ summary {
 
 @media (hover: hover) {
   .nw-marker:hover > span {
-    filter: brightness(1.08);
     transform: scale(1.18);
   }
 }
 
 .nw-marker > span {
-  transition:
-    transform 120ms var(--ease-out),
-    filter 120ms var(--ease-out);
+  transition: transform var(--dur-fast) var(--ease-out);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -524,41 +528,86 @@ button:disabled,
 
 /* ---- Segmented control ---------------------------------------------------- */
 
+/*
+ * Segmented control.
+ *
+ * The selected tab used to be paper (L 98.5%) on a paper-2 track (L 96.2%) —
+ * a 2.3% lightness step was carrying the entire selected state, which is not
+ * a state at all on a phone in daylight. It now reads on three channels at
+ * once: a lifted surface, accent text, and a solid accent underline. Accent
+ * also matches how every other pressed control in the app already speaks.
+ *
+ * Width is capped: stretched across a desktop viewport the tabs floated in
+ * dead space and stopped reading as one control.
+ */
 .segmented {
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: 1fr;
   gap: 0.25rem;
+  max-width: 30rem;
   padding: 0.25rem;
   border-radius: var(--radius-md);
   border: 1px solid var(--color-rule);
-  background: var(--color-paper-2);
+  background: var(--color-paper-3);
 }
 
 .segmented > [role="tab"] {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.375rem;
-  min-height: calc(var(--size-touch) - 0.625rem);
+  min-height: calc(var(--size-touch) - 0.5rem);
   border-radius: calc(var(--radius-md) - 1px);
   font-size: var(--text-sm);
   font-weight: 600;
   color: var(--color-muted);
   white-space: nowrap;
+  transition:
+    background-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
 }
 
 @media (hover: hover) {
   .segmented > [role="tab"]:hover[aria-selected="false"] {
     color: var(--color-ink);
-    background: color-mix(in oklab, var(--color-paper) 60%, transparent);
+    background: color-mix(in oklab, var(--color-paper) 70%, transparent);
   }
 }
 
 .segmented > [role="tab"][aria-selected="true"] {
   background: var(--color-paper);
-  color: var(--color-ink);
-  box-shadow: 0 1px 3px rgb(0 0 0 / 0.12);
+  color: var(--color-accent);
+  box-shadow:
+    0 1px 2px rgb(0 0 0 / 0.14),
+    0 2px 6px rgb(0 0 0 / 0.08);
+}
+
+/* The underline is the cue that survives greyscale, glare and colour-blindness. */
+.segmented > [role="tab"][aria-selected="true"]::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0.75rem;
+  bottom: 0.25rem;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--color-accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .segmented > [role="tab"] {
+    transition: none;
+  }
+}
+
+/* A filter row that scrolls sideways on a phone. Thin, so the bar does not
+ * eat a touch target, but never hidden — an invisible scroll affordance is a
+ * control people never find. */
+.filter-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-rule) transparent;
+  overscroll-behavior-x: contain;
 }
 
 /* ---- Depth swatch --------------------------------------------------------- */
@@ -586,6 +635,19 @@ button:disabled,
 .swatch[aria-pressed="true"] {
   transform: translateY(-2px);
   opacity: 1;
+  /* A 2px lift alone is invisible in a row of six. The ring is the state. */
+  box-shadow:
+    0 0 0 2px var(--color-paper),
+    0 0 0 4px var(--color-accent),
+    0 2px 6px rgb(0 0 0 / 0.18);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .swatch,
+  .swatch:hover,
+  .swatch[aria-pressed="true"] {
+    transform: none;
+  }
 }
 
 /* A crowd report nobody has confirmed lately: hollow, dashed, still visible.

@@ -106,9 +106,9 @@ export function FloodScreen() {
     <div className="flex min-h-[calc(100dvh-96px)] flex-col">
       {/* Orientation row — the Map/Diagram macrostructure's small heading beside
           the composition, not a hero above it. */}
-      <div className="flex flex-wrap items-center gap-2.5 px-4 pt-3 pb-2">
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-3 px-4 pt-4 pb-3">
         <h1 className="sr-only">{t("map.title")}</h1>
-        <div className="min-w-[180px] flex-1">
+        <div className="min-w-[240px] flex-1">
           <ViewToggle
             view={view}
             onChange={(v) => {
@@ -154,11 +154,17 @@ export function FloodScreen() {
         />
       )}
 
-      <div className="space-y-1.5 px-4 pb-2">
-        {/* `overflow-x: auto` clips the other axis too, which cut the top off the
-            selected swatch's ring and lift. The padding gives them room; the
-            negative margin keeps the row's outer spacing unchanged. */}
-        <div className="-mx-1 -my-1.5 flex items-center gap-2 overflow-x-auto px-1 py-1.5">
+      {/* Source and depth are one question — "show me what" — so they share a
+          row and a rule. Five stacked bands of chrome pushed the map itself
+          below the fold on a phone, which is the wrong thing to lose. */}
+      <div className="space-y-2 border-t border-[var(--color-rule-2)] px-4 pt-3 pb-3">
+        {/* `overflow-x: auto` clips the other axis too, which cut the top off
+            the selected swatch's ring and lift. The padding gives them room;
+            the negative margin keeps the row's outer spacing unchanged. */}
+        {/* Horizontal bleed only: a negative vertical margin here put the
+            scrollbar on top of the count line below. The vertical padding
+            stays, so the selected swatch's ring and lift are not clipped. */}
+        <div className="filter-scroll -mx-2 flex items-center gap-x-3 overflow-x-auto px-2 py-2">
           <SourceFilterControl
             value={source}
             onChange={(v) => {
@@ -166,8 +172,10 @@ export function FloodScreen() {
               setSource(v);
             }}
           />
-        </div>
-        <div className="-mx-1 -my-1.5 flex items-center gap-2 overflow-x-auto px-1 py-1.5">
+          <span
+            aria-hidden="true"
+            className="hidden h-6 w-px shrink-0 bg-[var(--color-rule)] sm:block"
+          />
           <DepthFilter min={minDepth} onChange={setMinDepth} />
         </div>
         <p className="text-[var(--text-xs)] text-[var(--color-muted)]">
