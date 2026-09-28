@@ -125,9 +125,16 @@ summary {
  * transform — never style shape or rotation on it. The inner span carries the
  * appearance.
  *
- * Provenance is distinguished by shape, since colour is spent on severity:
- * circle = a person reported it, square = a fixed instrument, diamond = a case
- * filed with the city.
+ * Provenance is distinguished by SHAPE and EDGE, since colour is spent on
+ * severity and cannot also carry source:
+ *   square, solid edge  = a fixed instrument measured it
+ *   circle, dashed ring = a person typed it in
+ *   diamond             = a case filed with the city
+ *
+ * The dashed ring is the load-bearing cue. Shape alone is unreadable at 12px,
+ * and during a flood "a sensor says so" and "somebody says so" are different
+ * enough claims that telling them apart must not require squinting. Dashed
+ * already means provisional elsewhere in this app, so it reads without a key.
  */
 .nw-marker {
   display: grid;
@@ -180,13 +187,23 @@ summary {
   box-shadow: 0 1px 2px rgb(0 0 0 / 0.4);
 }
 
+/* A person typed this in: round, and ringed in a dashed line. */
 .nw-crowd {
   border-radius: 50%;
+  outline: 2px dashed currentColor;
+  outline-offset: 2px;
 }
+
+/* An instrument measured this: square, hard edge, no ring. */
 .nw-sensor {
   border-radius: 1px;
 }
 
+/*
+ * A case filed with the city: a diamond, and dashed like the crowd circle,
+ * because a person typed this one in too. The two cues are orthogonal —
+ * the ring says who observed it, the shape says which channel carried it.
+ */
 .nw-channel {
   width: 9px;
   height: 9px;
@@ -195,6 +212,14 @@ summary {
   border-color: var(--color-ink-2);
   transform: rotate(45deg);
   opacity: 0.9;
+  outline: 1.5px dashed var(--color-ink-2);
+  outline-offset: 2px;
+}
+
+/* A cluster of filed cases is people-entered too. */
+.nw-cluster-channel {
+  outline: 2px dashed var(--color-rule);
+  outline-offset: 1px;
 }
 
 /* Rain gauges read as weather, not as alerts: no outline, slightly soft. */
@@ -214,7 +239,10 @@ summary {
 .nw-alarm {
   width: 22px;
   height: 22px;
-  border-radius: 50%;
+  /* Square, because an alarm is still an instrument reading. This used to be
+     a circle, which made an overbank gauge and a crowd report identical but
+     for size — the one distinction a reader most needs during a flood. */
+  border-radius: 3px;
   border-width: 3px;
   box-shadow:
     0 0 0 1.5px rgb(0 0 0 / 0.45),
@@ -226,10 +254,20 @@ summary {
     content: "";
     position: absolute;
     inset: -10px;
-    border-radius: 50%;
+    border-radius: 6px;
     border: 2px solid var(--color-depth-5);
     animation: nw-pulse 2.6s var(--ease-out) infinite;
   }
+}
+
+/*
+ * A cluster of crowd reports is still crowd data, so it carries the same
+ * dashed ring as a single one. Without it, zooming out silently upgrades
+ * "twelve people said so" into something that looks measured.
+ */
+.nw-from-people {
+  outline: 2px dashed var(--color-paper);
+  outline-offset: 1px;
 }
 
 /*

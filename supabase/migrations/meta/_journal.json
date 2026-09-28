@@ -15,6 +15,13 @@
       "when": 1790510278844,
       "tag": "20260927115758_massive_mentor",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1790567705765,
+      "tag": "20260928035505_opposite_scorpion",
+      "breakpoints": true
     }
   ]
 }

@@ -42,6 +42,13 @@ export const newReportSchema = z.object({
     .optional(),
   /** Thai district name, if the client resolved one. */
   districtTh: z.string().max(80).optional(),
+  /** Road or soi, as the reporter named it. */
+  roadName: z
+    .string()
+    .trim()
+    .max(120)
+    .optional()
+    .transform((v) => (v === "" ? undefined : v)),
   /** Cloudflare Turnstile token. */
   turnstileToken: z.string().min(1).max(4096),
 });

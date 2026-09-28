@@ -70,6 +70,46 @@ export function LegendControl() {
               </button>
             </div>
 
+            {/* Source first: it is the distinction a reader needs before any
+                question of severity, and the one they asked us to make plain. */}
+            <h3 className="pb-1 text-[var(--text-xs)] font-semibold tracking-wide text-[var(--color-muted)] uppercase">
+              {t("source.label")}
+            </h3>
+            <ul className="space-y-1.5 pb-3">
+              <Row
+                mark={
+                  <span
+                    className="nw-legend nw-sensor"
+                    style={{
+                      background: "var(--color-depth-4)",
+                      borderColor: "var(--color-paper)",
+                    }}
+                  />
+                }
+                label={`${t("provenance.officialSensor")} — ${t("source.sensorHint")}`}
+              />
+              <Row
+                mark={
+                  <span
+                    className="nw-legend nw-crowd"
+                    style={{
+                      background: "var(--color-depth-4)",
+                      borderColor: "var(--color-depth-4-border)",
+                      color: "var(--color-depth-4-border)",
+                    }}
+                  />
+                }
+                label={`${t("provenance.crowd")} — ${t("source.peopleHint")}`}
+              />
+              <Row
+                mark={<span className="nw-legend nw-channel" />}
+                label={`${t("provenance.officialChannel")} — ${t("source.peopleHint")}`}
+              />
+            </ul>
+
+            <h3 className="pb-1 text-[var(--text-xs)] font-semibold tracking-wide text-[var(--color-muted)] uppercase">
+              {t("legend.title")}
+            </h3>
             <ul className="space-y-1.5 pb-3">
               <Row
                 mark={
@@ -82,22 +122,6 @@ export function LegendControl() {
                   />
                 }
                 label={t("legend.alarm")}
-              />
-              <Row
-                mark={
-                  <span
-                    className="nw-legend nw-crowd"
-                    style={{
-                      background: "var(--color-depth-3)",
-                      borderColor: "var(--color-depth-3-border)",
-                    }}
-                  />
-                }
-                label={t("provenance.crowd")}
-              />
-              <Row
-                mark={<span className="nw-legend nw-channel" />}
-                label={t("provenance.officialChannel")}
               />
               <Row
                 mark={

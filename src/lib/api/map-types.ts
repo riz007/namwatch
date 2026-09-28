@@ -25,6 +25,10 @@ export type ReportProps = MapFeatureBase & {
   stillCount: number;
   recededCount: number;
   regionId: string | null;
+  /** Road or soi as the reporter named it; null when they did not. */
+  roadName: string | null;
+  /** What the reporter saw still getting through. */
+  passableBy: string[] | null;
 };
 
 export type StationProps = MapFeatureBase & {
@@ -39,6 +43,7 @@ export type StationProps = MapFeatureBase & {
   bankLevelM: number | null;
   status: "normal" | "watch" | "warning" | "critical" | "unknown";
   observedAt: string | null;
+  regionId: string | null;
 };
 
 export type ExternalProps = MapFeatureBase & {

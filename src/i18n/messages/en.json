@@ -94,6 +94,7 @@
     "locate": "Go to my location",
     "viewMap": "Map",
     "viewList": "List",
+    "viewRoads": "Roads",
     "filters": "Filters",
     "timeWindow": "Time range",
     "lastHours": "{hours} h",
@@ -133,6 +134,9 @@
     "useGps": "Use my current location",
     "gpsDenied": "Location unavailable. Search for a place instead.",
     "searchPlace": "Search for a place or district",
+    "roadStep": "Road or soi",
+    "roadPlaceholder": "e.g. Sukhumvit 39",
+    "roadHint": "Optional, and the most useful thing you can add — no map source names the road for us.",
     "districtStep": "District (เขต)",
     "districtUnsure": "I'm not sure",
     "districtHint": "This is how rescue teams and district offices name a place. The coordinates alone are hard to act on.",
@@ -279,5 +283,28 @@
     "forResponders": "For responders",
     "respondersNote": "We do not dispatch anyone. To act on this, use the hotlines or the agency's own channel.",
     "copyManual": "Copy did not work in this browser. The coordinates are selected — press and hold to copy."
+  },
+  "source": {
+    "label": "Source",
+    "all": "All",
+    "sensor": "Sensors",
+    "people": "People",
+    "sensorHint": "Measured by an instrument",
+    "peopleHint": "Typed in by a person",
+    "noneSensor": "No sensor readings in this view",
+    "nonePeople": "No one has reported here yet"
+  },
+  "roads": {
+    "label": "Roads",
+    "title": "Roads and areas",
+    "caveat": "What has been reported at each place — not a list of closures. No data source maps flooding along a road, so this is only as precise as the reports behind it.",
+    "areaOnly": "area, not a road",
+    "depthUnknown": "Depth not reported",
+    "passable": "Can pass: {vehicles}",
+    "impassable": "Nothing can pass safely",
+    "observed": "Reporters saw getting through: {vehicles}",
+    "counts": "{people} from people · {sensors} from sensors",
+    "empty": "Nothing reported yet",
+    "emptyWhy": "Reports and sensor readings appear here grouped by road or district. Add a road name when you report and it will show up by name."
   }
 }

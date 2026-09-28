@@ -2,7 +2,7 @@ import "server-only";
 
 import { resolveRegionId } from "@/lib/geo/region.ts";
 import type { IngestPayload } from "@/lib/sources/types.ts";
-import { sql } from "drizzle-orm";
+import { lt, sql } from "drizzle-orm";
 import { db } from "../index.ts";
 import { externalReports, stationReadings, stations } from "../schema.ts";
 
@@ -138,13 +138,14 @@ export async function persistPayload(
  * Called by /api/internal/maintain.
  */
 export async function pruneOldReadings(olderThan: Date): Promise<number> {
-  const rows = await db().execute<{ count: number }>(sql`
-    with deleted as (
-      delete from ${stationReadings} where observed_at < ${olderThan} returning 1
-    )
-    select count(*)::int as count from deleted
-  `);
-  return (rows as unknown as { count: number }[])[0]?.count ?? 0;
+  // Typed operator rather than a raw `sql` template: interpolating a Date into
+  // a template gives the driver a Date object with no column type to map it
+  // through, and postgres.js cannot serialise that. It fails every time.
+  const rows = await db()
+    .delete(stationReadings)
+    .where(lt(stationReadings.observedAt, olderThan))
+    .returning({ stationId: stationReadings.stationId });
+  return rows.length;
 }
 
 export async function seedRegions(

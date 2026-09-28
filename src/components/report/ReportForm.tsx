@@ -30,6 +30,7 @@ export function ReportForm({ siteKey }: { siteKey: string | null }) {
   const [depth, setDepth] = useState<DepthBandValue | null>(null);
   const [kind, setKind] = useState<Kind | null>(null);
   const [districtTh, setDistrictTh] = useState("");
+  const [roadName, setRoadName] = useState("");
   const [note, setNote] = useState("");
   const [passable, setPassable] = useState<Vehicle[]>([]);
   const [state, setState] = useState<"editing" | "sending" | "sent" | "error">(
@@ -88,6 +89,7 @@ export function ReportForm({ siteKey }: { siteKey: string | null }) {
           lat: position.lat,
           note: note.trim() || undefined,
           districtTh: districtTh || undefined,
+          roadName: roadName.trim() || undefined,
           locale,
           passableBy: passable.length > 0 ? passable : undefined,
           turnstileToken: token,
@@ -160,6 +162,31 @@ export function ReportForm({ siteKey }: { siteKey: string | null }) {
             {t("report.gpsDenied")}
           </p>
         )}
+
+        {/* No upstream source carries road geometry, and Traffy's address is
+            subdistrict-level for flood cases — so the only reliable source for
+            the road name is the person standing on it. */}
+        <div className="pt-3">
+          <label
+            htmlFor="road"
+            className="block pb-1.5 text-[var(--text-sm)] font-semibold text-[var(--color-ink)]"
+          >
+            {t("report.roadStep")}
+          </label>
+          <input
+            id="road"
+            type="text"
+            inputMode="text"
+            value={roadName}
+            onChange={(e) => setRoadName(e.target.value.slice(0, 120))}
+            placeholder={t("report.roadPlaceholder")}
+            autoComplete="off"
+            className="min-h-[var(--size-touch)] w-full rounded-[var(--radius-md)] border border-[var(--color-rule)] bg-[var(--color-paper)] px-3 text-[var(--color-ink)] placeholder:text-[var(--color-muted)] hover:border-[var(--color-accent)] focus-visible:border-[var(--color-accent)]"
+          />
+          <p className="pt-1.5 text-[var(--text-xs)] leading-relaxed text-[var(--color-muted)]">
+            {t("report.roadHint")}
+          </p>
+        </div>
 
         {/* A coordinate alone is hard to act on. The district is how agencies,
             hotline operators and neighbours actually name a place, and we have

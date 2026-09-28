@@ -154,6 +154,8 @@ export async function GET(request: Request) {
         stillCount: r.stillCount,
         recededCount: r.recededCount,
         regionId: r.regionId,
+        roadName: r.roadName,
+        passableBy: r.passableBy,
       },
     })),
     ...stations.map((s): Feature => ({
@@ -175,6 +177,10 @@ export async function GET(request: Request) {
             ? rainBandFor(s.value === null ? null : Number(s.value))
             : null,
         observedAt: s.observedAt?.toISOString() ?? null,
+        // Lets a station join the road/area grouping. Without it every group
+        // reported "0 sensors", which reads as "no gauge covers this" rather
+        // than "we never looked".
+        regionId: s.regionId,
       },
     })),
     ...external.map((e): Feature => ({

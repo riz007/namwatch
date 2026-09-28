@@ -42,6 +42,13 @@ jobs:
             echo "::error::Rejected: INGEST_SECRET does not match the deployment"
             exit 1
           fi
+          # 207 means the request was served but at least one step failed; the
+          # body names which. Still a failure — retention is a promise — but a
+          # different one from the endpoint never answering.
+          if [ "$code" = "207" ]; then
+            echo "::error::A maintenance step failed — see \"failed\" in the body above"
+            exit 1
+          fi
           if [ "$code" != "200" ]; then
             echo "::error::Maintenance did not run (HTTP $code) — retention is overdue"
             exit 1

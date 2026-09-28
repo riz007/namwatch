@@ -9,11 +9,19 @@ import { useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { useCallback, useMemo, useState } from "react";
 import { Freshness } from "../Freshness.tsx";
-import { DepthFilter, TimeFilter, ViewToggle, type View } from "./Controls.tsx";
+import {
+  DepthFilter,
+  SourceFilterControl,
+  TimeFilter,
+  ViewToggle,
+  type SourceFilter,
+  type View,
+} from "./Controls.tsx";
 import { DetailSheet } from "./DetailSheet.tsx";
 import { FloodList } from "./FloodList.tsx";
 import { LegendControl } from "./LegendControl.tsx";
 import { severityBandOf } from "./markers.ts";
+import { RoadList } from "./RoadList.tsx";
 import { SourceStrip } from "./SourceStrip.tsx";
 import { SummaryBar } from "./SummaryBar.tsx";
 import { useFloodData } from "./useFloodData.ts";
@@ -42,6 +50,7 @@ export function FloodScreen() {
   const [view, setView] = useState<View>("map");
   const [minDepth, setMinDepth] = useState<DepthBandValue>(0);
   const [hours, setHours] = useState<TimeWindowH>(12);
+  const [source, setSource] = useState<SourceFilter>("all");
 
   const [selected, setSelected] = useState<{
     props: AnyProps;
@@ -78,12 +87,18 @@ export function FloodScreen() {
 
   const features = useMemo<MapFeature[]>(() => {
     if (!data) return [];
-    if (minDepth === 0) return data.features;
     return data.features.filter((f) => {
+      // "People" means anything a person typed: our own reports and the cases
+      // filed with the city. "Sensors" means an instrument measured it.
+      if (source !== "all") {
+        const measured = f.properties.provenance === "official_sensor";
+        if (source === "sensor" ? !measured : measured) return false;
+      }
+      if (minDepth === 0) return true;
       const band = severityBandOf(f.properties);
       return band !== null && band >= minDepth;
     });
-  }, [data, minDepth]);
+  }, [data, minDepth, source]);
 
   const hiddenCount = (data?.features.length ?? 0) - features.length;
 
@@ -143,6 +158,15 @@ export function FloodScreen() {
         {/* `overflow-x: auto` clips the other axis too, which cut the top off the
             selected swatch's ring and lift. The padding gives them room; the
             negative margin keeps the row's outer spacing unchanged. */}
+        <div className="-mx-1 -my-1.5 flex items-center gap-2 overflow-x-auto px-1 py-1.5">
+          <SourceFilterControl
+            value={source}
+            onChange={(v) => {
+              track("layer_toggle", { view: v });
+              setSource(v);
+            }}
+          />
+        </div>
         <div className="-mx-1 -my-1.5 flex items-center gap-2 overflow-x-auto px-1 py-1.5">
           <DepthFilter min={minDepth} onChange={setMinDepth} />
         </div>
@@ -206,6 +230,8 @@ export function FloodScreen() {
           <div className="absolute inset-0 overflow-y-auto pb-20">
             {isLoading && !data ? (
               <ListSkeleton />
+            ) : view === "roads" ? (
+              <RoadList features={features} onSelect={select} />
             ) : (
               <FloodList features={features} onSelect={select} />
             )}

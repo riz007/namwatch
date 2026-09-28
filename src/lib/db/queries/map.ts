@@ -48,6 +48,8 @@ export type MapReport = {
   stillCount: number;
   recededCount: number;
   regionId: string | null;
+  roadName: string | null;
+  passableBy: string[] | null;
 };
 
 export async function reportsInBBox(
@@ -70,6 +72,9 @@ export async function reportsInBBox(
       stillCount: reports.stillCount,
       recededCount: reports.recededCount,
       regionId: reports.regionId,
+      roadName: reports.roadName,
+      // Collected by the form since day one and never once displayed.
+      passableBy: reports.passableBy,
     })
     .from(reports)
     .where(
@@ -97,6 +102,7 @@ export type MapStation = {
   value: string | null;
   status: string | null;
   observedAt: Date | null;
+  regionId: string | null;
 };
 
 /**
@@ -129,6 +135,7 @@ export async function stationsInBBox(
       ST_X(s.geom::geometry)   as lon,
       ST_Y(s.geom::geometry)   as lat,
       s.bank_level_m           as "bankLevelM",
+      s.region_id              as "regionId",
       r.value,
       case
         when r.observed_at < now() - interval '3 hours' then 'unknown'

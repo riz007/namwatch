@@ -94,6 +94,7 @@ export async function POST(request: Request) {
         locale: input.locale,
         point: { lon: input.lon, lat: input.lat },
         districtTh: input.districtTh ?? null,
+        roadName: input.roadName ?? null,
         deviceHash: device,
         ipHash: ip,
       },

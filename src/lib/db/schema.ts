@@ -138,6 +138,14 @@ export const reports = pgTable(
     geomPublic: geographyPoint("geom_public").notNull(),
     h3R9: text("h3_r9").notNull(),
     regionId: text("region_id").references(() => regions.id),
+    /**
+     * The road or soi as the reporter named it, e.g. "ซอยสุขุมวิท 39".
+     *
+     * There is no road geometry in any upstream source and Traffy's address
+     * field is subdistrict-level for flood cases (1 in 300 carries a road), so
+     * the person standing in the water is the only reliable source for this.
+     */
+    roadName: text("road_name"),
     photoKey: text("photo_key"),
     /**
      * sha256(deviceId + SERVER_SALT). Never the raw id.

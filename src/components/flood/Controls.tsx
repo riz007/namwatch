@@ -12,7 +12,7 @@ import { DepthPictogram } from "../DepthPictogram.tsx";
  * a peer of the Map, not a fallback, because it is what people on a cheap phone
  * without working WebGL actually use.
  */
-export type View = "map" | "list";
+export type View = "map" | "list" | "roads";
 
 export function ViewToggle({
   view,
@@ -25,7 +25,7 @@ export function ViewToggle({
 
   return (
     <div role="tablist" aria-label={t("title")} className="segmented">
-      {(["map", "list"] as const).map((value) => (
+      {(["map", "list", "roads"] as const).map((value) => (
         <button
           key={value}
           type="button"
@@ -34,8 +34,18 @@ export function ViewToggle({
           onClick={() => onChange(value)}
           className="press"
         >
-          {value === "map" ? <MapGlyph /> : <ListGlyph />}
-          {value === "map" ? t("viewMap") : t("viewList")}
+          {value === "map" ? (
+            <MapGlyph />
+          ) : value === "list" ? (
+            <ListGlyph />
+          ) : (
+            <RoadGlyph />
+          )}
+          {value === "map"
+            ? t("viewMap")
+            : value === "list"
+              ? t("viewList")
+              : t("viewRoads")}
         </button>
       ))}
     </div>
@@ -139,5 +149,102 @@ export function TimeFilter({
         </button>
       ))}
     </div>
+  );
+}
+
+/**
+ * Who is telling you this: everything, instruments only, or people only.
+ *
+ * Asked for by a user during the flood — merged on one map, an official gauge
+ * and somebody's phone report look like the same kind of claim, and they are
+ * not. Shape and a dashed ring separate them at a glance; this separates them
+ * outright, for the moment someone needs to act on one and not the other.
+ */
+export type SourceFilter = "all" | "sensor" | "people";
+
+export function SourceFilterControl({
+  value,
+  onChange,
+}: {
+  value: SourceFilter;
+  onChange: (v: SourceFilter) => void;
+}) {
+  const t = useTranslations("source");
+
+  return (
+    <div
+      className="flex items-center gap-2"
+      role="group"
+      aria-label={t("label")}
+    >
+      {(["all", "sensor", "people"] as const).map((v) => (
+        <button
+          key={v}
+          type="button"
+          aria-pressed={value === v}
+          onClick={() => onChange(v)}
+          className={
+            "inline-flex min-h-9 items-center gap-1.5 whitespace-nowrap rounded-[var(--radius-pill)] border px-3 text-[var(--text-sm)] font-medium transition-colors duration-[var(--dur-fast)] " +
+            (value === v
+              ? "border-[var(--color-accent)] bg-[var(--color-accent-soft)] text-[var(--color-accent)]"
+              : "border-[var(--color-rule)] text-[var(--color-muted)] hover:text-[var(--color-ink)]")
+          }
+        >
+          {v !== "all" && <SourceGlyph kind={v} />}
+          {t(v)}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+/** The same two marks the map uses: hard square, or dashed circle. */
+function SourceGlyph({ kind }: { kind: "sensor" | "people" }) {
+  return (
+    <svg viewBox="0 0 14 14" className="size-3.5" aria-hidden="true">
+      {kind === "sensor" ? (
+        <rect
+          x="2.5"
+          y="2.5"
+          width="9"
+          height="9"
+          rx="1.5"
+          fill="currentColor"
+        />
+      ) : (
+        <circle
+          cx="7"
+          cy="7"
+          r="4.6"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeDasharray="2.6 2"
+        />
+      )}
+    </svg>
+  );
+}
+
+/** A road narrowing toward the horizon — the tab's own mark, not a list icon. */
+function RoadGlyph() {
+  return (
+    <svg viewBox="0 0 16 16" className="size-4" aria-hidden="true">
+      <path
+        d="M5.4 14 7 2m3.6 12L9 2"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        fill="none"
+      />
+      <path
+        d="M8 4.6v2.2M8 9.2v2.2"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeDasharray="0.1 0"
+        fill="none"
+      />
+    </svg>
   );
 }

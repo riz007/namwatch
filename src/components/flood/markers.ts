@@ -148,6 +148,9 @@ export function styleFor(p: AnyProps, locale: string): MarkerStyle {
       className: "nw-shape nw-crowd",
       background: `var(--color-${band.token})`,
       borderColor: `var(--color-${band.token}-border)`,
+      // Drives the dashed ring, which is what says "a person typed this in"
+      // rather than "an instrument measured it". Severity keeps the hue.
+      color: `var(--color-${band.token}-border)`,
       opacity: Math.max(0.45, p.opacity),
       title: p.note ?? p.kind,
     };
@@ -198,7 +201,7 @@ export function clusterStyle(
   if (layer === "crowd" && summary.maxDepth >= 0) {
     const band = DEPTH_BANDS[summary.maxDepth] ?? DEPTH_BANDS[0]!;
     return {
-      className: "nw-cluster nw-cluster-crowd",
+      className: "nw-cluster nw-cluster-crowd nw-from-people",
       background: `var(--color-${band.token})`,
       borderColor: `var(--color-${band.token}-border)`,
       color: `var(--color-${band.token}-on)`,

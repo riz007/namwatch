@@ -10,7 +10,17 @@ import {
 import { windowStart } from "@/lib/reports/rate-limit.ts";
 import { shouldAutoHide, shouldExpireFromVotes } from "@/lib/reports/trust.ts";
 import type { LonLat } from "@/lib/sources/types.ts";
-import { and, eq, gte, sql } from "drizzle-orm";
+import {
+  and,
+  eq,
+  gte,
+  inArray,
+  isNotNull,
+  lt,
+  lte,
+  or,
+  sql,
+} from "drizzle-orm";
 import { db } from "../index.ts";
 import { rateLimits, reportVotes, reports } from "../schema.ts";
 
@@ -32,6 +42,7 @@ export type NewReport = {
   readonly locale: "th" | "en";
   readonly point: LonLat;
   readonly districtTh: string | null;
+  readonly roadName: string | null;
   readonly deviceHash: string;
   readonly ipHash: string | null;
 };
@@ -54,6 +65,7 @@ export async function insertReport(
       geomPublic: sql`${asGeography(publicPoint)}` as never,
       h3R9,
       regionId: resolveRegionId(input.districtTh),
+      roadName: input.roadName,
       deviceHash: input.deviceHash,
       ipHash: input.ipHash,
       createdAt: now,
@@ -235,18 +247,14 @@ export async function expireOverdueReports(
   const rows = await db()
     .update(reports)
     .set({ status: "expired" })
-    .where(
-      and(eq(reports.status, "active"), sql`${reports.expiresAt} <= ${now}`),
-    )
+    .where(and(eq(reports.status, "active"), lte(reports.expiresAt, now)))
     .returning({ id: reports.id });
   return rows.length;
 }
 
 /** Rate-limit rows are only useful inside their window; drop the rest. */
 export async function pruneRateLimits(olderThan: Date): Promise<void> {
-  await db()
-    .delete(rateLimits)
-    .where(sql`${rateLimits.windowStart} < ${olderThan}`);
+  await db().delete(rateLimits).where(lt(rateLimits.windowStart, olderThan));
 }
 
 /**
@@ -263,8 +271,8 @@ export async function clearOldIdentifiers(olderThan: Date): Promise<number> {
     .set({ ipHash: null, deviceHash: null })
     .where(
       and(
-        sql`(${reports.ipHash} is not null or ${reports.deviceHash} is not null)`,
-        sql`${reports.createdAt} < ${olderThan}`,
+        or(isNotNull(reports.ipHash), isNotNull(reports.deviceHash)),
+        lt(reports.createdAt, olderThan),
       ),
     )
     .returning({ id: reports.id });
@@ -283,10 +291,13 @@ export async function pruneVotesForExpiredReports(
   const rows = await db()
     .delete(reportVotes)
     .where(
-      sql`${reportVotes.reportId} in (
-        select ${reports.id} from ${reports}
-        where ${reports.expiresAt} < ${olderThan}
-      )`,
+      inArray(
+        reportVotes.reportId,
+        db()
+          .select({ id: reports.id })
+          .from(reports)
+          .where(lt(reports.expiresAt, olderThan)),
+      ),
     )
     .returning({ reportId: reportVotes.reportId });
   return rows.length;
