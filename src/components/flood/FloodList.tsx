@@ -220,7 +220,7 @@ export function FloodList({
 }
 
 /** Station status: never colour alone — a word plus a tinted band. */
-function StationStatus({ status }: { status: string }) {
+export function StationStatus({ status }: { status: string }) {
   const t = useTranslations("station.status");
   const key = ["normal", "watch", "warning", "critical", "unknown"].includes(
     status,

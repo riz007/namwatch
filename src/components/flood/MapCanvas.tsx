@@ -38,6 +38,25 @@ const STYLE_URL = {
   dark: "https://tiles.openfreemap.org/styles/dark",
 } as const;
 
+/**
+ * A design token as an `rgb()` string MapLibre can parse. Its colour parser
+ * predates `oklch()`, so the token is resolved by painting one pixel and
+ * reading it back — the value then follows light and dark exactly as the
+ * rest of the interface does.
+ */
+function tokenRgb(name: string): string | null {
+  const raw = getComputedStyle(document.documentElement)
+    .getPropertyValue(name)
+    .trim();
+  const ctx = document.createElement("canvas").getContext("2d");
+  if (!raw || !ctx) return null;
+  ctx.fillStyle = "#000";
+  ctx.fillStyle = raw;
+  ctx.fillRect(0, 0, 1, 1);
+  const [r, g, b] = ctx.getImageData(0, 0, 1, 1).data;
+  return `rgb(${r}, ${g}, ${b})`;
+}
+
 function prefersDark(): boolean {
   const attr = document.documentElement.getAttribute("data-theme");
   if (attr === "dark") return true;
@@ -140,6 +159,43 @@ export function MapCanvas({
             } catch {
               // A style layer we cannot relabel is not worth failing the map for.
             }
+          }
+        }
+
+        // Rivers and khlongs, made legible. In a flood the waterways are the
+        // geography: canal gauges should sit on visible canals, and the river
+        // view's Chao Phraya should be the same blue line you see here. The
+        // basemap already carries them from OpenStreetMap; this only restyles.
+        const water = tokenRgb("--color-water");
+        const waterLine = tokenRgb("--color-water-line");
+        for (const layer of instance.getStyle().layers ?? []) {
+          const sourceLayer = (layer as { "source-layer"?: string })[
+            "source-layer"
+          ];
+          try {
+            if (sourceLayer === "water" && layer.type === "fill" && water) {
+              instance.setPaintProperty(layer.id, "fill-color", water);
+            }
+            if (
+              sourceLayer === "waterway" &&
+              layer.type === "line" &&
+              waterLine
+            ) {
+              instance.setPaintProperty(layer.id, "line-color", waterLine);
+              instance.setPaintProperty(layer.id, "line-width", [
+                "interpolate",
+                ["linear"],
+                ["zoom"],
+                8,
+                0.8,
+                12,
+                1.8,
+                16,
+                4,
+              ] as never);
+            }
+          } catch {
+            // Same rule: a layer we cannot restyle is not worth failing for.
           }
         }
       });

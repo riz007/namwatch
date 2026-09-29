@@ -43,6 +43,13 @@
   --color-rain-on: oklch(99% 0.002 240);
   --color-rain-on-light: oklch(22% 0.03 240);
 
+  /* — Water ————————————————————————————
+   * Rivers and khlongs: the river diagram's spine and the map's waterways.
+   * Cooler and greyer than the rain scale so a river never reads as rainfall,
+   * and never a depth colour, which belongs to water on the ground. */
+  --color-water: oklch(90% 0.035 220);
+  --color-water-line: oklch(60% 0.085 222);
+
   /* — Alert ————————————————————————————
    * The emergency bar is deliberately NOT red. Red belongs to depth-5
    * ("life-threatening"); a permanently-red bar at the top of every page would
@@ -101,6 +108,10 @@
     --color-paper: oklch(16% 0.012 264);
     --color-paper-2: oklch(20% 0.013 264);
     --color-paper-3: oklch(24.5% 0.014 264);
+    --color-water: oklch(30% 0.04 222);
+    --color-water-line: oklch(64% 0.08 222);
+    --color-water: oklch(30% 0.04 222);
+    --color-water-line: oklch(64% 0.08 222);
     --color-ink: oklch(93% 0.008 264);
     --color-ink-2: oklch(74% 0.01 264);
     --color-muted: oklch(63% 0.011 264);

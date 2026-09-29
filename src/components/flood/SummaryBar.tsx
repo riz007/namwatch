@@ -36,7 +36,10 @@ export function SummaryBar({
     for (const { properties: p } of features) {
       if (isStation(p)) {
         if (p.status === "critical") overbank++;
-        else if (p.status === "warning" || p.status === "watch") rising++;
+        // Measured movement over the last two hours, from our own history.
+        // This used to count stations at watch/warning — near the bank — and
+        // call them "rising", which counted falling water as rising.
+        if (p.trend === "rising") rising++;
         if (p.kind === "rain" && p.value !== null) {
           maxRainMm =
             maxRainMm === null ? p.value : Math.max(maxRainMm, p.value);

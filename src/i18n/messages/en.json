@@ -95,6 +95,7 @@
     "viewMap": "Map",
     "viewList": "List",
     "viewRoads": "Roads",
+    "viewRiver": "River",
     "filters": "Filters",
     "timeWindow": "Time range",
     "lastHours": "{hours} h",
@@ -124,7 +125,8 @@
       "warning": "Warning",
       "critical": "Overbank",
       "unknown": "No data"
-    }
+    },
+    "discharge": "Flow"
   },
   "report": {
     "title": "Report flooding",
@@ -252,7 +254,7 @@
   },
   "summary": {
     "overbank": "over bank",
-    "rising": "rising",
+    "rising": "rising in 2 h",
     "quiet": "No alerts in this area right now",
     "unknown": "Situation unknown — data is incomplete or not updating"
   },
@@ -307,5 +309,39 @@
     "counts": "{people} from people · {sensors} from sensors",
     "empty": "Nothing reported yet",
     "emptyWhy": "Reports and sensor readings appear here grouped by road or district. Add a road name when you report and it will show up by name."
+  },
+  "river": {
+    "title": "The Chao Phraya, from upstream to Bangkok",
+    "headOver": "{count} of {total} gauges on the way to Bangkok are over their banks",
+    "headNone": "No gauge on the way to Bangkok is over its bank",
+    "headRising": "{count} rising over the last two hours",
+    "headNoData": "No current readings from the Chao Phraya gauges",
+    "howToRead": "North at the top, Bangkok at the bottom — the way the water travels. The line's width shows measured flow.",
+    "flow": "{value} m³/s",
+    "overBank": "Over bank by {m} m",
+    "belowBank": "{m} m below bank",
+    "noBank": "No bank level published",
+    "rising": "Rising {cm} cm in 2 hours",
+    "falling": "Falling {cm} cm in 2 hours",
+    "steady": "Holding steady",
+    "flowNotMeasured": "Flow is not measured from here down; the line keeps the last measured width.",
+    "noReading": "No current reading",
+    "damFull": "{pct}% full",
+    "damOver": "Over its normal capacity",
+    "damIn": "Inflow",
+    "damOut": "Release",
+    "damUnit": "Inflow and release in million m³ a day.",
+    "damDate": "Figures for {date}.",
+    "damsMissing": "Dam figures are not available yet.",
+    "warningsTitle": "HII warnings for this river basin",
+    "warningsNone": "HII's current feed has no warnings for the Chao Phraya basin.",
+    "warningsDown": "Couldn't reach HII's warning feed. Check thaiwater.net for the latest.",
+    "warningsMore": "Show all {count}",
+    "warningsLess": "Show fewer",
+    "warningsThaiOnly": "HII publishes these in Thai; they are shown as written.",
+    "gaugesDown": "Gauge readings are unavailable right now.",
+    "error": "Couldn't load the river. It will try again on its own.",
+    "sources": "Water levels and flow from Royal Irrigation Department and HII gauges. Dam figures from the Royal Irrigation Department, published by HII. Nothing here is a forecast.",
+    "inletJoins": "Dams upstream, feeding in at {place}"
   }
 }

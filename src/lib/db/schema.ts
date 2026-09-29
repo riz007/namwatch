@@ -19,6 +19,8 @@ import {
   bigserial,
   boolean,
   check,
+  date,
+  doublePrecision,
   index,
   integer,
   jsonb,
@@ -107,6 +109,12 @@ export const stationReadings = pgTable(
      */
     value: numeric("value").notNull(),
     status: text("status"),
+    /**
+     * River discharge, m³/s, where the gauge is flow-rated (RID "C." stations).
+     * The number Bangkok watches at C.13 below the Chao Phraya Dam; null for
+     * the majority of gauges, which only measure level.
+     */
+    dischargeM3s: numeric("discharge_m3s"),
   },
   (t) => [
     primaryKey({ columns: [t.stationId, t.observedAt] }),
@@ -268,3 +276,36 @@ export const moderationLog = pgTable("moderation_log", {
   reason: text("reason"),
   at: timestamp("at", { withTimezone: true }).notNull().defaultNow(),
 });
+
+/**
+ * Large reservoirs, latest state only — one row per dam, upserted.
+ *
+ * Volumes are million cubic metres (ล้าน ลบ.ม.) as the Royal Irrigation
+ * Department reports them; inflow and release are per day. The source
+ * publishes daily, so keeping history would cost storage for nothing we show.
+ */
+export const dams = pgTable(
+  "dams",
+  {
+    /** `<source>:<upstream dam id>`, e.g. `thaiwater:11`. */
+    id: text("id").primaryKey(),
+    source: text("source").notNull(),
+    nameTh: text("name_th").notNull(),
+    nameEn: text("name_en"),
+    lon: doublePrecision("lon").notNull(),
+    lat: doublePrecision("lat").notNull(),
+    maxStorageMcm: numeric("max_storage_mcm"),
+    storageMcm: numeric("storage_mcm"),
+    /** Percent of normal storage, as published — can exceed 100. */
+    storagePct: numeric("storage_pct"),
+    inflowMcm: numeric("inflow_mcm"),
+    releasedMcm: numeric("released_mcm"),
+    spilledMcm: numeric("spilled_mcm"),
+    /** The day the figures describe, Asia/Bangkok. */
+    observedOn: date("observed_on").notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (t) => [index("dams_source_idx").on(t.source)],
+);

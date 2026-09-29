@@ -263,6 +263,30 @@ function Reading({ p }: { p: AnyProps }) {
             </span>
           </div>
         )}
+        {p.dischargeM3s !== null && (
+          <Cell
+            label={t("station.discharge")}
+            value={t("river.flow", {
+              value: new Intl.NumberFormat("en-GB").format(p.dischargeM3s),
+            })}
+          />
+        )}
+        {p.trend !== null && p.deltaM !== null && (
+          <div className="col-span-2 text-[var(--color-ink-2)]">
+            <span aria-hidden="true">
+              {p.trend === "rising"
+                ? "↑ "
+                : p.trend === "falling"
+                  ? "↓ "
+                  : "→ "}
+            </span>
+            {p.trend === "steady"
+              ? t("river.steady")
+              : t(`river.${p.trend}`, {
+                  cm: Math.round(Math.abs(p.deltaM) * 100),
+                })}
+          </div>
+        )}
       </dl>
     );
   }

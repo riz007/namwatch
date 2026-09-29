@@ -7,6 +7,7 @@
  * caller gets an `AdapterResult` and the other layers are unaffected.
  */
 import { sourceLog } from "../log.ts";
+import { thaiwaterDamAdapter } from "./thaiwater-dam/adapter.ts";
 import { thaiwaterAdapter } from "./thaiwater/adapter.ts";
 import { traffyAdapter } from "./traffy/adapter.ts";
 import {
@@ -20,6 +21,7 @@ import {
 export const ADAPTERS: readonly SourceAdapter[] = [
   thaiwaterAdapter,
   traffyAdapter,
+  thaiwaterDamAdapter,
 ];
 
 export const adapterById = (id: SourceId): SourceAdapter | undefined =>

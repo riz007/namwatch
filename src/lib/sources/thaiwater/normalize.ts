@@ -171,6 +171,9 @@ export function normalizeWaterLevel(
         observedAt,
         // Metres MSL.
         value: levelMsl,
+        // m³/s; null for level-only gauges. Never used for severity — it has
+        // no bank to compare against — only shown alongside the level.
+        dischargeM3s: toNumber(item.discharge),
         status: deriveStatus(
           levelMsl,
           toNumber(item.station.min_bank),

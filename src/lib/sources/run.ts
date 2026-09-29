@@ -1,6 +1,7 @@
 import "server-only";
 
 import {
+  readSourceHealth,
   recordSourceFailure,
   recordSourceSuccess,
 } from "../db/queries/health.ts";
@@ -38,8 +39,24 @@ export async function runIngest(
 
   if (adapters.length === 0) throw new UnknownSourceError(requested ?? "");
 
+  // Expensive, slow-publishing sources declare a floor. Read it from the
+  // health table rather than module memory: serverless instances do not share
+  // memory, so an in-process timer would let every cold start refetch 10 MB.
+  // An explicit `?source=` request is a person debugging, so it always runs.
+  let due = adapters;
+  if (!requested && adapters.some((a) => a.minIntervalMinutes)) {
+    const health = await readSourceHealth().catch(() => []);
+    const lastOk = new Map(health.map((h) => [h.source, h.lastSuccessAt]));
+    const now = Date.now();
+    due = adapters.filter((a) => {
+      if (!a.minIntervalMinutes) return true;
+      const last = lastOk.get(a.id);
+      return !last || now - last.getTime() >= a.minIntervalMinutes * 60_000;
+    });
+  }
+
   const results = await Promise.all(
-    adapters.map(async (adapter): Promise<IngestResult> => {
+    due.map(async (adapter): Promise<IngestResult> => {
       const result = await runAdapter(adapter);
       const at = new Date();
 

@@ -4,7 +4,7 @@ import { resolveRegionId } from "@/lib/geo/region.ts";
 import type { IngestPayload } from "@/lib/sources/types.ts";
 import { lt, sql } from "drizzle-orm";
 import { db } from "../index.ts";
-import { externalReports, stationReadings, stations } from "../schema.ts";
+import { dams, externalReports, stationReadings, stations } from "../schema.ts";
 
 /**
  * Persisting a normalised adapter payload. SQL lives only here.
@@ -30,12 +30,18 @@ export type IngestCounts = {
   stations: number;
   readings: number;
   externalReports: number;
+  dams: number;
 };
 
 export async function persistPayload(
   payload: IngestPayload,
 ): Promise<IngestCounts> {
-  const counts: IngestCounts = { stations: 0, readings: 0, externalReports: 0 };
+  const counts: IngestCounts = {
+    stations: 0,
+    readings: 0,
+    externalReports: 0,
+    dams: 0,
+  };
 
   for (const batch of chunk(payload.stations)) {
     await db()
@@ -80,17 +86,18 @@ export async function persistPayload(
       const values = sql.join(
         batch.map(
           (r) =>
-            sql`(${r.source}::text, ${r.externalId}::text, ${r.observedAt.toISOString()}::timestamptz, ${r.value.toString()}::numeric, ${r.status}::text)`,
+            sql`(${r.source}::text, ${r.externalId}::text, ${r.observedAt.toISOString()}::timestamptz, ${r.value.toString()}::numeric, ${r.status}::text, ${r.dischargeM3s == null ? null : r.dischargeM3s.toString()}::numeric)`,
         ),
         sql`, `,
       );
       await db().execute(sql`
-        insert into ${stationReadings} (station_id, observed_at, value, status)
-        select s.id, v.observed_at, v.value, v.status
-        from (values ${values}) as v(source, external_id, observed_at, value, status)
+        insert into ${stationReadings} (station_id, observed_at, value, status, discharge_m3s)
+        select s.id, v.observed_at, v.value, v.status, v.discharge_m3s
+        from (values ${values}) as v(source, external_id, observed_at, value, status, discharge_m3s)
         join ${stations} s on s.source = v.source and s.external_id = v.external_id
         on conflict (station_id, observed_at) do update
-          set value = excluded.value, status = excluded.status
+          set value = excluded.value, status = excluded.status,
+              discharge_m3s = excluded.discharge_m3s
       `);
       counts.readings += batch.length;
     }
@@ -128,6 +135,50 @@ export async function persistPayload(
         },
       });
     counts.externalReports += batch.length;
+  }
+
+  // Latest state only: one row per dam, overwritten each ingest. `numeric`
+  // columns take strings so no float is ever rounded on the way in.
+  const num = (v: number | null): string | null =>
+    v === null ? null : v.toString();
+  for (const batch of chunk(payload.dams ?? [])) {
+    await db()
+      .insert(dams)
+      .values(
+        batch.map((d) => ({
+          id: `${d.source}:${d.externalId}`,
+          source: d.source,
+          nameTh: d.nameTh,
+          nameEn: d.nameEn,
+          lon: d.point.lon,
+          lat: d.point.lat,
+          maxStorageMcm: num(d.maxStorageMcm),
+          storageMcm: num(d.storageMcm),
+          storagePct: num(d.storagePct),
+          inflowMcm: num(d.inflowMcm),
+          releasedMcm: num(d.releasedMcm),
+          spilledMcm: num(d.spilledMcm),
+          observedOn: d.observedOn,
+        })),
+      )
+      .onConflictDoUpdate({
+        target: dams.id,
+        set: {
+          nameTh: sql`excluded.name_th`,
+          nameEn: sql`excluded.name_en`,
+          lon: sql`excluded.lon`,
+          lat: sql`excluded.lat`,
+          maxStorageMcm: sql`excluded.max_storage_mcm`,
+          storageMcm: sql`excluded.storage_mcm`,
+          storagePct: sql`excluded.storage_pct`,
+          inflowMcm: sql`excluded.inflow_mcm`,
+          releasedMcm: sql`excluded.released_mcm`,
+          spilledMcm: sql`excluded.spilled_mcm`,
+          observedOn: sql`excluded.observed_on`,
+          updatedAt: sql`now()`,
+        },
+      });
+    counts.dams += batch.length;
   }
 
   return counts;

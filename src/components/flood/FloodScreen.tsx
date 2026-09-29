@@ -10,6 +10,7 @@ import dynamic from "next/dynamic";
 import { useSearchParams } from "next/navigation.js";
 import { useCallback, useMemo, useState } from "react";
 import { Freshness } from "../Freshness.tsx";
+import { RiverView } from "../river/RiverView.tsx";
 import {
   DepthFilter,
   SourceFilterControl,
@@ -164,7 +165,7 @@ export function FloodScreen() {
             }}
           />
         </div>
-        <TimeFilter hours={hours} onChange={setHours} />
+        {view !== "river" && <TimeFilter hours={hours} onChange={setHours} />}
       </div>
 
       {/* An empty map during a flood reads as "nothing is happening". If the
@@ -204,7 +205,12 @@ export function FloodScreen() {
       {/* Source and depth are one question — "show me what" — so they share a
           row and a rule. Five stacked bands of chrome pushed the map itself
           below the fold on a phone, which is the wrong thing to lose. */}
-      <div className="space-y-2 border-t border-[var(--color-rule-2)] px-4 pt-3 pb-3">
+      <div
+        // Time, source and depth filter the map's own feed; the river view
+        // has its own and they would silently do nothing there.
+        hidden={view === "river"}
+        className="space-y-2 border-t border-[var(--color-rule-2)] px-4 pt-3 pb-3"
+      >
         {/* `overflow-x: auto` clips the other axis too, which cut the top off
             the selected swatch's ring and lift. The padding gives them room;
             the negative margin keeps the row's outer spacing unchanged. */}
@@ -284,7 +290,10 @@ export function FloodScreen() {
         ) : (
           // Pb-20 keeps the last rows clear of the floating report button.
           <div className="absolute inset-0 overflow-y-auto pb-20">
-            {isLoading && !data ? (
+            {view === "river" ? (
+              // Its own feed: the river reaches far outside the map's bbox.
+              <RiverView />
+            ) : isLoading && !data ? (
               <ListSkeleton />
             ) : view === "roads" ? (
               <RoadList features={features} onSelect={select} />
@@ -361,11 +370,14 @@ export function FloodScreen() {
 
       <DetailSheet selected={shown} onClose={closeSheet} onVote={vote} />
 
-      <SourceStrip
-        counts={data?.meta.counts}
-        generatedAt={data?.meta.generatedAt ?? null}
-        total={features.length}
-      />
+      {/* Counts the map's feed; the river names its own sources in place. */}
+      {view !== "river" && (
+        <SourceStrip
+          counts={data?.meta.counts}
+          generatedAt={data?.meta.generatedAt ?? null}
+          total={features.length}
+        />
+      )}
     </div>
   );
 }

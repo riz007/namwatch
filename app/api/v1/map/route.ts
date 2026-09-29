@@ -19,6 +19,7 @@ import {
   type ReportKind,
 } from "@/lib/reports/decay.ts";
 import { runIngest } from "@/lib/sources/run.ts";
+import { trendOf } from "@/lib/trend.ts";
 import { after, NextResponse } from "next/server";
 
 /**
@@ -177,6 +178,14 @@ export async function GET(request: Request) {
             ? rainBandFor(s.value === null ? null : Number(s.value))
             : null,
         observedAt: s.observedAt?.toISOString() ?? null,
+        dischargeM3s: s.dischargeM3s === null ? null : Number(s.dischargeM3s),
+        // From our own two-hour-old reading; null when there is no fair
+        // comparison point rather than a guessed direction.
+        ...trendOf(
+          s.value === null ? null : Number(s.value),
+          s.earlierValue === null ? null : Number(s.earlierValue),
+          s.kind,
+        ),
         // Lets a station join the road/area grouping. Without it every group
         // reported "0 sensors", which reads as "no gauge covers this" rather
         // than "we never looked".

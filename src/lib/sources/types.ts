@@ -14,7 +14,13 @@
 import type { Provenance } from "@/config/reports.ts";
 
 export type SourceId =
-  "thaiwater" | "bma-dds" | "traffy" | "rainviewer" | "gistda" | "openmeteo";
+  | "thaiwater"
+  | "thaiwater-dam"
+  | "bma-dds"
+  | "traffy"
+  | "rainviewer"
+  | "gistda"
+  | "openmeteo";
 
 export type StationKind = "canal_level" | "river_level" | "road_flood" | "rain";
 export type ReadingStatus =
@@ -45,6 +51,8 @@ export type NormalizedReading = {
   /** Unit is fixed by the station's `kind`. */
   readonly value: number;
   readonly status: ReadingStatus;
+  /** River discharge in m³/s, for flow-rated gauges only. */
+  readonly dischargeM3s?: number | null;
 };
 
 export type NormalizedExternalReport = {
@@ -63,10 +71,34 @@ export type NormalizedExternalReport = {
   readonly meta: Record<string, unknown>;
 };
 
+/**
+ * A large reservoir's latest published state. Volumes are million m³ (ล้าน
+ * ลบ.ม.), inflow and release per day, as the Royal Irrigation Department
+ * reports them.
+ */
+export type NormalizedDam = {
+  readonly source: SourceId;
+  readonly externalId: string;
+  readonly nameTh: string;
+  readonly nameEn: string | null;
+  readonly point: LonLat;
+  readonly maxStorageMcm: number | null;
+  readonly storageMcm: number | null;
+  /** Percent of normal storage as published; can exceed 100. */
+  readonly storagePct: number | null;
+  readonly inflowMcm: number | null;
+  readonly releasedMcm: number | null;
+  readonly spilledMcm: number | null;
+  /** `YYYY-MM-DD`, the day the figures describe. */
+  readonly observedOn: string;
+};
+
 export type IngestPayload = {
   readonly stations: readonly NormalizedStation[];
   readonly readings: readonly NormalizedReading[];
   readonly externalReports: readonly NormalizedExternalReport[];
+  /** Only the dam adapter sets this. */
+  readonly dams?: readonly NormalizedDam[];
 };
 
 export const emptyPayload = (): IngestPayload => ({
@@ -88,6 +120,12 @@ export type SourceAdapter = {
   readonly provenance: Provenance;
   /** Publish cadence in minutes. A source is "delayed" past 3× this. */
   readonly cadenceMinutes: number;
+  /**
+   * Skip this adapter until this long after its last success. For sources that
+   * publish rarely but cost a lot to fetch — the dam feed is 10 MB and changes
+   * once a day, so pulling it every ten minutes would be pure waste.
+   */
+  readonly minIntervalMinutes?: number;
   readonly attribution: Attribution;
   /** Hits the network. Only called from the ingest route, never from render. */
   fetchRaw(signal?: AbortSignal): Promise<unknown>;

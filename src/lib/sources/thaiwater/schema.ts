@@ -60,6 +60,8 @@ export const waterLevelReadingSchema = z.object({
   waterlevel_datetime: z.string(),
   waterlevel_msl: loose,
   waterlevel_m: loose,
+  /** m³/s. Populated for flow-rated RID gauges (~283 of 806); null elsewhere. */
+  discharge: loose,
   storage_percent: loose,
   /** Unsigned magnitude; the direction lives in `diff_wl_bank_text`. */
   diff_wl_bank: loose,

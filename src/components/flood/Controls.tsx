@@ -12,7 +12,7 @@ import { DepthPictogram } from "../DepthPictogram.tsx";
  * a peer of the Map, not a fallback, because it is what people on a cheap phone
  * without working WebGL actually use.
  */
-export type View = "map" | "list" | "roads";
+export type View = "map" | "list" | "roads" | "river";
 
 export function ViewToggle({
   view,
@@ -25,7 +25,7 @@ export function ViewToggle({
 
   return (
     <div role="tablist" aria-label={t("title")} className="segmented">
-      {(["map", "list", "roads"] as const).map((value) => (
+      {(["map", "list", "roads", "river"] as const).map((value) => (
         <button
           key={value}
           type="button"
@@ -38,14 +38,18 @@ export function ViewToggle({
             <MapGlyph />
           ) : value === "list" ? (
             <ListGlyph />
-          ) : (
+          ) : value === "roads" ? (
             <RoadGlyph />
+          ) : (
+            <RiverGlyph />
           )}
           {value === "map"
             ? t("viewMap")
             : value === "list"
               ? t("viewList")
-              : t("viewRoads")}
+              : value === "roads"
+                ? t("viewRoads")
+                : t("viewRiver")}
         </button>
       ))}
     </div>
@@ -243,6 +247,21 @@ function RoadGlyph() {
         strokeWidth="1.6"
         strokeLinecap="round"
         strokeDasharray="0.1 0"
+        fill="none"
+      />
+    </svg>
+  );
+}
+
+/** A river's meander, top to bottom — the way the river view reads. */
+function RiverGlyph() {
+  return (
+    <svg viewBox="0 0 16 16" className="size-4" aria-hidden="true">
+      <path
+        d="M9.5 1.5c-3 2-3 3.8 0 5.5s3 3.5 0 5.5"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinecap="round"
         fill="none"
       />
     </svg>

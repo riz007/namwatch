@@ -5,6 +5,7 @@
  */
 import type { ProvenanceLevel } from "@/components/Provenance.tsx";
 import type { RainBand } from "@/config/rain-bands.ts";
+import type { Trend } from "@/lib/trend.ts";
 
 export type MapFeatureBase = {
   layer: "reports" | "stations" | "external";
@@ -44,6 +45,11 @@ export type StationProps = MapFeatureBase & {
   status: "normal" | "watch" | "warning" | "critical" | "unknown";
   observedAt: string | null;
   regionId: string | null;
+  /** m³/s, for flow-rated gauges only. */
+  dischargeM3s: number | null;
+  /** Over the last ~2 h, from stored history; null when not comparable. */
+  trend: Trend | null;
+  deltaM: number | null;
 };
 
 export type ExternalProps = MapFeatureBase & {

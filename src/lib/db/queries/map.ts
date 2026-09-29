@@ -103,6 +103,10 @@ export type MapStation = {
   status: string | null;
   observedAt: Date | null;
   regionId: string | null;
+  dischargeM3s: string | null;
+  /** The level about two hours before `value`, from our own history. */
+  earlierValue: string | null;
+  oldCode: string | null;
 };
 
 /**
@@ -115,14 +119,17 @@ type RawStationRow = Omit<MapStation, "observedAt"> & {
 };
 
 /**
- * Stations with their most recent reading.
+ * Stations with their most recent reading and the reading about two hours
+ * before it, for trend.
  *
- * Uses a LATERAL join rather than fetching stations and then their readings,
- * which would be an N+1 against the free tier.
+ * Both are LATERAL joins rather than per-station fetches, which would be an
+ * N+1 against the free tier. The earlier reading is bounded to 90 minutes –
+ * 4 hours back: a gap in the feed must produce "no trend", never a comparison
+ * against a reading from yesterday.
  */
-export async function stationsInBBox(
-  bbox: BBox,
-  limit: number = MAX_MAP_FEATURES,
+async function stationsWhere(
+  where: ReturnType<typeof sql>,
+  limit: number,
 ): Promise<readonly MapStation[]> {
   const rows = await db().execute<RawStationRow>(sql`
     select
@@ -136,21 +143,33 @@ export async function stationsInBBox(
       ST_Y(s.geom::geometry)   as lat,
       s.bank_level_m           as "bankLevelM",
       s.region_id              as "regionId",
+      s.meta->>'oldCode'       as "oldCode",
       r.value,
+      r.discharge_m3s          as "dischargeM3s",
       case
         when r.observed_at < now() - interval '3 hours' then 'unknown'
         else r.status
       end                      as status,
-      r.observed_at            as "observedAt"
+      r.observed_at            as "observedAt",
+      e.value                  as "earlierValue"
     from ${stations} s
     left join lateral (
-      select value, status, observed_at
+      select value, status, observed_at, discharge_m3s
       from ${stationReadings}
       where station_id = s.id
       order by observed_at desc
       limit 1
     ) r on true
-    where ST_Intersects(s.geom, ${bboxGeog(bbox)})
+    left join lateral (
+      select value
+      from ${stationReadings}
+      where station_id = s.id
+        and observed_at <= r.observed_at - interval '90 minutes'
+        and observed_at >= r.observed_at - interval '4 hours'
+      order by observed_at desc
+      limit 1
+    ) e on true
+    where ${where}
     order by r.observed_at desc nulls last
     limit ${limit}
   `);
@@ -160,6 +179,25 @@ export async function stationsInBBox(
     observedAt: r.observedAt === null ? null : new Date(r.observedAt),
   }));
 }
+
+export const stationsInBBox = (
+  bbox: BBox,
+  limit: number = MAX_MAP_FEATURES,
+): Promise<readonly MapStation[]> =>
+  stationsWhere(sql`ST_Intersects(s.geom, ${bboxGeog(bbox)})`, limit);
+
+/** Named gauges, wherever they are — the river view reaches far upstream. */
+export const stationsByExternalId = (
+  source: string,
+  externalIds: readonly string[],
+): Promise<readonly MapStation[]> =>
+  stationsWhere(
+    sql`s.source = ${source} and s.external_id in (${sql.join(
+      externalIds.map((id) => sql`${id}`),
+      sql`, `,
+    )})`,
+    externalIds.length,
+  );
 
 export type MapExternalReport = {
   id: string;
